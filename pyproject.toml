@@ -1,0 +1,51 @@
+[project]
+name = "plataforma-psi"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "celery>=5.6.3",
+    "django>=5.2,<6.0",
+    "django-cors-headers>=4.9.0",
+    "django-environ>=0.14.0",
+    "djangorestframework>=3.18.1",
+    "gunicorn>=26.2.0",
+    "psycopg[binary]>=3.3.5",
+    "redis>=8.1.0",
+    "whitenoise>=6.12.0",
+]
+
+[dependency-groups]
+dev = [
+    "black>=26.5.1",
+    "django-stubs>=6.1.1",
+    "djangorestframework-stubs>=3.18.1",
+    "mypy>=2.3.1",
+    "pytest>=9.1.1",
+    "pytest-django>=4.14.0",
+    "ruff>=0.16.7",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.test_settings"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+exclude = [".venv", "migrations", "frontend/node_modules", "frontend/.next"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.black]
+line-length = 88
+target-version = ["py313"]
+
+[tool.mypy]
+python_version = "3.13"
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+ignore_missing_imports = true
+exclude = [".venv", "migrations", "frontend/node_modules", "frontend/.next"]
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
