@@ -10,6 +10,7 @@ export function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [showOtp, setShowOtp] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [mfaSecret, setMfaSecret] = useState("");
   const [mfaUri, setMfaUri] = useState("");
   const [copiedSecret, setCopiedSecret] = useState(false);
@@ -65,17 +66,31 @@ export function LoginPage() {
   }
 
   return (
-    <main className="auth-page">
-      <section className="auth-card" aria-labelledby="login-title">
-        <div className="auth-form-panel">
-          <div className="login-heading">
-            <div className="brand-mark">PSI</div>
-            <div>
-              <p className="eyebrow">Ambiente seguro</p>
-              <h1 id="login-title">Entrar na plataforma</h1>
-              <p className="muted">Acesse sua clínica com segurança.</p>
+    <main className="auth-page login-visual-page">
+      <div className="login-top-note">
+        <span>Plataforma para<br />psicólogos e clínicas</span>
+      </div>
+
+      <section className="login-visual-shell" aria-labelledby="login-title">
+        <div className="login-logo-area" aria-label="GoPsi">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-marca-sem-fundo.png" alt="GoPsi" />
+        </div>
+
+        <aside className="login-hero-copy" aria-label="Mensagem da plataforma">
+          <p>
+            Cuidar<br />
+            de pessoas<br />
+            <span>é acreditar<br />em novos<br />começos.</span>
+          </p>
+        </aside>
+
+        <section className="auth-card login-card" aria-label="Formulário de login">
+          <div className="auth-form-panel login-form-panel">
+            <div className="login-heading">
+              <h1 id="login-title">Entrar</h1>
+              <p>Acesse sua conta profissional.</p>
             </div>
-          </div>
 
           {error ? (
             <div id="login-form-error" className="alert" role="alert" aria-live="assertive">
@@ -84,88 +99,167 @@ export function LoginPage() {
           ) : null}
 
           <form className="form-stack" onSubmit={handleSubmit} aria-describedby={error ? "login-form-error" : undefined}>
-            <div className="field-group">
-              <label htmlFor="username">Usuário</label>
-              <input id="username" name="username" required autoComplete="username" />
-            </div>
-            <div className="field-group">
-              <label htmlFor="password">Senha</label>
-              <input
-                id="password"
-                name="password"
-                required
-                type="password"
-                autoComplete="current-password"
-              />
-            </div>
-            {showOtp ? (
-              <div className="field-group">
-                <label htmlFor="otp">Código MFA</label>
+            <div className="field-group login-field-group">
+              <label htmlFor="username">E-mail ou usuário</label>
+              <div className="login-input-wrap">
+                <span aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M4.75 6.75h14.5v10.5H4.75z" />
+                    <path d="m5.25 7.25 6.75 5.5 6.75-5.5" />
+                  </svg>
+                </span>
                 <input
-                  id="otp"
-                  name="otp"
-                  inputMode="numeric"
-                  pattern="[0-9]{6}"
-                  placeholder="000000"
-                  autoComplete="one-time-code"
-                  aria-describedby="otp-help"
+                  id="username"
+                  name="username"
+                  required
+                  autoComplete="username"
+                  placeholder="seu@e-mail.com ou admin"
+                  type="text"
                 />
-                <span id="otp-help" className="muted">Use o código de seis dígitos do seu aplicativo autenticador.</span>
               </div>
-            ) : null}
-            <button className="button-primary" disabled={isPending} type="submit">
-              {isPending ? "Entrando..." : "Entrar"}
-            </button>
-          </form>
-        </div>
-
-        <aside className="auth-security-panel" aria-label="Segurança do acesso">
-          <span className="panel-pill">Acesso protegido</span>
-          {mfaSecret ? (
-            <div className="mfa-setup-card" role="status">
-              <div className="mfa-setup-heading">
-                <strong>Configure seu autenticador</strong>
-                <p className="mfa-help">
-                  Escaneie o QR Code ou copie o segredo no seu app autenticador.
-                </p>
-              </div>
-              {mfaUri && showQr ? (
-                <div className="mfa-qr-box">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/api/qr?data=${encodeURIComponent(mfaUri)}`}
-                    alt=""
-                    onError={() => setShowQr(false)}
-                  />
-                </div>
-              ) : null}
-              <div className="mfa-secret-box">
-                <span>Segredo MFA</span>
-                <code>{mfaSecret}</code>
+            </div>
+            <div className="field-group login-field-group">
+              <label htmlFor="password">Senha</label>
+              <div className="login-input-wrap">
+                <span aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <rect x="5.75" y="10.25" width="12.5" height="8" rx="1.5" />
+                    <path d="M8.25 10.25V7.9a3.75 3.75 0 0 1 7.5 0v2.35" />
+                    <path d="M12 13.5v2" />
+                  </svg>
+                </span>
+                <input
+                  id="password"
+                  name="password"
+                  required
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  placeholder="Digite sua senha"
+                />
                 <button
-                  className="button-secondary"
+                  className="login-icon-button"
                   type="button"
-                  onClick={copyMfaSecret}
+                  onClick={() => setShowPassword((current) => !current)}
+                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
                 >
-                  {copiedSecret ? "Copiado" : "Copiar"}
+                  <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                    <path d="M3.5 12s3-5 8.5-5 8.5 5 8.5 5-3 5-8.5 5-8.5-5-8.5-5Z" />
+                    <circle cx="12" cy="12" r="2.5" />
+                    {showPassword ? null : <path d="m4 20 16-16" />}
+                  </svg>
                 </button>
               </div>
             </div>
-          ) : (
-            <div className="login-trust-card">
-              <strong>Dados clínicos exigem cuidado extra.</strong>
-              <p>
-                Contas administrativas usam MFA, sessões seguras e auditoria de
-                eventos sensíveis.
-              </p>
-              <ul>
-                <li>Isolamento por clínica</li>
-                <li>Prontuário com controle de acesso</li>
-                <li>Auditoria e LGPD desde a base</li>
-              </ul>
+
+            <div className="login-options-row">
+              <label className="login-checkbox-row">
+                <input type="checkbox" name="remember" />
+                <span>Manter-me conectado</span>
+              </label>
+              <a href="#password-recovery">Esqueci minha senha</a>
             </div>
-          )}
+
+            {showOtp ? (
+              <div className="field-group login-field-group">
+                <label htmlFor="otp">Código MFA</label>
+                <div className="login-input-wrap">
+                  <span aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                      <path d="M7 7h4v4H7zM13 7h4v4h-4zM7 13h4v4H7zM14 14h1.5v1.5H14zM17 13h1.5v1.5H17zM16 16h2v2h-2zM13 17h1.5v1.5H13z" />
+                    </svg>
+                  </span>
+                  <input
+                    id="otp"
+                    name="otp"
+                    inputMode="numeric"
+                    pattern="[0-9]{6}"
+                    placeholder="000000"
+                    autoComplete="one-time-code"
+                    aria-describedby="otp-help"
+                  />
+                </div>
+                <span id="otp-help" className="muted">Use o código de seis dígitos do seu aplicativo autenticador.</span>
+              </div>
+            ) : null}
+            <button className="button-primary login-submit-button" disabled={isPending} type="submit">
+              <span>{isPending ? "Entrando..." : "Entrar"}</span>
+              <span aria-hidden="true">→</span>
+            </button>
+
+            <div className="login-divider"><span>ou</span></div>
+
+            <button
+              className="login-mfa-button"
+              type="button"
+              onClick={() => setShowOtp((current) => !current)}
+              aria-expanded={showOtp}
+            >
+              <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                <path d="M5 5h5v5H5zM14 5h5v5h-5zM5 14h5v5H5zM15 15h1.5v1.5H15zM18 14h1.5v1.5H18zM17.5 17.5H20V20h-2.5zM13.5 18h1.5v1.5h-1.5z" />
+              </svg>
+              <span>{showOtp ? "Ocultar código MFA" : "Usar código MFA"}</span>
+            </button>
+          </form>
+
+            {mfaSecret ? (
+              <div className="mfa-setup-card login-mfa-setup" role="status">
+                <div className="mfa-setup-heading">
+                  <strong>Configure seu autenticador</strong>
+                  <p className="mfa-help">
+                    Escaneie o QR Code ou copie o segredo no seu app autenticador.
+                  </p>
+                </div>
+                {mfaUri && showQr ? (
+                  <div className="mfa-qr-box">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/api/qr?data=${encodeURIComponent(mfaUri)}`}
+                      alt=""
+                      onError={() => setShowQr(false)}
+                    />
+                  </div>
+                ) : null}
+                <div className="mfa-secret-box">
+                  <span>Segredo MFA</span>
+                  <code>{mfaSecret}</code>
+                  <button
+                    className="button-secondary"
+                    type="button"
+                    onClick={copyMfaSecret}
+                  >
+                    {copiedSecret ? "Copiado" : "Copiar"}
+                  </button>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="login-secure-note">
+              <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                <rect x="5.75" y="10.25" width="12.5" height="8" rx="1.5" />
+                <path d="M8.25 10.25V7.9a3.75 3.75 0 0 1 7.5 0v2.35" />
+              </svg>
+              <div>
+                <strong>Ambiente seguro para dados clínicos.</strong>
+                <p>Seus dados são protegidos com criptografia e seguem a LGPD.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside className="login-right-art" aria-hidden="true">
+          <div className="login-petal login-petal-one" />
+          <div className="login-petal login-petal-two" />
+          <p>Aqui a psicologia<br />ganha movimento.</p>
         </aside>
+
+        <footer className="login-footer">
+          <span>© 2026 GoPsi. Todos os direitos reservados.</span>
+          <nav aria-label="Links institucionais">
+            <a href="#privacy">Privacidade</a>
+            <a href="#terms">Termos de uso</a>
+            <a href="#support">Suporte</a>
+          </nav>
+        </footer>
       </section>
     </main>
   );

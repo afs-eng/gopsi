@@ -115,11 +115,8 @@ export function AppShell({
         inert={isMobile && !menuOpen ? true : undefined}
       >
         <div className="sidebar-header">
-          <div className="brand-mark">PSI</div>
-          <div>
-            <strong>Plataforma PSI</strong>
-            <span>Consultório digital</span>
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-marca-sem-fundo.png" alt="GoPsi" />
         </div>
         <nav className="nav-list" aria-label="Menu principal">
           <Link aria-current={activeNav === "dashboard" ? "page" : undefined} className={activeNav === "dashboard" ? "active" : ""} data-icon="grid" href="/" onClick={() => setMenuOpen(false)}>
@@ -246,15 +243,22 @@ export function AppShell({
           <div className="topbar-actions">
             <label className="topbar-search">
               <span>Buscar</span>
-              <input placeholder="Paciente, consulta..." disabled />
+              <input placeholder="Buscar pacientes, consultas, documentos..." disabled />
             </label>
+            {currentClinic ? (
+              <Link className="clinic-switcher" href={`/clinics/${currentClinic.id}`}>
+                <span aria-hidden="true">▦</span>
+                <strong>{currentClinic.name}</strong>
+                <small>Goiânia · GO</small>
+              </Link>
+            ) : null}
             <button
-              className="header-icon-button"
+              className="header-icon-button notification-button"
               type="button"
               aria-label="Abrir notificações"
               disabled
             >
-              🔔
+              <span aria-hidden="true">◖</span>
             </button>
             <span className="user-chip" aria-label={`Sessão de ${userName}`}>
               {userName.slice(0, 1).toUpperCase()}

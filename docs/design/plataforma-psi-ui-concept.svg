@@ -1,0 +1,319 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="3200" viewBox="0 0 2400 3200" role="img" aria-labelledby="title desc">
+  <title id="title">Conceito visual Plataforma PSI</title>
+  <desc id="desc">Prancha de mockups com direção visual para todas as principais telas da Plataforma PSI.</desc>
+  <defs>
+    <linearGradient id="pageBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6f0e6"/>
+      <stop offset="0.55" stop-color="#edf5ee"/>
+      <stop offset="1" stop-color="#f9f3ea"/>
+    </linearGradient>
+    <linearGradient id="deep" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#103f38"/>
+      <stop offset="1" stop-color="#1f7463"/>
+    </linearGradient>
+    <linearGradient id="mint" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dceee5"/>
+      <stop offset="1" stop-color="#f8f1e5"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="24" stdDeviation="34" flood-color="#314f44" flood-opacity="0.12"/>
+    </filter>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#314f44" flood-opacity="0.09"/>
+    </filter>
+    <style>
+      .bg{fill:url(#pageBg)}
+      .surface{fill:#fffaf2;stroke:#dde7df;stroke-width:2}
+      .surface2{fill:#ffffff;stroke:#dde7df;stroke-width:2}
+      .panel{fill:#fbf7ee;stroke:#dde7df;stroke-width:2;filter:url(#softShadow)}
+      .deep{fill:url(#deep)}
+      .mint{fill:url(#mint)}
+      .line{stroke:#d9e4dc;stroke-width:2}
+      .accent{fill:#176b56}
+      .accent2{fill:#dceee5}
+      .warm{fill:#e9b46e}
+      .danger{fill:#9f3d31}
+      .text{fill:#18332b;font-family:Inter,ui-sans-serif,system-ui,sans-serif}
+      .muted{fill:#5f716b;font-family:Inter,ui-sans-serif,system-ui,sans-serif}
+      .white{fill:#ffffff;font-family:Inter,ui-sans-serif,system-ui,sans-serif}
+      .tiny{font-size:20px}
+      .small{font-size:24px}
+      .body{font-size:30px}
+      .h3{font-size:38px;font-weight:760}
+      .h2{font-size:54px;font-weight:800;letter-spacing:-1px}
+      .h1{font-size:82px;font-weight:860;letter-spacing:-2.5px}
+      .label{font-size:20px;font-weight:780;letter-spacing:2.5px;text-transform:uppercase}
+      .screenTitle{font-size:28px;font-weight:780}
+      .buttonText{font-size:24px;font-weight:760}
+      .pillText{font-size:19px;font-weight:760}
+    </style>
+  </defs>
+
+  <rect class="bg" width="2400" height="3200"/>
+  <circle cx="2010" cy="150" r="300" fill="#dceee5" opacity="0.75"/>
+  <circle cx="290" cy="280" r="360" fill="#f3d3aa" opacity="0.46"/>
+  <circle cx="2100" cy="2880" r="420" fill="#dbeee6" opacity="0.55"/>
+
+  <g transform="translate(120 100)">
+    <rect x="0" y="0" width="2160" height="420" rx="56" class="surface" filter="url(#shadow)"/>
+    <g transform="translate(72 70)">
+      <rect x="0" y="0" width="78" height="78" rx="24" class="deep"/>
+      <text x="39" y="51" text-anchor="middle" class="white body" font-weight="850">PSI</text>
+      <text x="0" y="135" class="text label">Direção visual proposta</text>
+      <text x="0" y="220" class="text h1">Plataforma PSI mais calma, clínica e organizada</text>
+      <text x="0" y="282" class="muted body">Mockups conceituais para aprovar layout antes de mexer no frontend. Foco em privacidade, legibilidade e rotina clínica.</text>
+    </g>
+    <g transform="translate(1570 82)">
+      <rect x="0" y="0" width="446" height="256" rx="36" class="deep"/>
+      <text x="36" y="64" class="white h3">Sistema visual</text>
+      <text x="36" y="112" class="white small" opacity="0.8">Areia quente, verde clínico,</text>
+      <text x="36" y="148" class="white small" opacity="0.8">cards claros e ações evidentes.</text>
+      <rect x="36" y="184" width="68" height="34" rx="17" fill="#f6f0e6"/>
+      <rect x="116" y="184" width="68" height="34" rx="17" fill="#176b56"/>
+      <rect x="196" y="184" width="68" height="34" rx="17" fill="#dceee5"/>
+      <rect x="276" y="184" width="68" height="34" rx="17" fill="#e9b46e"/>
+    </g>
+  </g>
+
+  <!-- Large hero screens -->
+  <g transform="translate(120 610)">
+    <text x="0" y="0" class="text h2">Telas principais</text>
+    <text x="0" y="48" class="muted body">Uma base consistente para navegação, dados sensíveis e produtividade do profissional.</text>
+
+    <!-- Login -->
+    <g transform="translate(0 100)">
+      <rect width="680" height="460" rx="44" class="surface" filter="url(#shadow)"/>
+      <rect x="24" y="24" width="250" height="412" rx="32" class="deep"/>
+      <text x="54" y="76" class="white label">Acesso seguro</text>
+      <text x="54" y="140" class="white h3">Entrar com confiança</text>
+      <text x="54" y="188" class="white small" opacity="0.78">MFA, LGPD e proteção de dados clínicos logo no primeiro contato.</text>
+      <rect x="54" y="304" width="150" height="42" rx="21" fill="#dceee5" opacity="0.95"/>
+      <text x="129" y="332" text-anchor="middle" class="text pillText">Ambiente privado</text>
+      <g transform="translate(320 70)">
+        <rect x="0" y="0" width="64" height="64" rx="20" class="accent"/>
+        <text x="32" y="42" text-anchor="middle" class="white small" font-weight="850">PS</text>
+        <text x="0" y="118" class="text screenTitle">Login</text>
+        <text x="0" y="154" class="muted small">Acesse sua clínica</text>
+        <rect x="0" y="198" width="290" height="52" rx="16" class="surface2"/>
+        <rect x="0" y="268" width="290" height="52" rx="16" class="surface2"/>
+        <rect x="0" y="346" width="190" height="54" rx="18" class="accent"/>
+        <text x="95" y="381" text-anchor="middle" class="white buttonText">Entrar</text>
+      </g>
+    </g>
+
+    <!-- Dashboard -->
+    <g transform="translate(740 100)">
+      <rect width="680" height="460" rx="44" class="surface" filter="url(#shadow)"/>
+      <rect x="0" y="0" width="150" height="460" rx="44" class="deep"/>
+      <text x="36" y="58" class="white small" font-weight="850">PSI</text>
+      <rect x="28" y="112" width="94" height="34" rx="17" fill="#ffffff" opacity="0.18"/>
+      <rect x="28" y="164" width="94" height="20" rx="10" fill="#ffffff" opacity="0.28"/>
+      <rect x="28" y="208" width="94" height="20" rx="10" fill="#ffffff" opacity="0.28"/>
+      <rect x="28" y="252" width="94" height="20" rx="10" fill="#ffffff" opacity="0.28"/>
+      <g transform="translate(190 50)">
+        <text x="0" y="0" class="text screenTitle">Painel da clínica</text>
+        <text x="0" y="36" class="muted small">Hoje, agenda e pendências</text>
+        <rect x="0" y="72" width="130" height="92" rx="24" class="mint"/>
+        <rect x="154" y="72" width="130" height="92" rx="24" class="surface2"/>
+        <rect x="308" y="72" width="130" height="92" rx="24" class="surface2"/>
+        <text x="24" y="130" class="text h3">12</text>
+        <text x="178" y="130" class="text h3">4</text>
+        <text x="332" y="130" class="text h3">R$</text>
+        <rect x="0" y="196" width="438" height="180" rx="28" class="surface2"/>
+        <text x="24" y="240" class="text small" font-weight="760">Próximos atendimentos</text>
+        <rect x="24" y="266" width="390" height="2" class="accent2"/>
+        <rect x="24" y="292" width="390" height="40" rx="14" fill="#f5efe5"/>
+        <rect x="24" y="344" width="310" height="14" rx="7" fill="#dceee5"/>
+      </g>
+    </g>
+
+    <!-- Clinic detail -->
+    <g transform="translate(1480 100)">
+      <rect width="680" height="460" rx="44" class="surface" filter="url(#shadow)"/>
+      <rect x="36" y="36" width="608" height="110" rx="30" class="deep"/>
+      <text x="72" y="86" class="white label">Clínica selecionada</text>
+      <text x="72" y="126" class="white h3">Instituto Sereno</text>
+      <g transform="translate(48 180)">
+        <rect x="0" y="0" width="176" height="104" rx="28" class="surface2"/>
+        <rect x="208" y="0" width="176" height="104" rx="28" class="surface2"/>
+        <rect x="416" y="0" width="176" height="104" rx="28" class="mint"/>
+        <rect x="0" y="136" width="592" height="92" rx="26" class="surface2"/>
+        <rect x="24" y="160" width="76" height="44" rx="16" class="accent2"/>
+        <rect x="126" y="158" width="210" height="16" rx="8" fill="#cfded6"/>
+        <rect x="126" y="188" width="150" height="14" rx="7" fill="#e5ece6"/>
+        <rect x="472" y="160" width="86" height="34" rx="17" class="accent"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- Screen grid -->
+  <g transform="translate(120 1280)">
+    <text x="0" y="0" class="text h2">Mapa de telas em imagem</text>
+    <text x="0" y="48" class="muted body">Cada miniatura representa uma rota ou família de rotas do produto.</text>
+
+    <!-- Row 1 -->
+    <g transform="translate(0 100)">
+      <g>
+        <rect width="500" height="300" rx="34" class="panel"/>
+        <text x="32" y="54" class="text screenTitle">Clínicas</text>
+        <text x="32" y="88" class="muted small">Lista e nova clínica</text>
+        <rect x="32" y="124" width="436" height="54" rx="18" class="surface2"/>
+        <rect x="58" y="144" width="190" height="14" rx="7" fill="#bfd5ca"/>
+        <rect x="32" y="194" width="436" height="54" rx="18" class="surface2"/>
+        <rect x="58" y="214" width="230" height="14" rx="7" fill="#bfd5ca"/>
+        <rect x="326" y="36" width="142" height="46" rx="18" class="accent"/>
+        <text x="397" y="66" text-anchor="middle" class="white pillText">Nova clínica</text>
+      </g>
+      <g transform="translate(554 0)">
+        <rect width="500" height="300" rx="34" class="panel"/>
+        <text x="32" y="54" class="text screenTitle">Pacientes</text>
+        <text x="32" y="88" class="muted small">Cadastro, busca e histórico</text>
+        <rect x="32" y="122" width="160" height="132" rx="28" class="mint"/>
+        <rect x="216" y="122" width="252" height="42" rx="16" class="surface2"/>
+        <rect x="216" y="180" width="252" height="42" rx="16" class="surface2"/>
+        <rect x="216" y="238" width="160" height="28" rx="14" class="accent2"/>
+      </g>
+      <g transform="translate(1108 0)">
+        <rect width="500" height="300" rx="34" class="panel"/>
+        <text x="32" y="54" class="text screenTitle">Profissionais</text>
+        <text x="32" y="88" class="muted small">Equipe, CRP e agenda</text>
+        <circle cx="92" cy="154" r="44" class="accent2"/>
+        <circle cx="202" cy="154" r="44" fill="#f4dfc2"/>
+        <circle cx="312" cy="154" r="44" class="accent2"/>
+        <rect x="56" y="224" width="330" height="18" rx="9" fill="#cfded6"/>
+        <rect x="56" y="254" width="230" height="14" rx="7" fill="#e1e9e3"/>
+      </g>
+      <g transform="translate(1662 0)">
+        <rect width="500" height="300" rx="34" class="panel"/>
+        <text x="32" y="54" class="text screenTitle">Agenda</text>
+        <text x="32" y="88" class="muted small">Consultas e bloqueios</text>
+        <rect x="32" y="122" width="92" height="132" rx="24" class="deep"/>
+        <rect x="152" y="122" width="316" height="36" rx="14" class="accent2"/>
+        <rect x="152" y="174" width="250" height="36" rx="14" fill="#f4dfc2"/>
+        <rect x="152" y="226" width="294" height="36" rx="14" class="surface2"/>
+      </g>
+    </g>
+
+    <!-- Row 2 -->
+    <g transform="translate(0 450)">
+      <g>
+        <rect width="500" height="300" rx="34" class="panel"/>
+        <text x="32" y="54" class="text screenTitle">Prontuário</text>
+        <text x="32" y="88" class="muted small">Registro clínico protegido</text>
+        <rect x="32" y="126" width="436" height="132" rx="26" class="surface2"/>
+        <rect x="58" y="154" width="160" height="16" rx="8" class="accent2"/>
+        <rect x="58" y="190" width="360" height="12" rx="6" fill="#dce5df"/>
+        <rect x="58" y="218" width="310" height="12" rx="6" fill="#dce5df"/>
+        <rect x="330" y="32" width="138" height="44" rx="18" class="accent"/>
+      </g>
+      <g transform="translate(554 0)">
+        <rect width="500" height="300" rx="34" class="panel"/>
+        <text x="32" y="54" class="text screenTitle">Documentos</text>
+        <text x="32" y="88" class="muted small">Modelos, PDFs e assinaturas</text>
+        <rect x="42" y="126" width="118" height="132" rx="20" class="surface2"/>
+        <rect x="190" y="126" width="118" height="132" rx="20" class="surface2"/>
+        <rect x="338" y="126" width="118" height="132" rx="20" class="mint"/>
+        <rect x="66" y="166" width="70" height="10" rx="5" fill="#cfded6"/>
+        <rect x="214" y="166" width="70" height="10" rx="5" fill="#cfded6"/>
+        <rect x="362" y="166" width="70" height="10" rx="5" fill="#176b56" opacity="0.45"/>
+      </g>
+      <g transform="translate(1108 0)">
+        <rect width="500" height="300" rx="34" class="panel"/>
+        <text x="32" y="54" class="text screenTitle">Financeiro</text>
+        <text x="32" y="88" class="muted small">Planos, faturas e pagamentos</text>
+        <rect x="32" y="128" width="128" height="104" rx="26" class="mint"/>
+        <rect x="186" y="128" width="128" height="104" rx="26" class="surface2"/>
+        <rect x="340" y="128" width="128" height="104" rx="26" class="surface2"/>
+        <text x="62" y="190" class="text h3">R$</text>
+        <rect x="32" y="252" width="280" height="16" rx="8" fill="#cfded6"/>
+      </g>
+      <g transform="translate(1662 0)">
+        <rect width="500" height="300" rx="34" class="panel"/>
+        <text x="32" y="54" class="text screenTitle">Teleatendimento</text>
+        <text x="32" y="88" class="muted small">Sala segura e espera</text>
+        <rect x="42" y="126" width="280" height="150" rx="28" class="deep"/>
+        <circle cx="182" cy="198" r="38" fill="#ffffff" opacity="0.24"/>
+        <rect x="344" y="140" width="98" height="42" rx="21" class="accent"/>
+        <rect x="344" y="202" width="98" height="42" rx="21" fill="#f4dfc2"/>
+      </g>
+    </g>
+
+    <!-- Row 3 -->
+    <g transform="translate(0 800)">
+      <g>
+        <rect width="500" height="300" rx="34" class="panel"/>
+        <text x="32" y="54" class="text screenTitle">Relatórios</text>
+        <text x="32" y="88" class="muted small">Indicadores sem excesso visual</text>
+        <rect x="46" y="132" width="60" height="110" rx="16" class="accent2"/>
+        <rect x="126" y="102" width="60" height="140" rx="16" class="accent"/>
+        <rect x="206" y="158" width="60" height="84" rx="16" fill="#f4dfc2"/>
+        <rect x="306" y="134" width="130" height="24" rx="12" fill="#cfded6"/>
+        <rect x="306" y="182" width="100" height="18" rx="9" fill="#e1e9e3"/>
+      </g>
+      <g transform="translate(554 0)">
+        <rect width="500" height="300" rx="34" class="panel"/>
+        <text x="32" y="54" class="text screenTitle">Configurações</text>
+        <text x="32" y="88" class="muted small">Clínica, segurança e LGPD</text>
+        <rect x="32" y="126" width="436" height="46" rx="16" class="surface2"/>
+        <rect x="32" y="190" width="436" height="46" rx="16" class="surface2"/>
+        <rect x="372" y="136" width="56" height="26" rx="13" class="accent"/>
+        <rect x="372" y="200" width="56" height="26" rx="13" class="accent2"/>
+      </g>
+      <g transform="translate(1108 0)">
+        <rect width="500" height="300" rx="34" class="panel"/>
+        <text x="32" y="54" class="text screenTitle">Área pública</text>
+        <text x="32" y="88" class="muted small">Entrada do paciente na sessão</text>
+        <rect x="72" y="124" width="356" height="132" rx="32" class="mint"/>
+        <text x="112" y="172" class="text small" font-weight="760">Consulta online</text>
+        <rect x="112" y="198" width="190" height="42" rx="21" class="accent"/>
+        <text x="207" y="226" text-anchor="middle" class="white pillText">Entrar na sala</text>
+      </g>
+      <g transform="translate(1662 0)">
+        <rect width="500" height="300" rx="34" class="panel"/>
+        <text x="32" y="54" class="text screenTitle">Plataforma admin</text>
+        <text x="32" y="88" class="muted small">Visão multi-clínica</text>
+        <rect x="34" y="126" width="126" height="116" rx="26" class="deep"/>
+        <rect x="184" y="126" width="126" height="116" rx="26" class="surface2"/>
+        <rect x="334" y="126" width="126" height="116" rx="26" class="surface2"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- Form patterns -->
+  <g transform="translate(120 2530)">
+    <rect width="2160" height="500" rx="48" class="surface" filter="url(#shadow)"/>
+    <g transform="translate(64 58)">
+      <text x="0" y="0" class="text h2">Padrões para telas de criação</text>
+      <text x="0" y="50" class="muted body">Pacientes, profissionais, documentos, agendamentos, bloqueios, financeiro e prontuário usam o mesmo ritmo: contexto, formulário curto e revisão.</text>
+      <g transform="translate(0 112)">
+        <rect x="0" y="0" width="610" height="286" rx="34" class="mint"/>
+        <text x="38" y="58" class="text screenTitle">1. Contexto antes do formulário</text>
+        <text x="38" y="98" class="muted small">Mostra clínica, paciente ou agenda selecionada.</text>
+        <rect x="38" y="142" width="250" height="46" rx="17" class="surface2"/>
+        <rect x="38" y="208" width="390" height="18" rx="9" fill="#bfd5ca"/>
+      </g>
+      <g transform="translate(690 112)">
+        <rect x="0" y="0" width="610" height="286" rx="34" class="surface2"/>
+        <text x="38" y="58" class="text screenTitle">2. Campos legíveis</text>
+        <text x="38" y="98" class="muted small">Labels sempre visíveis e agrupamento por tarefa.</text>
+        <rect x="38" y="136" width="250" height="54" rx="17" fill="#fbf7ee" stroke="#dde7df" stroke-width="2"/>
+        <rect x="322" y="136" width="250" height="54" rx="17" fill="#fbf7ee" stroke="#dde7df" stroke-width="2"/>
+        <rect x="38" y="214" width="534" height="54" rx="17" fill="#fbf7ee" stroke="#dde7df" stroke-width="2"/>
+      </g>
+      <g transform="translate(1380 112)">
+        <rect x="0" y="0" width="610" height="286" rx="34" class="deep"/>
+        <text x="38" y="58" class="white screenTitle">3. Ação segura</text>
+        <text x="38" y="98" class="white small" opacity="0.78">Botões claros, confirmação para ações sensíveis.</text>
+        <rect x="38" y="154" width="190" height="58" rx="22" fill="#ffffff"/>
+        <text x="133" y="191" text-anchor="middle" class="text buttonText">Salvar</text>
+        <rect x="252" y="154" width="150" height="58" rx="22" fill="#ffffff" opacity="0.16"/>
+        <text x="327" y="191" text-anchor="middle" class="white buttonText">Cancelar</text>
+      </g>
+    </g>
+  </g>
+
+  <g transform="translate(120 3090)">
+    <text x="0" y="0" class="muted small">Arquivo conceitual: docs/design/plataforma-psi-ui-concept.svg</text>
+    <text x="2160" y="0" text-anchor="end" class="muted small">Gerado para aprovação visual antes da implementação</text>
+  </g>
+</svg>

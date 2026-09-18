@@ -1,0 +1,280 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="3200" viewBox="0 0 2400 3200" role="img" aria-labelledby="title desc">
+  <title id="title">Conceito visual Plataforma PSI v2</title>
+  <desc id="desc">Segunda proposta visual para a Plataforma PSI, com botões menores, cores neutras e login redesenhado.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="26" flood-color="#14211f" flood-opacity="0.08"/>
+    </filter>
+    <filter id="subtle" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#14211f" flood-opacity="0.05"/>
+    </filter>
+    <style>
+      .bg{fill:#f7f4ee}
+      .app{fill:#fbfaf7;stroke:#dedbd2;stroke-width:2;filter:url(#shadow)}
+      .card{fill:#ffffff;stroke:#dedbd2;stroke-width:2;filter:url(#subtle)}
+      .cardFlat{fill:#ffffff;stroke:#dedbd2;stroke-width:2}
+      .sidebar{fill:#233835}
+      .sideSoft{fill:#314844}
+      .ink{fill:#17211f;font-family:Inter,ui-sans-serif,system-ui,sans-serif}
+      .muted{fill:#66736f;font-family:Inter,ui-sans-serif,system-ui,sans-serif}
+      .white{fill:#ffffff;font-family:Inter,ui-sans-serif,system-ui,sans-serif}
+      .primary{fill:#315f59}
+      .primarySoft{fill:#e6eeeb}
+      .blueSoft{fill:#edf3f6}
+      .sand{fill:#f1eadf}
+      .warn{fill:#b1763d}
+      .line{stroke:#e4e0d8;stroke-width:2}
+      .tiny{font-size:18px}
+      .small{font-size:22px}
+      .body{font-size:28px}
+      .h3{font-size:34px;font-weight:760}
+      .h2{font-size:50px;font-weight:820;letter-spacing:-1px}
+      .h1{font-size:76px;font-weight:860;letter-spacing:-2.5px}
+      .label{font-size:18px;font-weight:760;letter-spacing:2px;text-transform:uppercase}
+      .screen{font-size:27px;font-weight:780}
+      .button{font-size:19px;font-weight:760}
+      .nav{font-size:20px;font-weight:650}
+    </style>
+  </defs>
+
+  <rect class="bg" width="2400" height="3200"/>
+  <rect x="90" y="80" width="2220" height="3040" rx="44" fill="#faf7f0" stroke="#e5ded2" stroke-width="2"/>
+
+  <g transform="translate(150 145)">
+    <text x="0" y="0" class="ink label">Plataforma PSI · proposta visual v2</text>
+    <text x="0" y="90" class="ink h1">Mais clínica, menos chamativa</text>
+    <text x="0" y="145" class="muted body">Botões menores, cor principal mais sóbria, menos gradiente, telas com densidade melhor e login redesenhado.</text>
+    <g transform="translate(0 210)">
+      <rect x="0" y="0" width="130" height="54" rx="10" fill="#315f59"/>
+      <text x="65" y="35" text-anchor="middle" class="white button">Primário</text>
+      <rect x="152" y="0" width="130" height="54" rx="10" fill="#ffffff" stroke="#cfcac0" stroke-width="2"/>
+      <text x="217" y="35" text-anchor="middle" class="ink button">Secundário</text>
+      <rect x="304" y="0" width="130" height="54" rx="10" fill="#f7f4ee" stroke="#cfcac0" stroke-width="2"/>
+      <text x="369" y="35" text-anchor="middle" class="ink button">Neutro</text>
+      <rect x="456" y="0" width="44" height="44" rx="22" fill="#315f59"/>
+      <rect x="518" y="0" width="44" height="44" rx="22" fill="#233835"/>
+      <rect x="580" y="0" width="44" height="44" rx="22" fill="#f1eadf"/>
+      <rect x="642" y="0" width="44" height="44" rx="22" fill="#e6eeeb"/>
+    </g>
+  </g>
+
+  <!-- Login redesigned -->
+  <g transform="translate(150 520)">
+    <text x="0" y="0" class="ink h2">Login redesenhado</text>
+    <text x="0" y="45" class="muted body">Sem painel escuro gigante, sem botão exagerado, com foco no formulário.</text>
+    <g transform="translate(0 95)">
+      <rect width="1020" height="620" rx="34" class="app"/>
+      <rect x="0" y="0" width="1020" height="68" rx="34" fill="#ffffff"/>
+      <rect x="0" y="42" width="1020" height="26" fill="#ffffff"/>
+      <circle cx="46" cy="34" r="8" fill="#d6d0c6"/>
+      <circle cx="76" cy="34" r="8" fill="#d6d0c6"/>
+      <circle cx="106" cy="34" r="8" fill="#d6d0c6"/>
+      <text x="492" y="41" text-anchor="middle" class="muted tiny">plataforma.psi/login</text>
+      <g transform="translate(150 145)">
+        <rect x="0" y="0" width="390" height="390" rx="28" class="cardFlat"/>
+        <rect x="34" y="34" width="46" height="46" rx="12" class="primary"/>
+        <text x="57" y="64" text-anchor="middle" class="white tiny" font-weight="850">PS</text>
+        <text x="34" y="122" class="ink h3">Entrar</text>
+        <text x="34" y="157" class="muted small">Acesse sua conta profissional.</text>
+        <text x="34" y="210" class="ink tiny" font-weight="760">E-mail</text>
+        <rect x="34" y="224" width="322" height="44" rx="9" fill="#fbfaf7" stroke="#d6d0c6" stroke-width="2"/>
+        <text x="34" y="295" class="ink tiny" font-weight="760">Senha</text>
+        <rect x="34" y="309" width="322" height="44" rx="9" fill="#fbfaf7" stroke="#d6d0c6" stroke-width="2"/>
+        <rect x="34" y="378" width="120" height="42" rx="10" class="primary"/>
+        <text x="94" y="405" text-anchor="middle" class="white button">Entrar</text>
+      </g>
+      <g transform="translate(615 180)">
+        <text x="0" y="0" class="ink screen">Segurança sem ruído visual</text>
+        <text x="0" y="42" class="muted small">O usuário entende que está em um ambiente seguro, mas a tela não vira uma propaganda.</text>
+        <rect x="0" y="96" width="300" height="52" rx="14" class="blueSoft"/>
+        <text x="22" y="130" class="ink small">MFA disponível</text>
+        <rect x="0" y="166" width="300" height="52" rx="14" class="primarySoft"/>
+        <text x="22" y="200" class="ink small">Dados clínicos protegidos</text>
+        <rect x="0" y="236" width="300" height="52" rx="14" class="sand"/>
+        <text x="22" y="270" class="ink small">Conformidade LGPD</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Main shell -->
+  <g transform="translate(1230 520)">
+    <text x="0" y="0" class="ink h2">Shell do sistema</text>
+    <text x="0" y="45" class="muted body">Navegação fixa, ações compactas e menos cards enormes.</text>
+    <g transform="translate(0 95)">
+      <rect width="1020" height="620" rx="34" class="app"/>
+      <rect x="0" y="0" width="230" height="620" rx="34" class="sidebar"/>
+      <rect x="0" y="560" width="230" height="60" rx="34" class="sidebar"/>
+      <text x="34" y="58" class="white h3">PSI</text>
+      <text x="34" y="92" class="white tiny" opacity="0.7">Clínica Sereno</text>
+      <rect x="20" y="132" width="190" height="38" rx="9" class="sideSoft"/>
+      <text x="42" y="157" class="white nav">Painel</text>
+      <text x="42" y="211" class="white nav" opacity="0.74">Agenda</text>
+      <text x="42" y="263" class="white nav" opacity="0.74">Pacientes</text>
+      <text x="42" y="315" class="white nav" opacity="0.74">Prontuários</text>
+      <text x="42" y="367" class="white nav" opacity="0.74">Financeiro</text>
+      <text x="42" y="419" class="white nav" opacity="0.74">Relatórios</text>
+      <g transform="translate(270 46)">
+        <text x="0" y="0" class="ink h3">Painel</text>
+        <text x="0" y="36" class="muted small">Resumo operacional de hoje</text>
+        <rect x="600" y="-18" width="112" height="40" rx="10" class="primary"/>
+        <text x="656" y="8" text-anchor="middle" class="white button">Novo</text>
+        <g transform="translate(0 78)">
+          <rect x="0" y="0" width="170" height="96" rx="18" class="cardFlat"/>
+          <text x="22" y="38" class="muted tiny">Consultas</text>
+          <text x="22" y="74" class="ink h3">12</text>
+          <rect x="190" y="0" width="170" height="96" rx="18" class="cardFlat"/>
+          <text x="212" y="38" class="muted tiny">Pendências</text>
+          <text x="212" y="74" class="ink h3">4</text>
+          <rect x="380" y="0" width="170" height="96" rx="18" class="cardFlat"/>
+          <text x="402" y="38" class="muted tiny">Recebidos</text>
+          <text x="402" y="74" class="ink h3">R$ 8,4k</text>
+        </g>
+        <rect x="0" y="206" width="710" height="300" rx="22" class="cardFlat"/>
+        <text x="26" y="250" class="ink screen">Agenda do dia</text>
+        <line x1="26" y1="278" x2="684" y2="278" class="line"/>
+        <text x="26" y="324" class="muted tiny">09:00</text>
+        <rect x="92" y="300" width="530" height="42" rx="10" class="primarySoft"/>
+        <text x="112" y="327" class="ink button">Ana Ribeiro · sessão presencial</text>
+        <text x="26" y="384" class="muted tiny">10:30</text>
+        <rect x="92" y="360" width="440" height="42" rx="10" class="blueSoft"/>
+        <text x="112" y="387" class="ink button">Carlos Lima · teleatendimento</text>
+        <text x="26" y="444" class="muted tiny">14:00</text>
+        <rect x="92" y="420" width="500" height="42" rx="10" class="sand"/>
+        <text x="112" y="447" class="ink button">Bloqueio · supervisão clínica</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Components -->
+  <g transform="translate(150 1320)">
+    <text x="0" y="0" class="ink h2">Componentes revisados</text>
+    <text x="0" y="45" class="muted body">Menos altura, menos arredondamento, hierarquia mais objetiva.</text>
+    <g transform="translate(0 95)">
+      <rect width="2100" height="470" rx="32" class="app"/>
+      <g transform="translate(50 55)">
+        <text x="0" y="0" class="ink screen">Botões</text>
+        <rect x="0" y="42" width="118" height="40" rx="9" class="primary"/>
+        <text x="59" y="68" text-anchor="middle" class="white button">Salvar</text>
+        <rect x="136" y="42" width="120" height="40" rx="9" fill="#ffffff" stroke="#cfcac0" stroke-width="2"/>
+        <text x="196" y="68" text-anchor="middle" class="ink button">Cancelar</text>
+        <rect x="274" y="42" width="106" height="40" rx="9" fill="#f7f4ee" stroke="#cfcac0" stroke-width="2"/>
+        <text x="327" y="68" text-anchor="middle" class="ink button">Filtrar</text>
+        <text x="0" y="145" class="ink screen">Campos</text>
+        <text x="0" y="188" class="ink tiny" font-weight="760">Nome completo</text>
+        <rect x="0" y="202" width="330" height="42" rx="9" fill="#fbfaf7" stroke="#d6d0c6" stroke-width="2"/>
+        <text x="370" y="188" class="ink tiny" font-weight="760">Profissional</text>
+        <rect x="370" y="202" width="330" height="42" rx="9" fill="#fbfaf7" stroke="#d6d0c6" stroke-width="2"/>
+      </g>
+      <g transform="translate(830 55)">
+        <text x="0" y="0" class="ink screen">Tabela mais densa</text>
+        <rect x="0" y="42" width="640" height="260" rx="18" class="cardFlat"/>
+        <rect x="0" y="42" width="640" height="46" rx="18" fill="#f3efe7"/>
+        <text x="24" y="72" class="muted tiny" font-weight="760">Paciente</text>
+        <text x="300" y="72" class="muted tiny" font-weight="760">Status</text>
+        <text x="460" y="72" class="muted tiny" font-weight="760">Próxima sessão</text>
+        <line x1="0" y1="88" x2="640" y2="88" class="line"/>
+        <text x="24" y="126" class="ink tiny">Ana Ribeiro</text>
+        <rect x="300" y="106" width="82" height="26" rx="13" class="primarySoft"/>
+        <text x="341" y="125" text-anchor="middle" class="ink tiny">Ativo</text>
+        <text x="460" y="126" class="muted tiny">Hoje, 09:00</text>
+        <line x1="0" y1="150" x2="640" y2="150" class="line"/>
+        <text x="24" y="188" class="ink tiny">Carlos Lima</text>
+        <rect x="300" y="168" width="118" height="26" rx="13" class="blueSoft"/>
+        <text x="359" y="187" text-anchor="middle" class="ink tiny">Teleconsulta</text>
+        <text x="460" y="188" class="muted tiny">Hoje, 10:30</text>
+        <line x1="0" y1="212" x2="640" y2="212" class="line"/>
+        <text x="24" y="250" class="ink tiny">Marina Costa</text>
+        <rect x="300" y="230" width="94" height="26" rx="13" class="sand"/>
+        <text x="347" y="249" text-anchor="middle" class="ink tiny">Retorno</text>
+        <text x="460" y="250" class="muted tiny">Amanhã</text>
+      </g>
+      <g transform="translate(1580 55)">
+        <text x="0" y="0" class="ink screen">Alertas discretos</text>
+        <rect x="0" y="42" width="420" height="70" rx="14" class="primarySoft"/>
+        <text x="22" y="84" class="ink small">Prontuário salvo com sucesso.</text>
+        <rect x="0" y="132" width="420" height="70" rx="14" class="sand"/>
+        <text x="22" y="174" class="ink small">Consentimento pendente.</text>
+        <rect x="0" y="222" width="420" height="70" rx="14" class="blueSoft"/>
+        <text x="22" y="264" class="ink small">Link de teleatendimento liberado.</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Screen families -->
+  <g transform="translate(150 1960)">
+    <text x="0" y="0" class="ink h2">Famílias de telas</text>
+    <text x="0" y="45" class="muted body">Miniaturas com a mesma linguagem visual aplicada ao produto inteiro.</text>
+    <g transform="translate(0 95)">
+      <g>
+        <rect width="500" height="250" rx="28" class="card"/>
+        <text x="30" y="50" class="ink screen">Pacientes</text>
+        <rect x="30" y="82" width="118" height="38" rx="9" class="primary"/>
+        <text x="89" y="107" text-anchor="middle" class="white button">Novo</text>
+        <rect x="30" y="146" width="440" height="1" fill="#e4e0d8"/>
+        <text x="30" y="182" class="ink tiny">Lista compacta, filtros e prontuário protegido.</text>
+      </g>
+      <g transform="translate(535 0)">
+        <rect width="500" height="250" rx="28" class="card"/>
+        <text x="30" y="50" class="ink screen">Agenda</text>
+        <rect x="30" y="82" width="440" height="38" rx="9" class="primarySoft"/>
+        <rect x="30" y="134" width="360" height="38" rx="9" class="blueSoft"/>
+        <rect x="30" y="186" width="400" height="38" rx="9" class="sand"/>
+      </g>
+      <g transform="translate(1070 0)">
+        <rect width="500" height="250" rx="28" class="card"/>
+        <text x="30" y="50" class="ink screen">Prontuário</text>
+        <rect x="30" y="88" width="440" height="104" rx="16" fill="#fbfaf7" stroke="#dedbd2" stroke-width="2"/>
+        <rect x="54" y="114" width="250" height="12" rx="6" fill="#cfd8d4"/>
+        <rect x="54" y="146" width="360" height="12" rx="6" fill="#e4e0d8"/>
+        <rect x="54" y="172" width="310" height="12" rx="6" fill="#e4e0d8"/>
+      </g>
+      <g transform="translate(1605 0)">
+        <rect width="500" height="250" rx="28" class="card"/>
+        <text x="30" y="50" class="ink screen">Financeiro</text>
+        <rect x="30" y="90" width="120" height="80" rx="16" class="primarySoft"/>
+        <rect x="174" y="90" width="120" height="80" rx="16" class="blueSoft"/>
+        <rect x="318" y="90" width="120" height="80" rx="16" class="sand"/>
+        <text x="30" y="218" class="muted tiny">Planos, faturas e pagamentos.</text>
+      </g>
+    </g>
+    <g transform="translate(0 305)">
+      <g>
+        <rect width="500" height="250" rx="28" class="card"/>
+        <text x="30" y="50" class="ink screen">Teleatendimento</text>
+        <rect x="30" y="86" width="260" height="128" rx="18" class="sidebar"/>
+        <rect x="318" y="96" width="120" height="40" rx="10" class="primary"/>
+        <rect x="318" y="154" width="120" height="40" rx="10" fill="#ffffff" stroke="#cfcac0" stroke-width="2"/>
+      </g>
+      <g transform="translate(535 0)">
+        <rect width="500" height="250" rx="28" class="card"/>
+        <text x="30" y="50" class="ink screen">Documentos</text>
+        <rect x="40" y="90" width="92" height="112" rx="14" fill="#fbfaf7" stroke="#dedbd2" stroke-width="2"/>
+        <rect x="158" y="90" width="92" height="112" rx="14" fill="#fbfaf7" stroke="#dedbd2" stroke-width="2"/>
+        <rect x="276" y="90" width="92" height="112" rx="14" fill="#fbfaf7" stroke="#dedbd2" stroke-width="2"/>
+      </g>
+      <g transform="translate(1070 0)">
+        <rect width="500" height="250" rx="28" class="card"/>
+        <text x="30" y="50" class="ink screen">Relatórios</text>
+        <rect x="48" y="120" width="46" height="82" rx="8" class="primarySoft"/>
+        <rect x="118" y="88" width="46" height="114" rx="8" class="primary"/>
+        <rect x="188" y="142" width="46" height="60" rx="8" class="sand"/>
+        <rect x="290" y="104" width="140" height="14" rx="7" fill="#cfd8d4"/>
+        <rect x="290" y="142" width="110" height="12" rx="6" fill="#e4e0d8"/>
+      </g>
+      <g transform="translate(1605 0)">
+        <rect width="500" height="250" rx="28" class="card"/>
+        <text x="30" y="50" class="ink screen">Paciente público</text>
+        <text x="30" y="88" class="muted small">Tela simples, acolhedora e sem termos técnicos.</text>
+        <rect x="30" y="146" width="164" height="40" rx="10" class="primary"/>
+        <text x="112" y="172" text-anchor="middle" class="white button">Entrar na sala</text>
+      </g>
+    </g>
+  </g>
+
+  <g transform="translate(150 2880)">
+    <rect width="2100" height="180" rx="28" fill="#ffffff" stroke="#dedbd2" stroke-width="2"/>
+    <text x="42" y="62" class="ink h3">O que mudou em relação à v1</text>
+    <text x="42" y="112" class="muted body">Menos verde saturado, menos sombra, login mais limpo, botões compactos, cards menos arredondados e layout mais denso.</text>
+    <text x="42" y="152" class="muted small">Arquivo: docs/design/plataforma-psi-ui-concept-v2.svg</text>
+  </g>
+</svg>

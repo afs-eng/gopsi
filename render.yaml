@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: gopsi-api
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health/
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: gopsi-api.onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://gopsi.vercel.app
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://gopsi.vercel.app
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gopsi-postgres
+          property: connectionString
+      - key: RUN_MIGRATIONS
+        value: "true"
+      - key: DRF_ANON_THROTTLE_RATE
+        value: 60/min
+      - key: DRF_USER_THROTTLE_RATE
+        value: 1000/hour
+      - key: SECURE_HSTS_SECONDS
+        value: "31536000"
+      - key: SECURE_HSTS_INCLUDE_SUBDOMAINS
+        value: "True"
+      - key: SECURE_HSTS_PRELOAD
+        value: "False"
+      - key: LOG_LEVEL
+        value: INFO
+      - key: MFA_ISSUER
+        value: GoPsi
+
+databases:
+  - name: gopsi-postgres
+    databaseName: plataforma_psi
+    user: plataforma_psi
+    plan: starter

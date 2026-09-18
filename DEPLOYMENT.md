@@ -3,6 +3,9 @@
 Este projeto possui uma base de produção com Docker Compose, Nginx, Gunicorn,
 PostgreSQL, Redis, Celery e Celery Beat.
 
+Para deploy gerenciado com backend no Render e frontend no Vercel, use
+`docs/deploy-render-vercel.md`.
+
 ## Pré-requisitos
 
 - Domínio apontando para o servidor.

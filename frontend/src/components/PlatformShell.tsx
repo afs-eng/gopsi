@@ -17,7 +17,10 @@ export function PlatformShell({ activeNav, children, title, user }: { activeNav:
   }, [open]);
   return <div className="app-shell">
     <aside className={`sidebar ${open ? "is-open" : ""}`} aria-label="Navegação da plataforma">
-      <div className="sidebar-header"><div className="brand-mark">PSI</div><div><strong>Plataforma PSI</strong><span>Operação da plataforma</span></div></div>
+      <div className="sidebar-header">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-marca-sem-fundo.png" alt="GoPsi" />
+      </div>
       <nav className="nav-list" aria-label="Menu da plataforma">
         <Link className={activeNav === "clinics" ? "active" : ""} aria-current={activeNav === "clinics" ? "page" : undefined} data-icon="clinic" href="/platform" onClick={() => setOpen(false)}><span>Clínicas</span></Link>
       </nav>
