@@ -4,7 +4,16 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from apps.accounts.models import has_explicit_platform_role
+from apps.appointments.models import AppointmentStatus
 from apps.appointments.selectors import appointments_visible_to_user
+from apps.medical_records.models import (
+    MedicalRecordAuditAction,
+    MedicalRecordAuditEvent,
+    MedicalRecordEntry,
+    MedicalRecordEntryStatus,
+    MedicalRecordEntryType,
+    MedicalRecordEntryVersion,
+)
 from apps.telehealth.models import (
     TelehealthAccessToken,
     TelehealthParticipantEvent,
@@ -231,27 +240,91 @@ class TelehealthSessionSerializer(serializers.ModelSerializer):
         instance.save(
             update_fields=["status", "waiting_room_open", "started_at", "updated_at"]
         )
+        if instance.appointment.status != AppointmentStatus.IN_PROGRESS:
+            instance.appointment.status = AppointmentStatus.IN_PROGRESS
+            instance.appointment.save(update_fields=["status", "updated_at"])
         return instance
 
+    @transaction.atomic
     def finish(self, instance):
         try:
             get_video_provider(instance.provider).close_room(instance.external_room_id)
         except VideoProviderError as error:
             raise serializers.ValidationError(str(error)) from error
+        now = timezone.now()
+        if not instance.started_at:
+            instance.started_at = now
         instance.status = TelehealthSessionStatus.FINISHED
         instance.waiting_room_open = False
-        instance.ended_at = timezone.now()
+        instance.ended_at = now
         instance.is_active = False
         instance.save(
             update_fields=[
                 "status",
                 "waiting_room_open",
+                "started_at",
                 "ended_at",
                 "is_active",
                 "updated_at",
             ]
         )
+        if instance.appointment.status != AppointmentStatus.COMPLETED:
+            instance.appointment.status = AppointmentStatus.COMPLETED
+            instance.appointment.save(update_fields=["status", "updated_at"])
+        self._create_telehealth_report(instance)
         return instance
+
+    def _create_telehealth_report(self, instance):
+        if MedicalRecordEntry.objects.filter(
+            appointment=instance.appointment,
+            entry_type=MedicalRecordEntryType.SESSION_NOTE,
+            content__startswith="Relatório de atendimento online",
+        ).exists():
+            return
+
+        user = self.context["request"].user
+        started_at = instance.started_at or instance.created_at
+        ended_at = instance.ended_at or timezone.now()
+        content = (
+            "Relatório de atendimento online\n\n"
+            f"Paciente: {instance.appointment.patient.full_name}\n"
+            f"Profissional: {instance.appointment.professional.full_name}\n"
+            f"Data da consulta: {instance.appointment.date:%d/%m/%Y}\n"
+            f"Horário agendado: {instance.appointment.start_time:%H:%M} "
+            f"às {instance.appointment.end_time:%H:%M}\n"
+            f"Sala iniciada em: {started_at:%d/%m/%Y %H:%M}\n"
+            f"Sala finalizada em: {ended_at:%d/%m/%Y %H:%M}\n"
+            f"Provedor: {instance.provider}\n"
+            f"Participantes registrados na espera: "
+            f"{instance.participant_events.count()}\n\n"
+            "Observação: relatório gerado automaticamente ao finalizar "
+            "o teleatendimento. Complementar evolução clínica quando necessário."
+        )
+        entry = MedicalRecordEntry.objects.create(
+            clinic=instance.clinic,
+            patient=instance.appointment.patient,
+            professional=instance.appointment.professional,
+            appointment=instance.appointment,
+            entry_type=MedicalRecordEntryType.SESSION_NOTE,
+            status=MedicalRecordEntryStatus.FINAL,
+            content=content,
+            created_by=user,
+        )
+        MedicalRecordEntryVersion.objects.create(
+            entry=entry,
+            version=1,
+            entry_type=entry.entry_type,
+            status=entry.status,
+            content=entry.content,
+            changed_by=user,
+        )
+        MedicalRecordAuditEvent.objects.create(
+            clinic=entry.clinic,
+            entry=entry,
+            action=MedicalRecordAuditAction.CREATED,
+            actor=user,
+            metadata={"source": "telehealth", "session": str(instance.id)},
+        )
 
     def cancel(self, instance):
         try:
