@@ -2754,3 +2754,143 @@ body:has(.app-shell) {
     margin: 0 0 1rem;
   }
 }
+
+/* Form polish: replace browser fieldset boxes with calm clinical sections. */
+.form-page {
+  align-items: start;
+  min-height: auto;
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.form-card {
+  width: min(100%, 64rem);
+  border-radius: 1.25rem;
+  padding: clamp(1.4rem, 3vw, 2.25rem);
+}
+
+.form-card > .back-link {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 1rem;
+}
+
+.form-card > h1,
+.form-card > h2 {
+  margin-top: 0.2rem;
+  color: #142f5b;
+  font-size: clamp(1.9rem, 3vw, 2.65rem);
+  letter-spacing: -0.04em;
+}
+
+.form-card > .muted {
+  max-width: 48rem;
+  margin-top: 0.45rem;
+}
+
+.form-stack {
+  gap: 1.1rem;
+  margin-top: 1.6rem;
+}
+
+fieldset.form-section,
+.form-stack .form-section {
+  min-width: 0;
+  border: 1px solid #e5ebf7;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+  box-shadow: 0 12px 30px rgb(47 69 117 / 4%);
+  padding: 1.45rem;
+}
+
+fieldset.form-section {
+  margin: 0;
+}
+
+fieldset.form-section > legend {
+  float: left;
+  width: 100%;
+  margin: 0 0 1rem;
+  border-bottom: 1px solid #edf1fb;
+  color: #7357d8;
+  padding-bottom: 0.75rem;
+}
+
+fieldset.form-section > legend + * {
+  clear: both;
+}
+
+.form-stack .form-section .form-section {
+  margin-top: 0.35rem;
+  border-style: dashed;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.field-grid {
+  gap: 1rem;
+}
+
+.field-group {
+  gap: 0.48rem;
+}
+
+.field-group label,
+.checkbox-row {
+  color: #142f5b;
+  font-size: 0.92rem;
+  font-weight: 760;
+}
+
+.form-stack input,
+.form-stack select,
+.form-stack textarea {
+  min-height: 3rem;
+  border-color: #d9e2f3;
+  border-radius: 0.72rem;
+  background: #fbfcff;
+  padding: 0.78rem 0.9rem;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.form-stack textarea {
+  min-height: 6.5rem;
+}
+
+.form-stack input:focus,
+.form-stack select:focus,
+.form-stack textarea:focus {
+  border-color: #8569ca;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgb(132 101 210 / 13%);
+  outline: 0;
+}
+
+.form-stack > .button-primary {
+  justify-self: end;
+  min-width: 11rem;
+  min-height: 2.85rem;
+  margin-top: 0.25rem;
+}
+
+.checkbox-row {
+  width: fit-content;
+  border: 1px solid #e5ebf7;
+  border-radius: 0.72rem;
+  background: #fbfcff;
+  padding: 0.75rem 0.9rem;
+}
+
+@media (max-width: 720px) {
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+
+  fieldset.form-section,
+  .form-stack .form-section {
+    padding: 1rem;
+  }
+
+  .form-stack > .button-primary {
+    justify-self: stretch;
+  }
+}
