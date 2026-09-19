@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, use, useState, useTransition } from "react";
 
 import { createProfessional } from "@/lib/api";
+import { maskCpfInput, maskCrpInput, maskPhoneInput } from "@/lib/formMasks";
 import { useAuthenticatedData } from "@/features/clinics/useAuthenticatedData";
 
 type ProfessionalCreatePageProps = {
@@ -85,13 +86,13 @@ export function ProfessionalCreatePage({ params }: ProfessionalCreatePageProps) 
             </div>
             <div className="field-group">
               <label htmlFor="cpf">CPF</label>
-              <input id="cpf" name="cpf" />
+              <input id="cpf" name="cpf" inputMode="numeric" maxLength={14} onInput={maskCpfInput} placeholder="000.000.000-00" />
             </div>
           </div>
           <div className="field-grid">
             <div className="field-group">
               <label htmlFor="crp">CRP</label>
-              <input id="crp" name="crp" placeholder="06/123456" />
+              <input id="crp" name="crp" inputMode="numeric" maxLength={12} onInput={maskCrpInput} placeholder="CRP 00/00000" />
             </div>
             <div className="field-group">
               <label htmlFor="crp_state">UF do CRP</label>
@@ -105,7 +106,7 @@ export function ProfessionalCreatePage({ params }: ProfessionalCreatePageProps) 
             </div>
             <div className="field-group">
               <label htmlFor="phone">Telefone</label>
-              <input id="phone" name="phone" />
+              <input id="phone" name="phone" inputMode="numeric" maxLength={14} onInput={maskPhoneInput} placeholder="(00)00000-0000" />
             </div>
           </div>
           <div className="field-grid">

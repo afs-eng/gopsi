@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, use, useEffect, useState, useTransition } from "react";
 
 import { createPatient, listProfessionals } from "@/lib/api";
+import { maskCpfInput, maskPhoneInput } from "@/lib/formMasks";
 import type { Professional } from "@/lib/types";
 import { useAuthenticatedData } from "@/features/clinics/useAuthenticatedData";
 
@@ -111,7 +112,7 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
             </div>
             <div className="field-group">
               <label htmlFor="cpf">CPF</label>
-              <input id="cpf" name="cpf" />
+              <input id="cpf" name="cpf" inputMode="numeric" maxLength={14} onInput={maskCpfInput} placeholder="000.000.000-00" />
             </div>
           </div>
           </fieldset>
@@ -139,7 +140,7 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
             </div>
             <div className="field-group">
               <label htmlFor="phone">Telefone</label>
-              <input id="phone" name="phone" />
+              <input id="phone" name="phone" inputMode="numeric" maxLength={14} onInput={maskPhoneInput} placeholder="(00)00000-0000" />
             </div>
           </div>
           <div className="field-group">
@@ -156,7 +157,7 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
             </div>
             <div className="field-group">
               <label htmlFor="emergency_contact_phone">Telefone de emergência</label>
-              <input id="emergency_contact_phone" name="emergency_contact_phone" />
+              <input id="emergency_contact_phone" name="emergency_contact_phone" inputMode="numeric" maxLength={14} onInput={maskPhoneInput} placeholder="(00)00000-0000" />
             </div>
           </div>
           <div className="field-group">
@@ -186,11 +187,11 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
             <div className="field-grid">
               <div className="field-group">
                 <label htmlFor="guardian_cpf">CPF do responsável</label>
-                <input id="guardian_cpf" name="guardian_cpf" />
+                <input id="guardian_cpf" name="guardian_cpf" inputMode="numeric" maxLength={14} onInput={maskCpfInput} placeholder="000.000.000-00" />
               </div>
               <div className="field-group">
                 <label htmlFor="guardian_phone">Telefone do responsável</label>
-                <input id="guardian_phone" name="guardian_phone" />
+                <input id="guardian_phone" name="guardian_phone" inputMode="numeric" maxLength={14} onInput={maskPhoneInput} placeholder="(00)00000-0000" />
               </div>
             </div>
             <div className="field-group">
