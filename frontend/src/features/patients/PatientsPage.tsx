@@ -81,31 +81,44 @@ export function PatientsPage({ params }: PatientsPageProps) {
         />
       </section>
 
-      <section className="panel-card">
+      <section className="panel-card patients-panel">
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Cadastro</p>
             <h2>Pacientes vinculados</h2>
+            <p className="muted">Acompanhe os cadastros administrativos e acesse o prontuário da clínica.</p>
           </div>
           <span className="panel-pill">{patients.length} registro(s)</span>
         </div>
 
         {patients.length ? (
-          <div className="clinic-list">
+          <div className="clinic-list patients-list">
+            <div className="patients-list-header" aria-hidden="true">
+              <span>Paciente</span>
+              <span>Contato</span>
+              <span>Status</span>
+              <span>Ações</span>
+            </div>
             {patients.map((patient) => (
-              <article className="clinic-row" key={patient.id}>
-                <div>
-                  <strong>{patient.full_name}</strong>
-                  <p>
-                    {patient.email ? `E-mail: ${patient.email}` : patient.phone ? `Telefone: ${patient.phone}` : "Contato não informado"}
-                  </p>
-                </div>
-                <div className="row-actions">
-                  <span className="status-badge" aria-label={`Status: ${patientStatus(patient.status)}`}>
-                    {patientStatus(patient.status)}
+              <article className="clinic-row patient-row" key={patient.id}>
+                <div className="patient-identity">
+                  <span className="patient-avatar" aria-hidden="true">
+                    {patient.full_name.slice(0, 1).toUpperCase()}
                   </span>
+                  <div>
+                  <strong>{patient.full_name}</strong>
+                    <p>{patient.social_name ? `Nome social: ${patient.social_name}` : "Cadastro administrativo"}</p>
+                  </div>
+                </div>
+                <p className="patient-contact">
+                  {patient.email ? patient.email : patient.phone ? patient.phone : "Contato não informado"}
+                </p>
+                <span className="status-badge" aria-label={`Status: ${patientStatus(patient.status)}`}>
+                  {patientStatus(patient.status)}
+                </span>
+                <div className="row-actions patient-actions">
                   <Link className="button-secondary button-compact" href={`/clinics/${id}/medical-records`} aria-label="Abrir lista de prontuários da clínica">
-                    Prontuários da clínica
+                    Prontuários
                   </Link>
                 </div>
               </article>

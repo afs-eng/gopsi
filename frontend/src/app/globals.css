@@ -2894,3 +2894,101 @@ fieldset.form-section > legend + * {
     justify-self: stretch;
   }
 }
+
+/* Patient list polish */
+.patients-panel .panel-heading {
+  align-items: flex-start;
+}
+
+.patients-panel .panel-heading h2 {
+  font-size: clamp(1.55rem, 2.4vw, 2.25rem);
+}
+
+.patients-list {
+  border-radius: 1rem;
+}
+
+.patients-list-header,
+.patient-row {
+  display: grid;
+  grid-template-columns: minmax(15rem, 1.5fr) minmax(12rem, 1fr) 7rem minmax(8rem, auto);
+  gap: 1rem;
+  align-items: center;
+}
+
+.patients-list-header {
+  border-bottom: 1px solid #edf1fb;
+  background: #f8faff;
+  color: #63759b;
+  padding: 0.72rem 1rem;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.patient-row.clinic-row {
+  min-height: 4.6rem;
+  padding: 0.85rem 1rem;
+}
+
+.patient-identity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.patient-avatar {
+  display: grid;
+  width: 2.45rem;
+  height: 2.45rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #e8e1ff, #eef5ff);
+  color: #5e45c4;
+  font-weight: 900;
+}
+
+.patient-identity strong,
+.patient-identity p,
+.patient-contact {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.patient-contact {
+  color: #63759b;
+  font-size: 0.85rem;
+}
+
+.patient-actions {
+  justify-content: flex-end;
+}
+
+.patient-actions .button-compact {
+  min-width: 7.25rem;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .patients-list-header {
+    display: none;
+  }
+
+  .patient-row.clinic-row {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+    align-items: flex-start;
+  }
+
+  .patient-contact {
+    white-space: normal;
+  }
+
+  .patient-actions {
+    justify-content: flex-start;
+  }
+}
