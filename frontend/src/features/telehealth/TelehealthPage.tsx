@@ -110,6 +110,8 @@ export function TelehealthPage({ params }: TelehealthPageProps) {
     (count, session) => count + session.participant_events.length,
     0,
   );
+  const formatDate = (date: string) =>
+    new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium" }).format(new Date(`${date}T12:00:00`));
 
   return (
     <AppShell
@@ -144,7 +146,7 @@ export function TelehealthPage({ params }: TelehealthPageProps) {
 
       {error ? <div className="alert" role="alert" aria-live="assertive">{error}</div> : null}
 
-      <section className="panel-card">
+      <section className="panel-card telehealth-sessions-panel">
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Fluxo online</p>
@@ -157,23 +159,29 @@ export function TelehealthPage({ params }: TelehealthPageProps) {
         </div>
 
         {appointments.length ? (
-          <div className="clinic-list">
+          <div className="telehealth-session-list">
             {appointments.map((appointment) => {
               const session = sessionForAppointment(appointment.id);
               return (
-                <article className="clinic-row" key={appointment.id}>
-                  <div>
-                    <strong>{appointment.patient_name}</strong>
-                    <p>
-                      {appointment.date} · {appointment.start_time.slice(0, 5)} - {appointment.end_time.slice(0, 5)} · {appointment.professional_name}
-                    </p>
-                    <p>
-                      Modalidade {modalityLabels[appointment.modality] || appointment.modality} · Consulta {appointmentStatusLabels[appointment.status] || appointment.status}
-                    </p>
+                <article className="telehealth-session-card" key={appointment.id}>
+                  <div className="telehealth-session-main">
+                    <span className="telehealth-session-icon" aria-hidden="true">◉</span>
+                    <div>
+                      <div className="telehealth-session-title-row">
+                        <strong>{appointment.patient_name}</strong>
+                        <span className="status-badge">{appointmentStatusLabels[appointment.status] || appointment.status}</span>
+                      </div>
+                      <p>
+                        {formatDate(appointment.date)} · {appointment.start_time.slice(0, 5)} às {appointment.end_time.slice(0, 5)}
+                      </p>
+                      <p>
+                        {appointment.professional_name} · {modalityLabels[appointment.modality] || appointment.modality}
+                      </p>
+                    </div>
                   </div>
                   {session ? (
-                    <div className="row-actions">
-                      <span className="status-badge">{session.status.replaceAll("_", " ")}</span>
+                    <div className="telehealth-session-actions">
+                      <span className="telehealth-room-status">Sala criada</span>
                       <Link
                         className="button-primary button-compact"
                         href={`/clinics/${id}/telehealth/${session.id}`}
@@ -183,7 +191,7 @@ export function TelehealthPage({ params }: TelehealthPageProps) {
                     </div>
                   ) : roomFormAppointmentId === appointment.id ? (
                     <form
-                      className="form-stack"
+                      className="telehealth-create-room-form"
                       onSubmit={(event) => {
                         event.preventDefault();
                         const formData = new FormData(event.currentTarget);
@@ -193,8 +201,8 @@ export function TelehealthPage({ params }: TelehealthPageProps) {
                         );
                       }}
                     >
-                      <label className="field-group" htmlFor={`manual-join-url-${appointment.id}`}>
-                        Link da sala (Google Meet)
+                      <label className="field-group telehealth-room-url-field" htmlFor={`manual-join-url-${appointment.id}`}>
+                        <span>Link da sala</span>
                         <input
                           id={`manual-join-url-${appointment.id}`}
                           name="manual_join_url"
@@ -204,7 +212,7 @@ export function TelehealthPage({ params }: TelehealthPageProps) {
                           autoFocus
                         />
                       </label>
-                      <div className="row-actions">
+                      <div className="telehealth-session-actions">
                         <button className="button-primary button-compact" disabled={isPending} type="submit">
                           {isPending ? "Criando..." : "Abrir sala"}
                         </button>

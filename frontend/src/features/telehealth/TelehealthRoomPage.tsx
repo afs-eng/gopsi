@@ -121,6 +121,11 @@ export function TelehealthRoomPage({ params }: TelehealthRoomPageProps) {
   const patientAccessUrl = patientAccessToken
     ? `${window.location.origin}${patientAccessToken.access_url}`
     : "";
+  const whatsappMessage = patientAccessUrl
+    ? encodeURIComponent(
+        `Olá, ${session.patient_name}. Acesse sua consulta online pela Plataforma GoPsi: ${patientAccessUrl}`,
+      )
+    : "";
 
   return (
     <AppShell
@@ -196,20 +201,30 @@ export function TelehealthRoomPage({ params }: TelehealthRoomPageProps) {
         {patientAccessUrl ? (
           <div className="copy-box">
             <code>{patientAccessUrl}</code>
-            <button
-              className="button-secondary button-compact"
-              type="button"
-              onClick={async () => {
-                try {
-                  await navigator.clipboard.writeText(patientAccessUrl);
-                  setCopyStatus("Link copiado para a área de transferência.");
-                } catch {
-                  setCopyStatus("Não foi possível copiar o link. Selecione e copie o endereço manualmente.");
-                }
-              }}
-            >
-              Copiar link
-            </button>
+            <div className="copy-box-actions">
+              <a
+                className="button-primary button-compact"
+                href={`https://wa.me/?text=${whatsappMessage}`}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Enviar WhatsApp
+              </a>
+              <button
+                className="button-secondary button-compact"
+                type="button"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(patientAccessUrl);
+                    setCopyStatus("Link copiado para a área de transferência.");
+                  } catch {
+                    setCopyStatus("Não foi possível copiar o link. Selecione e copie o endereço manualmente.");
+                  }
+                }}
+              >
+                Copiar link
+              </button>
+            </div>
           </div>
         ) : (
           <div className="alert" role="alert">Link público do paciente não encontrado.</div>

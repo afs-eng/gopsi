@@ -1414,8 +1414,18 @@ h2 {
 }
 
 .copy-box code {
+  min-width: 0;
+  flex: 1;
   color: var(--accent-dark);
   overflow-wrap: anywhere;
+}
+
+.copy-box-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  justify-content: flex-end;
 }
 
 .waiting-result a {
@@ -2989,6 +2999,120 @@ fieldset.form-section > legend + * {
   }
 
   .patient-actions {
+    justify-content: flex-start;
+  }
+}
+
+/* Telehealth sessions */
+.telehealth-sessions-panel .panel-heading {
+  align-items: flex-start;
+}
+
+.telehealth-session-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.telehealth-session-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  border: 1px solid #e5ebf7;
+  border-radius: 1rem;
+  background: #ffffff;
+  padding: 1rem;
+  box-shadow: 0 12px 28px rgb(47 69 117 / 4%);
+}
+
+.telehealth-session-main {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.telehealth-session-icon {
+  display: grid;
+  width: 2.65rem;
+  height: 2.65rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.85rem;
+  background: #eee9ff;
+  color: #7357d8;
+  font-weight: 900;
+}
+
+.telehealth-session-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.2rem;
+}
+
+.telehealth-session-title-row strong {
+  color: #142f5b;
+  font-size: 1rem;
+}
+
+.telehealth-session-main p {
+  color: #63759b;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.telehealth-session-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.telehealth-room-status {
+  border-radius: 999px;
+  background: #e8f6ef;
+  color: #22724f;
+  padding: 0.36rem 0.65rem;
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.telehealth-create-room-form {
+  display: grid;
+  min-width: min(100%, 34rem);
+  grid-template-columns: minmax(14rem, 1fr) auto;
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.telehealth-room-url-field {
+  gap: 0.42rem;
+}
+
+.telehealth-room-url-field span {
+  color: #142f5b;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.telehealth-room-url-field input {
+  min-height: 2.7rem;
+  border: 1px solid #d9e2f3;
+  border-radius: 0.68rem;
+  background: #fbfcff;
+  padding: 0.72rem 0.85rem;
+}
+
+@media (max-width: 880px) {
+  .telehealth-session-card,
+  .telehealth-create-room-form {
+    grid-template-columns: 1fr;
+  }
+
+  .telehealth-session-actions {
     justify-content: flex-start;
   }
 }
