@@ -1371,116 +1371,334 @@ h2 {
   padding: 0.45rem 0.75rem;
 }
 
-.professional-profile-grid {
+.professionals-marketplace,
+.profile-showcase {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
   gap: 1rem;
 }
 
-.professional-profile-hero {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 1rem;
-  align-items: center;
-  background:
-    radial-gradient(circle at 100% 0, rgb(220 238 229 / 85%) 0, transparent 16rem),
-    linear-gradient(135deg, rgb(255 255 255 / 92%), rgb(251 250 245 / 88%));
-}
-
-.professional-profile-hero h2,
-.trueque-hero h2 {
-  color: #142f5b;
-  font-size: clamp(1.7rem, 3vw, 2.25rem);
-  line-height: 1.05;
-}
-
-.professional-avatar {
-  display: grid;
-  width: 4rem;
-  height: 4rem;
-  place-items: center;
-  border-radius: 1.25rem;
-  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-  color: white;
-  font-size: 1.7rem;
-  font-weight: 900;
-  box-shadow: 0 16px 30px rgb(23 107 86 / 18%);
-}
-
-.professional-profile-card {
-  display: grid;
-  align-content: start;
-  gap: 0.9rem;
-}
-
-.professional-profile-bio {
-  grid-column: 1 / -1;
-}
-
-.professional-profile-bio p:not(.eyebrow),
-.trueque-bio {
-  color: var(--muted);
-  line-height: 1.55;
-}
-
-.profile-detail-list,
-.trueque-card dl {
-  display: grid;
-  gap: 0.65rem;
-}
-
-.profile-detail-list div,
-.trueque-card dl div {
-  display: grid;
-  gap: 0.25rem;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 0.65rem;
-}
-
-.profile-detail-list dt,
-.trueque-card dt {
-  color: var(--muted);
-  font-size: 0.78rem;
-  font-weight: 850;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.profile-detail-list dd,
-.trueque-card dd {
-  color: var(--text);
-  font-weight: 800;
-}
-
-.trueque-hero {
+.professionals-marketplace-heading {
   display: flex;
   gap: 1rem;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 1rem;
 }
 
-.trueque-grid {
+.professionals-marketplace-heading h2 {
+  color: #5a1597;
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+  line-height: 1.05;
+}
+
+.professionals-offer-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.professional-offer-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1rem;
+  border: 1px solid #bdf7d0;
+  border-radius: 1rem;
+  background: #ffffff;
+  padding: clamp(1rem, 2vw, 1.45rem);
+}
+
+.professional-card-avatar,
+.profile-photo {
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #143f3b, #176b56);
+  color: white;
+  font-weight: 900;
+}
+
+.professional-card-avatar {
+  width: 4rem;
+  height: 4rem;
+  font-size: 1.45rem;
+}
+
+.professional-card-body {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.professional-card-header,
+.professional-card-footer {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.professional-card-header h3 {
+  color: #111827;
+  font-size: 1.15rem;
+}
+
+.professional-tag {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 0.35rem;
+  border: 1px solid #d7dee9;
+  border-radius: 999px;
+  background: white;
+  color: #111827;
+  padding: 0.28rem 0.58rem;
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.professional-score {
+  border-radius: 999px;
+  background: #ff8a00;
+  color: white;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.78rem;
+}
+
+.professional-offer-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.professional-offer-box {
+  display: grid;
+  gap: 0.35rem;
+  border-radius: 0.8rem;
+  padding: 1rem;
+}
+
+.professional-offer-box.is-primary {
+  background: #ecfbf1;
+}
+
+.professional-offer-box.is-secondary {
+  background: #faf2ff;
+}
+
+.professional-offer-box span {
+  color: #637083;
+  font-size: 0.75rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.professional-offer-box strong {
+  color: #006144;
+  font-size: 1rem;
+}
+
+.professional-offer-box.is-secondary strong {
+  color: #5a1597;
+}
+
+.professional-offer-box p,
+.professional-card-meta {
+  color: #526173;
+  font-size: 0.86rem;
+}
+
+.professional-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.profile-showcase-hero,
+.profile-showcase-card,
+.profile-business-card {
+  border: 1px solid #e3dfe8;
+  border-radius: 0.9rem;
+  background: #ffffff;
+  padding: clamp(1rem, 2.4vw, 1.35rem);
+}
+
+.profile-showcase-hero {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.3rem;
+  align-items: start;
+}
+
+.profile-photo {
+  width: 6.4rem;
+  height: 6.4rem;
+  font-size: 2.2rem;
+}
+
+.profile-showcase-copy {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.profile-showcase-copy h2 {
+  color: #5a1597;
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  line-height: 1.05;
+}
+
+.profile-showcase-copy p {
+  max-width: 64rem;
+  color: #26364d;
+  line-height: 1.55;
+}
+
+.profile-badges,
+.profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.profile-badges span,
+.profile-badges strong,
+.profile-badges small,
+.profile-tags span {
+  border-radius: 999px;
+  padding: 0.32rem 0.55rem;
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.profile-badges span {
+  background: #a547ff;
+  color: white;
+}
+
+.profile-badges strong {
+  background: #ffab1a;
+  color: white;
+}
+
+.profile-badges small,
+.profile-tags span {
+  border: 1px solid #d7dee9;
+  background: #ffffff;
+  color: #111827;
+}
+
+.profile-showcase-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
 
-.trueque-card {
+.profile-showcase-card {
   display: grid;
-  gap: 0.9rem;
   align-content: start;
+  gap: 1rem;
+  min-height: 16rem;
 }
 
-.trueque-card h3 {
-  color: #142f5b;
+.profile-showcase-card h3,
+.profile-business-card h3 {
+  color: #111827;
+  font-size: 1rem;
+}
+
+.profile-showcase-card dl {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.profile-showcase-card dl div {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.profile-showcase-card dt {
+  color: #526173;
+}
+
+.profile-showcase-card dd {
+  color: #111827;
+  font-weight: 900;
+}
+
+.profile-achievements {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.profile-achievements div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.profile-achievements span,
+.profile-business-icon {
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #fff0bf;
+}
+
+.profile-achievements span {
+  width: 2.05rem;
+  height: 2.05rem;
+}
+
+.profile-achievements small {
+  display: block;
+  color: #526173;
+}
+
+.reputation-card > strong {
+  color: #ff8a00;
+  font-size: 3rem;
+  line-height: 1;
+  text-align: center;
+}
+
+.reputation-card > p {
+  color: #ffb020;
+  text-align: center;
+}
+
+.reputation-card > span {
+  color: #526173;
+  text-align: center;
+}
+
+.profile-business-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.profile-business-card > div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.95rem;
+  align-items: center;
+}
+
+.profile-business-icon {
+  width: 4.9rem;
+  height: 4.9rem;
+  border-radius: 0.7rem;
+  background: #f0c7f3;
+  font-size: 1.8rem;
+}
+
+.profile-business-card h4 {
+  color: #111827;
   font-size: 1.15rem;
 }
 
-.trueque-card h3 + p {
-  color: var(--muted);
-  font-weight: 800;
+.profile-business-card p {
+  margin: 0.35rem 0 0.6rem;
+  color: #26364d;
+  line-height: 1.45;
 }
 
 .telehealth-room {
@@ -1955,7 +2173,7 @@ h2 {
 }
 
 @media (max-width: 1100px) {
-  .trueque-grid {
+  .profile-showcase-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1990,21 +2208,19 @@ h2 {
 }
 
 @media (max-width: 720px) {
-  .professional-profile-grid,
-  .trueque-grid {
+  .professional-offer-card,
+  .professional-offer-panels,
+  .profile-showcase-hero,
+  .profile-showcase-grid,
+  .profile-business-card > div {
     grid-template-columns: 1fr;
   }
 
-  .professional-profile-hero,
-  .trueque-hero {
+  .professional-card-header,
+  .professional-card-footer,
+  .professionals-marketplace-heading,
+  .profile-showcase-hero {
     align-items: flex-start;
-  }
-
-  .professional-profile-hero {
-    grid-template-columns: 1fr;
-  }
-
-  .trueque-hero {
     flex-direction: column;
   }
 
@@ -2385,7 +2601,6 @@ h2 {
 .nav-list > a[data-icon="grid"]::before { content: "▦"; background-image: none; }
 .nav-list > a[data-icon="clinic"]::before { content: "⌂"; background-image: none; }
 .nav-list > a[data-icon="profile"]::before { content: "P"; background-image: none; }
-.nav-list > a[data-icon="trueque"]::before { content: "T"; background-image: none; }
 .nav-list > a[data-icon="people"]::before { content: "♙"; background-image: none; }
 .nav-list > a[data-icon="patient"]::before { content: "♡"; background-image: none; }
 .nav-list > a[data-icon="calendar"]::before { content: "◷"; background-image: none; }

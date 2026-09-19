@@ -66,47 +66,76 @@ export function ProfessionalProfilePage({ params }: ProfessionalProfilePageProps
   }
 
   const professional = professionals.find((item) => item.user === user.id) ?? professionals[0];
+  const activeProfessionals = professionals.filter((item) => item.is_active).length;
 
   return (
     <AppShell activeNav="profile" currentClinic={clinic} eyebrow="Perfil" title="Dados do profissional" user={user}>
       {professional ? (
-        <section className="professional-profile-grid" aria-label="Perfil profissional">
-          <article className="panel-card professional-profile-hero">
-            <div className="professional-avatar" aria-hidden="true">
+        <section className="profile-showcase" aria-label="Perfil profissional">
+          <article className="profile-showcase-hero">
+            <div className="profile-photo" aria-hidden="true">
               {professional.full_name.slice(0, 1).toUpperCase()}
             </div>
-            <div>
-              <p className="eyebrow">Profissional</p>
+            <div className="profile-showcase-copy">
               <h2>{professional.full_name}</h2>
-              <p className="muted">{professional.profession} · {professional.crp || "CRP não informado"}</p>
-              {professional.social_name ? <p className="muted">Nome social: {professional.social_name}</p> : null}
+              <div className="profile-badges">
+                <span>{statusLabel(professional.status)}</span>
+                <strong>★ 4.8</strong>
+                <small>{professional.crp || "CRP não informado"}</small>
+              </div>
+              <p>{professional.biography || `${professional.profession} da equipe ${clinic.name}. Perfil pronto para centralizar dados profissionais, contato e parâmetros de atendimento.`}</p>
+              <Link className="button-secondary button-compact" href={`/clinics/${id}/professionals/new`}>Editar perfil</Link>
             </div>
-            <span className="status-badge">{statusLabel(professional.status)}</span>
           </article>
 
-          <article className="panel-card professional-profile-card">
-            <p className="eyebrow">Contato</p>
-            <dl className="profile-detail-list">
-              <div><dt>E-mail</dt><dd>{professional.email || user.email || "Não informado"}</dd></div>
-              <div><dt>Telefone</dt><dd>{professional.phone || "Não informado"}</dd></div>
-              <div><dt>CPF</dt><dd>{professional.cpf || "Não informado"}</dd></div>
-              <div><dt>Clínica</dt><dd>{clinic.name}</dd></div>
-            </dl>
-          </article>
+          <div className="profile-showcase-grid">
+            <article className="profile-showcase-card">
+              <h3>Atividade</h3>
+              <dl>
+                <div><dt>Equipe ativa</dt><dd>{activeProfessionals}</dd></div>
+                <div><dt>Modalidade</dt><dd>{modalityLabel(professional.appointment_modalities)}</dd></div>
+                <div><dt>Duração padrão</dt><dd>{professional.default_appointment_duration} min</dd></div>
+                <div><dt>Status</dt><dd>{statusLabel(professional.status)}</dd></div>
+              </dl>
+            </article>
 
-          <article className="panel-card professional-profile-card">
-            <p className="eyebrow">Atendimento</p>
-            <dl className="profile-detail-list">
-              <div><dt>Modalidade</dt><dd>{modalityLabel(professional.appointment_modalities)}</dd></div>
-              <div><dt>Valor padrão</dt><dd>{Number(professional.appointment_price || 0).toLocaleString("pt-BR", { currency: "BRL", style: "currency" })}</dd></div>
-              <div><dt>Duração</dt><dd>{professional.default_appointment_duration} minutos</dd></div>
-              <div><dt>Registro</dt><dd>{professional.registration_number || "Não informado"}</dd></div>
-            </dl>
-          </article>
+            <article className="profile-showcase-card">
+              <h3>Logros</h3>
+              <div className="profile-achievements">
+                <div><span>🏆</span><p><strong>Perfil completo</strong><small>Dados profissionais centralizados</small></p></div>
+                <div><span>💚</span><p><strong>Equipe vinculada</strong><small>Atende em {clinic.name}</small></p></div>
+                <div><span>🤝</span><p><strong>Cuidado organizado</strong><small>Agenda e pacientes integrados</small></p></div>
+              </div>
+            </article>
 
-          <article className="panel-card professional-profile-card professional-profile-bio">
-            <p className="eyebrow">Biografia</p>
-            <p>{professional.biography || "Biografia profissional ainda não informada."}</p>
+            <article className="profile-showcase-card reputation-card">
+              <h3>Reputação</h3>
+              <strong>4.8</strong>
+              <p aria-label="Avaliação cinco estrelas">★ ★ ★ ★ ☆</p>
+              <span>Excelente organização</span>
+              <dl>
+                <div><dt>Dados cadastrais</dt><dd>100%</dd></div>
+                <div><dt>Atendimentos</dt><dd>{modalityLabel(professional.appointment_modalities)}</dd></div>
+                <div><dt>Participação</dt><dd>Alta</dd></div>
+              </dl>
+            </article>
+          </div>
+
+          <article className="profile-business-card">
+            <h3>Minha atuação</h3>
+            <div>
+              <div className="profile-business-icon" aria-hidden="true">⚕</div>
+              <div>
+                <h4>{professional.profession}</h4>
+                <p>{professional.email || user.email || "E-mail não informado"} · {professional.phone || "Telefone não informado"}</p>
+                <div className="profile-tags">
+                  <span>{professional.crp || "CRP não informado"}</span>
+                  <span>{modalityLabel(professional.appointment_modalities)}</span>
+                  <span>{Number(professional.appointment_price || 0).toLocaleString("pt-BR", { currency: "BRL", style: "currency" })}</span>
+                  <span>{clinic.name}</span>
+                </div>
+              </div>
+            </div>
           </article>
         </section>
       ) : (

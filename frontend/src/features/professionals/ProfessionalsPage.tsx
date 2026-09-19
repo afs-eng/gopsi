@@ -4,7 +4,6 @@ import Link from "next/link";
 import { use, useEffect, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
-import { MetricCard } from "@/components/MetricCard";
 import { getClinic, listProfessionals } from "@/lib/api";
 import type { Clinic, Professional } from "@/lib/types";
 import { useAuthenticatedData } from "@/features/clinics/useAuthenticatedData";
@@ -15,7 +14,14 @@ type ProfessionalsPageProps = {
 
 const statusLabels: Record<string, string> = {
   ACTIVE: "Ativo",
+  BLOCKED: "Bloqueado",
   INACTIVE: "Inativo",
+};
+
+const modalityLabels: Record<Professional["appointment_modalities"], string> = {
+  HYBRID: "Presencial e online",
+  IN_PERSON: "Presencial",
+  ONLINE: "Online",
 };
 
 export function ProfessionalsPage({ params }: ProfessionalsPageProps) {
@@ -68,46 +74,56 @@ export function ProfessionalsPage({ params }: ProfessionalsPageProps) {
         </Link>
       }
     >
-      <section className="metrics-grid" aria-label="Resumo de profissionais">
-        <MetricCard
-          label="Profissionais ativos"
-          value={professionals.filter((professional) => professional.is_active).length}
-          description="Equipe visível dentro da clínica selecionada."
-        />
-        <MetricCard
-          label="Clínica"
-          value={clinic.name}
-          description="Tenant lógico em uso nesta tela."
-        />
-        <MetricCard
-          label="Permissões"
-          value="RBAC"
-          description="Cadastro restrito a administradores da clínica."
-        />
-      </section>
-
-      <section className="panel-card">
-        <div className="panel-heading">
+      <section className="professionals-marketplace" aria-label="Lista de profissionais">
+        <div className="professionals-marketplace-heading">
           <div>
-            <p className="eyebrow">Cadastro</p>
-            <h2>Profissionais vinculados</h2>
+            <h2>Equipe profissional</h2>
+            <p className="muted">Visualize atuação, modalidade e contato de cada profissional da clínica.</p>
           </div>
-          <span className="panel-pill">{professionals.length} registro(s)</span>
+          <span className="panel-pill">{professionals.filter((professional) => professional.is_active).length} ativo(s)</span>
         </div>
 
         {professionals.length ? (
-          <div className="clinic-list">
+          <div className="professionals-offer-list">
             {professionals.map((professional) => (
-              <article className="clinic-row" key={professional.id}>
-                <div>
-                  <strong>{professional.full_name}</strong>
-                  <p>
-                    {professional.profession} · {professional.crp || "CRP não informado"}
-                  </p>
+              <article className="professional-offer-card" key={professional.id}>
+                <div className="professional-card-avatar" aria-hidden="true">
+                  {professional.full_name.slice(0, 1).toUpperCase()}
                 </div>
-                <span className="status-badge" aria-label={`Status: ${statusLabels[professional.status] || professional.status}`}>
-                  {statusLabels[professional.status] || professional.status}
-                </span>
+                <div className="professional-card-body">
+                  <div className="professional-card-header">
+                    <div>
+                      <h3>{professional.full_name}</h3>
+                      <span className="professional-tag">{professional.profession}</span>
+                    </div>
+                    <strong className="professional-score">{professional.default_appointment_duration} min</strong>
+                  </div>
+
+                  <div className="professional-offer-panels">
+                    <div className="professional-offer-box is-primary">
+                      <span>Atuação</span>
+                      <strong>{professional.crp || "CRP não informado"}</strong>
+                      <p>{professional.registration_number || "Registro complementar não informado"}</p>
+                    </div>
+                    <div className="professional-offer-box is-secondary">
+                      <span>Disponibilidade</span>
+                      <strong>{modalityLabels[professional.appointment_modalities]}</strong>
+                      <p>{Number(professional.appointment_price || 0).toLocaleString("pt-BR", { currency: "BRL", style: "currency" })} por consulta</p>
+                    </div>
+                  </div>
+
+                  <div className="professional-card-footer">
+                    <div className="professional-card-meta">
+                      <span aria-hidden="true">♡</span>
+                      <span>{professional.email || "E-mail não informado"}</span>
+                      <span aria-hidden="true">↗</span>
+                      <span>{professional.phone || "Telefone não informado"}</span>
+                    </div>
+                    <span className="status-badge" aria-label={`Status: ${statusLabels[professional.status] || professional.status}`}>
+                      {statusLabels[professional.status] || professional.status}
+                    </span>
+                  </div>
+                </div>
               </article>
             ))}
           </div>
