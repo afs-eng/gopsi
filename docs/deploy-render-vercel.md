@@ -69,6 +69,31 @@ uv run python manage.py reset_admin_password \
 
 O login aceita `username` ou e-mail.
 
+### Sem Shell No Plano Free
+
+Se o serviço não tiver Shell disponível, crie o admin por variáveis de ambiente
+temporárias no próprio deploy.
+
+No Render, adicione no serviço `gopsi-api`:
+
+```text
+BOOTSTRAP_ADMIN=true
+ADMIN_USERNAME=admin
+ADMIN_EMAIL=seu-email@dominio.com
+ADMIN_PASSWORD=TroqueEssaSenha123
+```
+
+Faça um novo deploy. O entrypoint vai criar/resetar o admin automaticamente.
+
+Depois que conseguir entrar, remova ou altere:
+
+```text
+BOOTSTRAP_ADMIN=false
+ADMIN_PASSWORD=
+```
+
+Faça outro deploy para não manter senha em variável de ambiente.
+
 ## 3. Frontend No Vercel
 
 No Vercel:

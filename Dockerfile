@@ -22,4 +22,4 @@ RUN chmod +x /app/scripts/entrypoint.prod.sh
 EXPOSE 8000
 
 ENTRYPOINT ["/app/scripts/entrypoint.prod.sh"]
-CMD ["sh", "-c", "uv run gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers ${GUNICORN_WORKERS:-3} --timeout ${GUNICORN_TIMEOUT:-60}"]
+CMD ["sh", "-c", "uv run --no-sync gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers ${GUNICORN_WORKERS:-3} --timeout ${GUNICORN_TIMEOUT:-60}"]
