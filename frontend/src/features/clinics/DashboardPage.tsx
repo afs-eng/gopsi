@@ -50,6 +50,7 @@ export function DashboardPage() {
   return (
     <AppShell
       activeNav="dashboard"
+      currentClinic={primaryClinic}
       eyebrow="Dashboard"
       title="Visão geral"
       user={user}

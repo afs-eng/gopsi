@@ -15,6 +15,17 @@ from apps.audit.services import record_audit_event
 SENSITIVE_MFA_ROLES = {"SUPERADMIN", "CLINIC_ADMIN"}
 
 
+def resolve_login_username(identifier):
+    if not identifier:
+        return identifier
+    if "@" not in identifier:
+        return identifier
+    from apps.accounts.models import User
+
+    user = User.objects.filter(email__iexact=identifier).only("username").first()
+    return user.username if user else identifier
+
+
 def user_requires_mfa(user) -> bool:
     if user.is_platform_admin:
         return True
@@ -34,7 +45,8 @@ class LoginView(APIView):
         username = request.data.get("username")
         password = request.data.get("password")
         otp = request.data.get("otp", "")
-        user = authenticate(request, username=username, password=password)
+        auth_username = resolve_login_username(username)
+        user = authenticate(request, username=auth_username, password=password)
 
         if user is None:
             record_audit_event(
