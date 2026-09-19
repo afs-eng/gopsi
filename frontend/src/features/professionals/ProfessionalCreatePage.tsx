@@ -12,16 +12,66 @@ type ProfessionalCreatePageProps = {
   params: Promise<{ id: string }>;
 };
 
+const crpRegions: Record<string, { state: string; label: string }> = {
+  "01": { state: "DF", label: "Distrito Federal" },
+  "02": { state: "PE", label: "Pernambuco" },
+  "03": { state: "BA", label: "Bahia" },
+  "04": { state: "MG", label: "Minas Gerais" },
+  "05": { state: "RJ", label: "Rio de Janeiro" },
+  "06": { state: "SP", label: "São Paulo" },
+  "07": { state: "RS", label: "Rio Grande do Sul" },
+  "08": { state: "PR", label: "Paraná" },
+  "09": { state: "GO", label: "Goiás" },
+  "10": { state: "PA", label: "Pará e Amapá" },
+  "11": { state: "CE", label: "Ceará" },
+  "12": { state: "SC", label: "Santa Catarina" },
+  "13": { state: "PB", label: "Paraíba" },
+  "14": { state: "MS", label: "Mato Grosso do Sul" },
+  "15": { state: "AL", label: "Alagoas" },
+  "16": { state: "ES", label: "Espírito Santo" },
+  "17": { state: "RN", label: "Rio Grande do Norte" },
+  "18": { state: "MT", label: "Mato Grosso" },
+  "19": { state: "SE", label: "Sergipe" },
+  "20": { state: "AM", label: "Amazonas, Acre, Rondônia e Roraima" },
+  "21": { state: "PI", label: "Piauí" },
+  "22": { state: "MA", label: "Maranhão" },
+  "23": { state: "TO", label: "Tocantins" },
+  "24": { state: "RO", label: "Rondônia e Acre" },
+};
+
+function crpRegionFromValue(value: string) {
+  return value.replace(/\D/g, "").slice(0, 2);
+}
+
 export function ProfessionalCreatePage({ params }: ProfessionalCreatePageProps) {
   const { id } = use(params);
   const router = useRouter();
   const { loading, user } = useAuthenticatedData();
   const [error, setError] = useState("");
+  const [crpState, setCrpState] = useState("");
+  const [crpRegionLabel, setCrpRegionLabel] = useState("");
+  const [invalidCrpRegion, setInvalidCrpRegion] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  function handleCrpInput(event: FormEvent<HTMLInputElement>) {
+    maskCrpInput(event);
+    const region = crpRegionFromValue(event.currentTarget.value);
+    const regionInfo = crpRegions[region];
+
+    setCrpState(regionInfo?.state ?? "");
+    setCrpRegionLabel(regionInfo?.label ?? "");
+    setInvalidCrpRegion(region.length === 2 && !regionInfo);
+  }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+
+    if (invalidCrpRegion) {
+      setError("Informe uma regional de CRP válida antes de salvar.");
+      return;
+    }
+
     const formData = new FormData(event.currentTarget);
 
     startTransition(async () => {
@@ -92,11 +142,24 @@ export function ProfessionalCreatePage({ params }: ProfessionalCreatePageProps) 
           <div className="field-grid">
             <div className="field-group">
               <label htmlFor="crp">CRP</label>
-              <input id="crp" name="crp" inputMode="numeric" maxLength={12} onInput={maskCrpInput} placeholder="CRP 00/00000" />
+              <input
+                id="crp"
+                name="crp"
+                aria-describedby="crp-help"
+                aria-invalid={invalidCrpRegion}
+                className={invalidCrpRegion ? "field-invalid" : undefined}
+                inputMode="numeric"
+                maxLength={12}
+                onInput={handleCrpInput}
+                placeholder="CRP 00/00000"
+              />
+              <span className={invalidCrpRegion ? "field-error" : "field-hint"} id="crp-help">
+                {invalidCrpRegion ? "Regional do CRP não encontrada." : crpRegionLabel ? `Regional: ${crpRegionLabel}.` : "Digite a regional para preencher a UF automaticamente."}
+              </span>
             </div>
             <div className="field-group">
               <label htmlFor="crp_state">UF do CRP</label>
-              <input id="crp_state" name="crp_state" maxLength={2} placeholder="SP" />
+              <input id="crp_state" name="crp_state" maxLength={2} placeholder="SP" readOnly value={crpState} />
             </div>
           </div>
           <div className="field-grid">

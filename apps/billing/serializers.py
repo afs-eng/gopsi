@@ -267,6 +267,21 @@ class PaymentSerializer(serializers.ModelSerializer):
         if invoice:
             data["clinic"] = invoice.clinic
 
+            if not self.instance:
+                if invoice.status not in [InvoiceStatus.OPEN, InvoiceStatus.OVERDUE]:
+                    raise serializers.ValidationError(
+                        "Somente cobranças abertas ou vencidas podem receber pagamento."
+                    )
+                if invoice.payments.filter(status=PaymentStatus.PAID).exists():
+                    raise serializers.ValidationError("Cobrança já possui pagamento registrado.")
+
+            status = attrs.get("status") or getattr(self.instance, "status", None)
+            amount = attrs.get("amount") or getattr(self.instance, "amount", None)
+            if status == PaymentStatus.PAID and amount != invoice.amount:
+                raise serializers.ValidationError(
+                    "Pagamentos parciais não são suportados. Informe o valor integral da cobrança."
+                )
+
         if not self.instance:
             data["created_by"] = self.context["request"].user
 

@@ -379,6 +379,99 @@ def test_paid_payment_marks_invoice_paid_and_creates_transaction():
 
 
 @pytest.mark.django_db
+def test_paid_payment_rejects_partial_amount():
+    user, clinic, _professional, patient, _appointment = make_billing_context()
+    invoice = Invoice.objects.create(
+        clinic=clinic,
+        patient=patient,
+        description="Consulta parcial",
+        amount="250.00",
+        created_by=user,
+    )
+    client = APIClient()
+    client.force_authenticate(user=user)
+
+    response = client.post(
+        reverse("billing-payment-list"),
+        {
+            "invoice": str(invoice.id),
+            "amount": "100.00",
+            "method": "PIX",
+            "status": "PAID",
+        },
+        format="json",
+    )
+
+    assert response.status_code == 400
+    assert not Payment.objects.filter(invoice=invoice).exists()
+
+
+@pytest.mark.django_db
+def test_payment_rejects_invoice_that_is_not_open_or_overdue():
+    user, clinic, _professional, patient, _appointment = make_billing_context()
+    invoice = Invoice.objects.create(
+        clinic=clinic,
+        patient=patient,
+        description="Cobrança cancelada",
+        amount="250.00",
+        status=InvoiceStatus.CANCELLED,
+        created_by=user,
+    )
+    client = APIClient()
+    client.force_authenticate(user=user)
+
+    response = client.post(
+        reverse("billing-payment-list"),
+        {
+            "invoice": str(invoice.id),
+            "amount": "250.00",
+            "method": "PIX",
+            "status": "PAID",
+        },
+        format="json",
+    )
+
+    assert response.status_code == 400
+    assert not Payment.objects.filter(invoice=invoice).exists()
+
+
+@pytest.mark.django_db
+def test_payment_rejects_duplicate_paid_payment():
+    user, clinic, _professional, patient, _appointment = make_billing_context()
+    invoice = Invoice.objects.create(
+        clinic=clinic,
+        patient=patient,
+        description="Consulta duplicada",
+        amount="250.00",
+        created_by=user,
+    )
+    Payment.objects.create(
+        clinic=clinic,
+        invoice=invoice,
+        amount="250.00",
+        method="PIX",
+        status=PaymentStatus.PAID,
+        created_by=user,
+    )
+    client = APIClient()
+    client.force_authenticate(user=user)
+
+    response = client.post(
+        reverse("billing-payment-list"),
+        {
+            "invoice": str(invoice.id),
+            "amount": "250.00",
+            "method": "PIX",
+            "status": "PAID",
+        },
+        format="json",
+    )
+
+    assert response.status_code == 400
+    assert Payment.objects.filter(invoice=invoice).count() == 1
+
+
+@pytest.mark.django_db
 def test_payment_rejects_full_card_digits():
     user, clinic, _professional, patient, _appointment = make_billing_context()
     invoice = Invoice.objects.create(

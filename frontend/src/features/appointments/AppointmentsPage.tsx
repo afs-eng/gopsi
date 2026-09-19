@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { use, useEffect, useState, useTransition } from "react";
+import { type CSSProperties, use, useEffect, useState, useTransition } from "react";
 
 import { AppShell } from "@/components/AppShell";
-import { MetricCard } from "@/components/MetricCard";
 import {
   cancelAppointment,
   getClinic,
@@ -18,6 +17,69 @@ type AppointmentsPageProps = {
   params: Promise<{ id: string }>;
 };
 
+type CalendarItem = {
+  id: string;
+  type: "appointment" | "block";
+  date: string;
+  start_time: string;
+  end_time: string;
+  title: string;
+  subtitle: string;
+  status?: Appointment["status"];
+  modality?: Appointment["modality"];
+  source: Appointment | ScheduleBlock;
+};
+
+const weekDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+const hourStart = 7;
+const hourEnd = 19;
+const hourHeight = 72;
+
+function dateKey(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function localDate(date: string) {
+  return new Date(`${date}T12:00:00`);
+}
+
+function addDays(date: Date, days: number) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function startOfWeek(date: Date) {
+  return addDays(date, -date.getDay());
+}
+
+function minutesFromStart(time: string) {
+  const [hours, minutes] = time.split(":").map(Number);
+  return (hours - hourStart) * 60 + minutes;
+}
+
+function eventStyle(item: CalendarItem) {
+  const top = Math.max(0, (minutesFromStart(item.start_time) / 60) * hourHeight);
+  const duration = Math.max(30, minutesFromStart(item.end_time) - minutesFromStart(item.start_time));
+  const height = Math.max(42, (duration / 60) * hourHeight - 6);
+  return { height: `${height}px`, top: `${top}px` };
+}
+
+function formatDate(date: string) {
+  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium" }).format(localDate(date));
+}
+
+function statusLabel(status: Appointment["status"]) {
+  return {
+    CANCELLED: "Cancelada",
+    COMPLETED: "Concluída",
+    CONFIRMED: "Confirmada",
+    IN_PROGRESS: "Em atendimento",
+    NO_SHOW: "Faltou",
+    SCHEDULED: "Agendada",
+  }[status];
+}
+
 export function AppointmentsPage({ params }: AppointmentsPageProps) {
   const { id } = use(params);
   const { loading, user } = useAuthenticatedData();
@@ -26,6 +88,8 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
   const [scheduleBlocks, setScheduleBlocks] = useState<ScheduleBlock[]>([]);
   const [error, setError] = useState("");
   const [cancelingId, setCancelingId] = useState("");
+  const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
+  const [search, setSearch] = useState("");
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -59,12 +123,6 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
     );
   }
 
-  const today = new Date().toISOString().slice(0, 10);
-  const formatDate = (date: string) =>
-    new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium" }).format(new Date(`${date}T12:00:00`));
-  const statusLabel = (status: string) =>
-    ({ SCHEDULED: "Agendada", CONFIRMED: "Confirmada", COMPLETED: "Concluída", CANCELED: "Cancelada" }[status] ?? status);
-
   function handleCancelAppointment(appointment: Appointment) {
     const confirmed = window.confirm(
       `Você está prestes a cancelar a consulta de ${appointment.patient_name}, em ${formatDate(appointment.date)}, das ${appointment.start_time.slice(0, 5)} às ${appointment.end_time.slice(0, 5)}. Deseja continuar?`,
@@ -91,6 +149,58 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
     });
   }
 
+  const today = dateKey(new Date());
+  const days = Array.from({ length: 7 }, (_, index) => addDays(weekStart, index));
+  const weekEnd = addDays(weekStart, 6);
+  const hours = Array.from({ length: hourEnd - hourStart }, (_, index) => hourStart + index);
+  const normalizedSearch = search.trim().toLowerCase();
+  const calendarItems: CalendarItem[] = [
+    ...appointments
+      .filter((appointment) => appointment.is_active)
+      .map((appointment) => ({
+        date: appointment.date,
+        end_time: appointment.end_time,
+        id: appointment.id,
+        modality: appointment.modality,
+        source: appointment,
+        start_time: appointment.start_time,
+        status: appointment.status,
+        subtitle: appointment.professional_name,
+        title: appointment.patient_name,
+        type: "appointment" as const,
+      })),
+    ...scheduleBlocks
+      .filter((block) => block.is_active)
+      .map((block) => ({
+        date: block.date,
+        end_time: block.end_time,
+        id: block.id,
+        source: block,
+        start_time: block.start_time,
+        subtitle: block.professional_name,
+        title: block.reason || "Horário bloqueado",
+        type: "block" as const,
+      })),
+  ].filter((item) => {
+    const itemDate = localDate(item.date);
+    const isInWeek = itemDate >= weekStart && itemDate <= weekEnd;
+    const matchesSearch = !normalizedSearch || [item.title, item.subtitle, item.status, item.modality]
+      .filter(Boolean)
+      .some((value) => String(value).toLowerCase().includes(normalizedSearch));
+    return isInWeek && matchesSearch;
+  });
+  const todayAppointments = appointments.filter((appointment) => appointment.date === today && appointment.is_active);
+  const nextItems = calendarItems
+    .filter((item) => `${item.date}T${item.start_time}` >= `${today}T00:00`)
+    .sort((a, b) => `${a.date}T${a.start_time}`.localeCompare(`${b.date}T${b.start_time}`))
+    .slice(0, 5);
+  const miniMonthDays = Array.from({ length: 35 }, (_, index) => {
+    const monthStart = new Date(weekStart.getFullYear(), weekStart.getMonth(), 1, 12);
+    const gridStart = startOfWeek(monthStart);
+    return addDays(gridStart, index);
+  });
+  const monthLabel = new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" }).format(weekStart);
+
   return (
     <AppShell
       activeNav="appointments"
@@ -109,106 +219,129 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
         </>
       }
     >
-      <section className="metrics-grid" aria-label="Resumo da agenda">
-        <MetricCard
-          label="Consultas ativas"
-          value={appointments.filter((appointment) => appointment.is_active).length}
-          description="Cancelamentos usam soft delete lógico."
-        />
-        <MetricCard
-          label="Hoje"
-          value={appointments.filter((appointment) => appointment.date === today).length}
-          description="Consultas agendadas para a data atual."
-        />
-        <MetricCard
-          label="Bloqueios ativos"
-          value={scheduleBlocks.filter((block) => block.is_active).length}
-          description="Períodos indisponíveis impedem novos agendamentos."
-        />
-      </section>
+      {error ? <div className="alert" role="alert" aria-live="assertive">{error}</div> : null}
 
-      <section className="panel-card">
-        <div className="panel-heading">
-          <div>
-            <p className="eyebrow">Calendário inicial</p>
-            <h2>Consultas agendadas</h2>
+      <section className="calendar-shell" aria-label="Agenda semanal">
+        <aside className="calendar-sidebar" aria-label="Resumo da agenda">
+          <div className="calendar-sidebar-window-controls" aria-hidden="true">
+            <span />
+            <span />
+            <span />
           </div>
-          <span className="panel-pill">{appointments.length} registro(s)</span>
-        </div>
+          <div className="calendar-sidebar-heading">
+            <p>{monthLabel}</p>
+            <div>
+              <button type="button" onClick={() => setWeekStart((current) => addDays(current, -7))} aria-label="Semana anterior">‹</button>
+              <button type="button" onClick={() => setWeekStart((current) => addDays(current, 7))} aria-label="Próxima semana">›</button>
+            </div>
+          </div>
 
-        {error ? <div className="alert" role="alert" aria-live="assertive">{error}</div> : null}
+          <div className="mini-calendar" aria-label="Calendário do mês">
+            {weekDays.map((day) => <span className="mini-calendar-weekday" key={day}>{day}</span>)}
+            {miniMonthDays.map((day) => {
+              const key = dateKey(day);
+              const hasEvent = appointments.some((appointment) => appointment.date === key && appointment.is_active);
+              return (
+                <button
+                  className={`${key === today ? "is-today" : ""} ${days.some((weekDay) => dateKey(weekDay) === key) ? "is-week" : ""}`}
+                  key={key}
+                  type="button"
+                  onClick={() => setWeekStart(startOfWeek(day))}
+                >
+                  {day.getDate()}
+                  {hasEvent ? <span aria-hidden="true" /> : null}
+                </button>
+              );
+            })}
+          </div>
 
-        {appointments.length ? (
-          <div className="clinic-list">
-            {appointments.map((appointment) => (
-              <article className="clinic-row" key={appointment.id}>
+          <div className="calendar-sidebar-stats">
+            <div><span>Hoje</span><strong>{todayAppointments.length}</strong></div>
+            <div><span>Semana</span><strong>{calendarItems.filter((item) => item.type === "appointment").length}</strong></div>
+            <div><span>Bloqueios</span><strong>{calendarItems.filter((item) => item.type === "block").length}</strong></div>
+          </div>
+
+          <div className="calendar-upcoming">
+            <p className="eyebrow">Próximos horários</p>
+            {nextItems.length ? nextItems.map((item) => (
+              <article key={`${item.type}-${item.id}`}>
+                <span className={`calendar-dot ${item.type === "block" ? "is-block" : ""}`} />
                 <div>
-                  <strong>{appointment.patient_name}</strong>
-                  <p>
-                    <time dateTime={`${appointment.date}T${appointment.start_time}`}>{formatDate(appointment.date)}</time>{" · "}
-                    <time dateTime={`${appointment.date}T${appointment.start_time}`}>{appointment.start_time.slice(0, 5)}</time>–{appointment.end_time.slice(0, 5)} · {appointment.professional_name}
-                  </p>
-                </div>
-                <div className="row-actions">
-                  <span className="status-badge">{statusLabel(appointment.status)}</span>
-                  <button
-                    className="button-secondary button-compact"
-                    disabled={isPending && cancelingId === appointment.id}
-                    type="button"
-                    onClick={() => handleCancelAppointment(appointment)}
-                    aria-label={`Cancelar consulta de ${appointment.patient_name} em ${formatDate(appointment.date)}`}
-                  >
-                    {isPending && cancelingId === appointment.id
-                      ? "Cancelando..."
-                      : "Cancelar"}
-                  </button>
+                  <strong>{item.title}</strong>
+                  <p>{formatDate(item.date)} · {item.start_time.slice(0, 5)} às {item.end_time.slice(0, 5)}</p>
                 </div>
               </article>
-            ))}
+            )) : <p className="calendar-sidebar-empty">Nenhum horário nesta semana.</p>}
           </div>
-        ) : (
-          <div className="empty-state">
-            <h3>Nenhuma consulta agendada</h3>
-            <p>Crie a primeira consulta vinculando paciente e profissional.</p>
-            <Link className="button-primary button-compact" href={`/clinics/${id}/appointments/new`}>
-              Agendar consulta
-            </Link>
-          </div>
-        )}
-      </section>
+        </aside>
 
-      <section className="panel-card section-gap">
-        <div className="panel-heading">
-          <div>
-            <p className="eyebrow">Disponibilidade</p>
-            <h2>Bloqueios de agenda</h2>
+        <div className="calendar-board">
+          <div className="calendar-toolbar">
+            <div className="calendar-nav-actions">
+              <button type="button" onClick={() => setWeekStart((current) => addDays(current, -7))} aria-label="Semana anterior">‹</button>
+              <button type="button" onClick={() => setWeekStart(startOfWeek(new Date()))}>Hoje</button>
+              <button type="button" onClick={() => setWeekStart((current) => addDays(current, 7))} aria-label="Próxima semana">›</button>
+            </div>
+            <div className="calendar-view-tabs" aria-label="Visualização atual">
+              <span>Dia</span>
+              <strong>Semana</strong>
+              <span>Mês</span>
+              <span>Ano</span>
+            </div>
+            <label className="calendar-search">
+              <span>Buscar</span>
+              <input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Paciente, profissional ou status" />
+            </label>
           </div>
-          <span className="panel-pill">{scheduleBlocks.length} registro(s)</span>
-        </div>
 
-        {scheduleBlocks.length ? (
-          <div className="clinic-list">
-            {scheduleBlocks.map((block) => (
-              <article className="clinic-row" key={block.id}>
-                <div>
-                  <strong>{block.professional_name}</strong>
-                  <p>
-                    <time dateTime={`${block.date}T${block.start_time}`}>{formatDate(block.date)}</time> · {block.start_time.slice(0, 5)} - {block.end_time.slice(0, 5)}
-                  </p>
+          <div className="week-calendar" style={{ "--hour-height": `${hourHeight}px` } as CSSProperties}>
+            <div className="week-header" style={{ gridTemplateColumns: `4.6rem repeat(7, minmax(8.4rem, 1fr))` }}>
+              <span />
+              {days.map((day) => (
+                <div className={dateKey(day) === today ? "is-today" : ""} key={dateKey(day)}>
+                  <span>{weekDays[day.getDay()]}</span>
+                  <strong>{day.getDate()}</strong>
                 </div>
-                <span>{block.reason || "Bloqueio sem motivo informado"}</span>
-              </article>
-            ))}
+              ))}
+            </div>
+            <div className="week-body" style={{ gridTemplateColumns: `4.6rem repeat(7, minmax(8.4rem, 1fr))` }}>
+              <div className="time-gutter">
+                {hours.map((hour) => <span key={hour}>{hour}:00</span>)}
+              </div>
+              {days.map((day) => {
+                const key = dateKey(day);
+                const dayItems = calendarItems.filter((item) => item.date === key);
+                return (
+                  <div className={`calendar-day-column ${key === today ? "is-today" : ""}`} key={key}>
+                    {dayItems.map((item) => (
+                      <article
+                        className={`calendar-event ${item.type === "block" ? "is-block" : ""} ${item.modality === "ONLINE" ? "is-online" : ""}`}
+                        key={`${item.type}-${item.id}`}
+                        style={eventStyle(item)}
+                      >
+                        <time>{item.start_time.slice(0, 5)}–{item.end_time.slice(0, 5)}</time>
+                        <strong>{item.title}</strong>
+                        <span>{item.subtitle}</span>
+                        {item.type === "appointment" ? (
+                          <div className="calendar-event-actions">
+                            <small>{statusLabel(item.status ?? "SCHEDULED")}</small>
+                            <button
+                              disabled={isPending && cancelingId === item.id}
+                              type="button"
+                              onClick={() => handleCancelAppointment(item.source as Appointment)}
+                            >
+                              {isPending && cancelingId === item.id ? "Cancelando" : "Cancelar"}
+                            </button>
+                          </div>
+                        ) : <small>Bloqueio</small>}
+                      </article>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        ) : (
-          <div className="empty-state">
-            <h3>Nenhum bloqueio cadastrado</h3>
-            <p>Registre indisponibilidades para evitar conflitos na agenda.</p>
-            <Link className="button-primary button-compact" href={`/clinics/${id}/appointments/blocks/new`}>
-              Bloquear horário
-            </Link>
-          </div>
-        )}
+        </div>
       </section>
     </AppShell>
   );
