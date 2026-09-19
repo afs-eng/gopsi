@@ -2717,3 +2717,40 @@ body:has(.app-shell) {
     padding: 0.9rem 1rem;
   }
 }
+
+.content-area {
+  padding: 1.15rem 2rem 2rem;
+}
+
+.topbar {
+  margin: 0 0 1.5rem;
+  min-height: 4.85rem;
+  border: 1px solid #e8edf8;
+  border-radius: 1rem;
+  background: rgb(255 255 255 / 82%);
+  padding: 1rem 1.25rem;
+}
+
+.topbar > div:first-of-type {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.topbar .eyebrow {
+  display: block;
+  margin: 0;
+}
+
+.topbar h1 {
+  line-height: 1.05;
+}
+
+@media (max-width: 860px) {
+  .content-area {
+    padding: 1rem;
+  }
+
+  .topbar {
+    margin: 0 0 1rem;
+  }
+}

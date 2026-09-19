@@ -27,6 +27,6 @@ export function PlatformShell({ activeNav, children, title, user }: { activeNav:
       <div className="sidebar-footer"><span className="muted">{user.full_name || user.username}</span><button className="button-secondary button-compact" type="button" onClick={() => { clearToken(); router.replace("/login"); }}>Sair</button></div>
     </aside>
     {open ? <button className="drawer-backdrop" type="button" aria-label="Fechar menu" onClick={() => setOpen(false)} /> : null}
-    <main className="content-area"><header className="topbar"><button className="menu-button" type="button" aria-expanded={open} aria-label={open ? "Fechar menu" : "Abrir menu"} onClick={() => setOpen(!open)}>☰ <span>Menu</span></button><div><p className="eyebrow">Workspace da plataforma</p><h1>{title}</h1></div><span className="panel-pill">Somente tenant</span></header>{children}</main>
+    <main className="content-area"><header className="topbar"><button className="menu-button" type="button" aria-expanded={open} aria-label={open ? "Fechar menu" : "Abrir menu"} onClick={() => setOpen(!open)}>☰ <span>Menu</span></button><div><p className="eyebrow">Administração</p><h1>{title}</h1></div><span className="panel-pill">Gestão da plataforma</span></header>{children}</main>
   </div>;
 }
