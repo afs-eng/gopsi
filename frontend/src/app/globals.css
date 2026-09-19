@@ -1371,6 +1371,118 @@ h2 {
   padding: 0.45rem 0.75rem;
 }
 
+.professional-profile-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+  gap: 1rem;
+}
+
+.professional-profile-hero {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  background:
+    radial-gradient(circle at 100% 0, rgb(220 238 229 / 85%) 0, transparent 16rem),
+    linear-gradient(135deg, rgb(255 255 255 / 92%), rgb(251 250 245 / 88%));
+}
+
+.professional-profile-hero h2,
+.trueque-hero h2 {
+  color: #142f5b;
+  font-size: clamp(1.7rem, 3vw, 2.25rem);
+  line-height: 1.05;
+}
+
+.professional-avatar {
+  display: grid;
+  width: 4rem;
+  height: 4rem;
+  place-items: center;
+  border-radius: 1.25rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: white;
+  font-size: 1.7rem;
+  font-weight: 900;
+  box-shadow: 0 16px 30px rgb(23 107 86 / 18%);
+}
+
+.professional-profile-card {
+  display: grid;
+  align-content: start;
+  gap: 0.9rem;
+}
+
+.professional-profile-bio {
+  grid-column: 1 / -1;
+}
+
+.professional-profile-bio p:not(.eyebrow),
+.trueque-bio {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.profile-detail-list,
+.trueque-card dl {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.profile-detail-list div,
+.trueque-card dl div {
+  display: grid;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.65rem;
+}
+
+.profile-detail-list dt,
+.trueque-card dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.profile-detail-list dd,
+.trueque-card dd {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.trueque-hero {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.trueque-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.trueque-card {
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+}
+
+.trueque-card h3 {
+  color: #142f5b;
+  font-size: 1.15rem;
+}
+
+.trueque-card h3 + p {
+  color: var(--muted);
+  font-weight: 800;
+}
+
 .telehealth-room {
   display: grid;
   gap: 1.25rem;
@@ -1843,6 +1955,10 @@ h2 {
 }
 
 @media (max-width: 1100px) {
+  .trueque-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .calendar-shell {
     grid-template-columns: 1fr;
   }
@@ -1874,6 +1990,24 @@ h2 {
 }
 
 @media (max-width: 720px) {
+  .professional-profile-grid,
+  .trueque-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .professional-profile-hero,
+  .trueque-hero {
+    align-items: flex-start;
+  }
+
+  .professional-profile-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .trueque-hero {
+    flex-direction: column;
+  }
+
   .calendar-sidebar {
     grid-template-columns: 1fr;
     padding: 1rem;
@@ -2250,6 +2384,8 @@ h2 {
 
 .nav-list > a[data-icon="grid"]::before { content: "▦"; background-image: none; }
 .nav-list > a[data-icon="clinic"]::before { content: "⌂"; background-image: none; }
+.nav-list > a[data-icon="profile"]::before { content: "P"; background-image: none; }
+.nav-list > a[data-icon="trueque"]::before { content: "T"; background-image: none; }
 .nav-list > a[data-icon="people"]::before { content: "♙"; background-image: none; }
 .nav-list > a[data-icon="patient"]::before { content: "♡"; background-image: none; }
 .nav-list > a[data-icon="calendar"]::before { content: "◷"; background-image: none; }

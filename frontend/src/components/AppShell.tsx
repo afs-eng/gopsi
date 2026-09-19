@@ -11,6 +11,8 @@ type AppShellProps = {
   activeNav:
     | "dashboard"
     | "clinic"
+    | "profile"
+    | "trueque"
     | "professionals"
     | "patients"
     | "appointments"
@@ -132,6 +134,24 @@ export function AppShell({
                 onClick={() => setMenuOpen(false)}
               >
                 <span>Clínica</span>
+              </Link>
+              <Link
+                aria-current={activeNav === "profile" ? "page" : undefined}
+                className={activeNav === "profile" ? "active" : ""}
+                data-icon="profile"
+                href={`/clinics/${currentClinic.id}/profile`}
+                onClick={() => setMenuOpen(false)}
+              >
+                <span>Perfil</span>
+              </Link>
+              <Link
+                aria-current={activeNav === "trueque" ? "page" : undefined}
+                className={activeNav === "trueque" ? "active" : ""}
+                data-icon="trueque"
+                href={`/clinics/${currentClinic.id}/trueque`}
+                onClick={() => setMenuOpen(false)}
+              >
+                <span>Trueque</span>
               </Link>
               <Link
                 aria-current={activeNav === "professionals" ? "page" : undefined}

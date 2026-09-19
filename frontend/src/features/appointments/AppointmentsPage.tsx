@@ -184,7 +184,12 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
   ].filter((item) => {
     const itemDate = localDate(item.date);
     const isInWeek = itemDate >= weekStart && itemDate <= weekEnd;
-    const matchesSearch = !normalizedSearch || [item.title, item.subtitle, item.status, item.modality]
+    const matchesSearch = !normalizedSearch || [
+      item.title,
+      item.subtitle,
+      item.type === "appointment" ? item.status : "Bloqueio",
+      item.type === "appointment" ? item.modality : "",
+    ]
       .filter(Boolean)
       .some((value) => String(value).toLowerCase().includes(normalizedSearch));
     return isInWeek && matchesSearch;
