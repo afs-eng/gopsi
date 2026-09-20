@@ -63,7 +63,7 @@ export function DashboardPage() {
           <div>
             <p className="eyebrow">{dateLabel}</p>
             <h2 id="dashboard-welcome-title">Bom dia, {user.full_name || user.username}.</h2>
-            <p className="muted">Acompanhe o que importa para sua clínica em um só lugar.</p>
+            <p className="muted">Agenda, pacientes, prontuário, documentos e avaliação psicológica em um só lugar.</p>
           </div>
           <div className="dashboard-welcome-mark" aria-hidden="true">✦</div>
         </section>
@@ -80,14 +80,14 @@ export function DashboardPage() {
           description="Locais prontos para agenda, pacientes e equipe."
         />
         <MetricCard
-          label="Perfil"
-          value={user.global_role}
-          description="Permissões específicas dependem do vínculo por clínica."
+          label="Rotina clínica"
+          value="6 pilares"
+          description="Pacientes, agenda, prontuário, documentos, financeiro e avaliações."
         />
         <MetricCard
-          label="Clínicas inativas"
-          value={clinics.length - activeClinics}
-          description="Vínculos que não estão disponíveis no momento."
+          label="Diferencial"
+          value="Avaliação"
+          description="Fluxo estruturado para instrumentos, resultados e documento final."
         />
       </section>
 
@@ -96,8 +96,8 @@ export function DashboardPage() {
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Agenda</p>
-              <h2>Compromissos</h2>
-              <p className="muted">A agenda da clínica selecionada aparece aqui.</p>
+              <h2>Rotina de hoje</h2>
+              <p className="muted">Atendimentos, bloqueios e próximos passos da clínica selecionada.</p>
             </div>
             <span className="panel-pill">Hoje</span>
           </div>
@@ -138,16 +138,34 @@ export function DashboardPage() {
             <Link className="button-secondary button-compact" href={`/clinics/${primaryClinic.id}/billing`}>Financeiro</Link>
           </div> : <p className="muted">Escolha uma clínica para liberar os atalhos.</p>}
         </article>
+        <article className="panel-card dashboard-assessment-card">
+          <p className="eyebrow">Diferencial GoPsi</p>
+          <h3>Avaliação psicológica</h3>
+          <p className="muted">
+            Organize avaliação, instrumentos, resultados, interpretação, síntese integrativa e documento final.
+          </p>
+          <ol className="assessment-flow-list" aria-label="Fluxo de avaliação psicológica">
+            <li>Paciente</li>
+            <li>Instrumentos</li>
+            <li>Resultados</li>
+            <li>Síntese</li>
+          </ol>
+          {primaryClinic ? (
+            <Link className="button-secondary button-compact" href={`/clinics/${primaryClinic.id}/assessments/new`}>
+              Nova avaliação
+            </Link>
+          ) : null}
+        </article>
       </aside>
 
       <section className="dashboard-lower-grid">
       <section id="clinicas" className="panel-card dashboard-clinics-panel">
         <div className="panel-heading">
           <div>
-            <p className="eyebrow">Tenant atual</p>
+            <p className="eyebrow">Ambiente clínico</p>
             <h2>Clínicas visíveis</h2>
           </div>
-          <span className="panel-pill">Protegido por token</span>
+          <span className="panel-pill">Acesso seguro</span>
         </div>
 
         {error ? <div className="alert" role="alert" aria-live="assertive">{error}</div> : null}

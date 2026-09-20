@@ -93,6 +93,13 @@ export type GuardianPayload = {
   has_authorization: boolean;
 };
 
+export type Guardian = GuardianPayload & {
+  id: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export type ProfessionalPatientLink = {
   id: string;
   professional: string;
@@ -116,7 +123,7 @@ export type Patient = {
   emergency_contact_phone: string;
   status: "ACTIVE" | "INACTIVE" | "ARCHIVED";
   is_active: boolean;
-  guardians: GuardianPayload[];
+  guardians: Guardian[];
   professional_links: ProfessionalPatientLink[];
   created_at: string;
   updated_at: string;
@@ -455,4 +462,90 @@ export type MedicalRecordPayload = {
   entry_type: MedicalRecordEntryType;
   status: MedicalRecordEntryStatus;
   content: string;
+};
+
+export type PsychologicalAssessmentStatus =
+  | "DRAFT"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "CANCELLED";
+
+export type AssessmentSession = {
+  id: string;
+  assessment: string;
+  session_date: string;
+  start_time: string;
+  end_time: string;
+  status: "SCHEDULED" | "COMPLETED" | "CANCELLED";
+  administrative_notes: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type InstrumentApplication = {
+  id: string;
+  assessment: string;
+  session: string | null;
+  instrument_name: string;
+  application_date: string | null;
+  status: "PLANNED" | "APPLIED" | "CANCELLED";
+  notes: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AssessmentResult = {
+  id: string;
+  assessment: string;
+  status: "DRAFT" | "FINAL" | "VOIDED";
+  summary: string;
+  recommendations: string;
+  finalized_at: string | null;
+  created_by: string;
+  updated_by: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AssessmentDocument = {
+  id: string;
+  assessment: string;
+  document: string;
+  document_title: string;
+  document_type: "REPORT" | "DECLARATION" | "FEEDBACK" | "OTHER";
+  created_at: string;
+};
+
+export type PsychologicalAssessment = {
+  id: string;
+  clinic: string;
+  patient: string;
+  patient_name: string;
+  professional: string;
+  professional_name: string;
+  title: string;
+  reason: string;
+  status: PsychologicalAssessmentStatus;
+  started_at: string | null;
+  completed_at: string | null;
+  sessions: AssessmentSession[];
+  instrument_applications: InstrumentApplication[];
+  result: AssessmentResult | null;
+  assessment_documents: AssessmentDocument[];
+  created_by: string;
+  updated_by: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PsychologicalAssessmentPayload = {
+  clinic: string;
+  patient: string;
+  professional: string;
+  title: string;
+  reason: string;
+  status: PsychologicalAssessmentStatus;
+  started_at?: string | null;
+  completed_at?: string | null;
 };

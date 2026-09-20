@@ -20,6 +20,8 @@ import type {
   PlatformClinicPayload,
   Professional,
   ProfessionalPayload,
+  PsychologicalAssessment,
+  PsychologicalAssessmentPayload,
   PublicTelehealthAccess,
   ScheduleBlock,
   ScheduleBlockPayload,
@@ -154,6 +156,10 @@ export async function listPatients(clinicId: string) {
   return apiFetch<Patient[]>(`/api/v1/patients/?clinic=${clinicId}`);
 }
 
+export async function getPatient(id: string) {
+  return apiFetch<Patient>(`/api/v1/patients/${id}/`);
+}
+
 export async function createPatient(payload: PatientPayload) {
   return apiFetch<Patient>("/api/v1/patients/", {
     method: "POST",
@@ -175,6 +181,21 @@ export async function createAppointment(payload: AppointmentPayload) {
 export async function cancelAppointment(id: string) {
   return apiFetch<void>(`/api/v1/appointments/${id}/`, {
     method: "DELETE",
+  });
+}
+
+export async function listPsychologicalAssessments(clinicId: string) {
+  return apiFetch<PsychologicalAssessment[]>(
+    `/api/v1/psychological-assessments/?clinic=${clinicId}`,
+  );
+}
+
+export async function createPsychologicalAssessment(
+  payload: PsychologicalAssessmentPayload,
+) {
+  return apiFetch<PsychologicalAssessment>("/api/v1/psychological-assessments/", {
+    method: "POST",
+    body: JSON.stringify(payload),
   });
 }
 

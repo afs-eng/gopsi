@@ -18,6 +18,7 @@ type AppShellProps = {
     | "telehealth"
     | "documents"
     | "medicalRecords"
+    | "assessments"
     | "billing"
     | "reports"
     | "settings";
@@ -196,6 +197,15 @@ export function AppShell({
                 onClick={() => setMenuOpen(false)}
               >
                 <span>Prontuário</span>
+              </Link>
+              <Link
+                aria-current={activeNav === "assessments" ? "page" : undefined}
+                className={activeNav === "assessments" ? "active" : ""}
+                data-icon="assessment"
+                href={`/clinics/${currentClinic.id}/assessments`}
+                onClick={() => setMenuOpen(false)}
+              >
+                <span>Avaliação</span>
               </Link>
               <Link
                 aria-current={activeNav === "billing" ? "page" : undefined}
