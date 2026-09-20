@@ -1,16 +1,31 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useState, useTransition } from "react";
 
-import { getCurrentUser, login } from "@/lib/api";
+import {
+  confirmPasswordReset,
+  getCurrentUser,
+  login,
+  requestPasswordReset,
+} from "@/lib/api";
 import { setToken } from "@/lib/auth";
+
+type AuthMode = "login" | "password-request" | "password-confirm";
 
 export function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const resetUid = searchParams.get("reset_uid") ?? "";
+  const resetToken = searchParams.get("reset_token") ?? "";
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const [authMode, setAuthMode] = useState<AuthMode>(
+    resetUid && resetToken ? "password-confirm" : "login",
+  );
   const [showOtp, setShowOtp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [mfaSecret, setMfaSecret] = useState("");
   const [mfaUri, setMfaUri] = useState("");
   const [copiedSecret, setCopiedSecret] = useState(false);
@@ -28,6 +43,7 @@ export function LoginPage() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    setNotice("");
 
     const formData = new FormData(event.currentTarget);
     const username = String(formData.get("username") ?? "");
@@ -65,6 +81,57 @@ export function LoginPage() {
     });
   }
 
+  function handlePasswordResetRequest(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError("");
+    setNotice("");
+
+    const formData = new FormData(event.currentTarget);
+    const email = String(formData.get("email") ?? "");
+
+    startTransition(async () => {
+      try {
+        const response = await requestPasswordReset(email);
+        setNotice(response.detail);
+      } catch {
+        setError("Não foi possível solicitar a redefinição agora.");
+      }
+    });
+  }
+
+  function handlePasswordResetConfirm(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError("");
+    setNotice("");
+
+    const formData = new FormData(event.currentTarget);
+    const newPassword = String(formData.get("newPassword") ?? "");
+    const confirmPassword = String(formData.get("confirmPassword") ?? "");
+
+    if (newPassword !== confirmPassword) {
+      setError("As senhas informadas não conferem.");
+      return;
+    }
+
+    startTransition(async () => {
+      try {
+        const response = await confirmPasswordReset(resetUid, resetToken, newPassword);
+        setNotice(`${response.detail} Entre novamente com sua nova senha.`);
+        setAuthMode("login");
+        router.replace("/login");
+      } catch {
+        setError("Link inválido, expirado ou senha fora dos critérios de segurança.");
+      }
+    });
+  }
+
+  function backToLogin() {
+    setAuthMode("login");
+    setError("");
+    setNotice("");
+    router.replace("/login");
+  }
+
   return (
     <main className="auth-page login-visual-page">
       <div className="login-top-note">
@@ -88,8 +155,14 @@ export function LoginPage() {
         <section className="auth-card login-card" aria-label="Formulário de login">
           <div className="auth-form-panel login-form-panel">
             <div className="login-heading">
-              <h1 id="login-title">Entrar</h1>
-              <p>Acesse sua conta profissional.</p>
+              <h1 id="login-title">
+                {authMode === "login" ? "Entrar" : "Redefinir senha"}
+              </h1>
+              <p>
+                {authMode === "login"
+                  ? "Acesse sua conta profissional."
+                  : "Recupere o acesso com segurança."}
+              </p>
             </div>
 
           {error ? (
@@ -97,7 +170,111 @@ export function LoginPage() {
               {error}
             </div>
           ) : null}
+          {notice ? (
+            <div className="success-alert login-status-alert" role="status" aria-live="polite">
+              {notice}
+            </div>
+          ) : null}
 
+          {authMode === "password-request" ? (
+            <form className="form-stack" onSubmit={handlePasswordResetRequest} aria-describedby={error ? "login-form-error" : undefined}>
+              <div className="field-group login-field-group">
+                <label htmlFor="reset-email">E-mail cadastrado</label>
+                <div className="login-input-wrap">
+                  <span aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                      <path d="M4.75 6.75h14.5v10.5H4.75z" />
+                      <path d="m5.25 7.25 6.75 5.5 6.75-5.5" />
+                    </svg>
+                  </span>
+                  <input
+                    id="reset-email"
+                    name="email"
+                    required
+                    autoComplete="email"
+                    placeholder="seu@e-mail.com"
+                    type="email"
+                  />
+                </div>
+              </div>
+              <button className="button-primary login-submit-button" disabled={isPending} type="submit">
+                <span>{isPending ? "Enviando..." : "Enviar instruções"}</span>
+                <span aria-hidden="true">→</span>
+              </button>
+              <button className="login-link-button" type="button" onClick={backToLogin}>
+                Voltar para o login
+              </button>
+            </form>
+          ) : null}
+
+          {authMode === "password-confirm" ? (
+            <form className="form-stack" onSubmit={handlePasswordResetConfirm} aria-describedby={error ? "login-form-error" : undefined}>
+              <div className="field-group login-field-group">
+                <label htmlFor="new-password">Nova senha</label>
+                <div className="login-input-wrap">
+                  <span aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                      <rect x="5.75" y="10.25" width="12.5" height="8" rx="1.5" />
+                      <path d="M8.25 10.25V7.9a3.75 3.75 0 0 1 7.5 0v2.35" />
+                      <path d="M12 13.5v2" />
+                    </svg>
+                  </span>
+                  <input
+                    id="new-password"
+                    name="newPassword"
+                    required
+                    minLength={8}
+                    type={showNewPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    placeholder="Digite a nova senha"
+                  />
+                  <button
+                    className="login-icon-button"
+                    type="button"
+                    onClick={() => setShowNewPassword((current) => !current)}
+                    aria-label={showNewPassword ? "Ocultar senha" : "Mostrar senha"}
+                  >
+                    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                      <path d="M3.5 12s3-5 8.5-5 8.5 5 8.5 5-3 5-8.5 5-8.5-5-8.5-5Z" />
+                      <circle cx="12" cy="12" r="2.5" />
+                      {showNewPassword ? null : <path d="m4 20 16-16" />}
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div className="field-group login-field-group">
+                <label htmlFor="confirm-password">Confirmar senha</label>
+                <div className="login-input-wrap">
+                  <span aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                      <path d="M6 12.5 10.2 16.5 18.5 7.5" />
+                    </svg>
+                  </span>
+                  <input
+                    id="confirm-password"
+                    name="confirmPassword"
+                    required
+                    minLength={8}
+                    type={showNewPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    placeholder="Repita a nova senha"
+                  />
+                </div>
+              </div>
+              <p className="login-reset-help">
+                Depois da redefinição, contas com MFA continuarão solicitando o código do aplicativo autenticador no login.
+              </p>
+              <button className="button-primary login-submit-button" disabled={isPending} type="submit">
+                <span>{isPending ? "Salvando..." : "Redefinir senha"}</span>
+                <span aria-hidden="true">→</span>
+              </button>
+              <button className="login-link-button" type="button" onClick={backToLogin}>
+                Voltar para o login
+              </button>
+            </form>
+          ) : null}
+
+          {authMode === "login" ? (
           <form className="form-stack" onSubmit={handleSubmit} aria-describedby={error ? "login-form-error" : undefined}>
             <div className="field-group login-field-group">
               <label htmlFor="username">E-mail ou usuário</label>
@@ -156,7 +333,17 @@ export function LoginPage() {
                 <input type="checkbox" name="remember" />
                 <span>Manter-me conectado</span>
               </label>
-              <a href="#password-recovery">Esqueci minha senha</a>
+              <button
+                className="login-inline-link"
+                type="button"
+                onClick={() => {
+                  setAuthMode("password-request");
+                  setError("");
+                  setNotice("");
+                }}
+              >
+                Esqueci minha senha
+              </button>
             </div>
 
             {showOtp ? (
@@ -200,8 +387,9 @@ export function LoginPage() {
               <span>{showOtp ? "Ocultar código MFA" : "Usar código MFA"}</span>
             </button>
           </form>
+          ) : null}
 
-            {mfaSecret ? (
+            {authMode === "login" && mfaSecret ? (
               <div className="mfa-setup-card login-mfa-setup" role="status">
                 <div className="mfa-setup-heading">
                   <strong>Configure seu autenticador</strong>

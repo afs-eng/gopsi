@@ -448,6 +448,29 @@ h2 {
   font-weight: 700;
 }
 
+.login-inline-link,
+.login-link-button {
+  border: 0;
+  background: transparent;
+  color: #8569ca;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 0;
+}
+
+.login-link-button {
+  justify-self: center;
+}
+
+.login-reset-help {
+  color: #536696;
+  font-size: 0.82rem;
+}
+
+.login-status-alert.success-alert {
+  margin-top: 0.9rem;
+}
+
 .login-checkbox-row {
   display: flex;
   align-items: center;

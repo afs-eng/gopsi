@@ -20,6 +20,8 @@ Com Docker, use `docker compose up` e acesse o frontend em `http://localhost:300
 - `GET /health/`
 - `POST /api/v1/auth/login/`
 - `GET /api/v1/auth/me/`
+- `POST /api/v1/auth/password-reset/request/`
+- `POST /api/v1/auth/password-reset/confirm/`
 - `POST /api/v1/auth/mfa/setup/`
 - `POST /api/v1/auth/mfa/confirm/`
 - `POST /api/v1/auth/mfa/disable/`

@@ -79,6 +79,26 @@ export async function login(username: string, password: string, otp?: string) {
   });
 }
 
+export async function requestPasswordReset(email: string) {
+  return apiFetch<{ detail: string }>("/api/v1/auth/password-reset/request/", {
+    method: "POST",
+    authenticated: false,
+    body: JSON.stringify({ email }),
+  });
+}
+
+export async function confirmPasswordReset(
+  uid: string,
+  token: string,
+  newPassword: string,
+) {
+  return apiFetch<{ detail: string }>("/api/v1/auth/password-reset/confirm/", {
+    method: "POST",
+    authenticated: false,
+    body: JSON.stringify({ uid, token, new_password: newPassword }),
+  });
+}
+
 export async function getCurrentUser() {
   return apiFetch<User>("/api/v1/auth/me/");
 }

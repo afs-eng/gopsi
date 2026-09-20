@@ -1,5 +1,10 @@
+from django.conf import settings
 from django.contrib.auth import authenticate
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
 from django.utils import timezone
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -8,7 +13,12 @@ from rest_framework.views import APIView
 
 from apps.accounts.mfa import generate_totp_secret, provisioning_uri, verify_totp
 from apps.accounts.models import UserMFADevice
-from apps.accounts.serializers import CurrentUserSerializer, MFASetupSerializer
+from apps.accounts.serializers import (
+    CurrentUserSerializer,
+    MFASetupSerializer,
+    PasswordResetConfirmSerializer,
+    PasswordResetRequestSerializer,
+)
 from apps.audit.models import AuditAction
 from apps.audit.services import record_audit_event
 
@@ -127,6 +137,56 @@ class CurrentUserView(APIView):
 
     def get(self, request):
         return Response(CurrentUserSerializer(request.user).data)
+
+
+class PasswordResetRequestView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = PasswordResetRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.get_user()
+
+        if user:
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            reset_url = (
+                f"{settings.FRONTEND_BASE_URL}/login?"
+                f"reset_uid={uid}&reset_token={token}"
+            )
+            send_mail(
+                subject="Redefinição de senha - Plataforma PSI",
+                message=(
+                    "Recebemos uma solicitação para redefinir sua senha.\n\n"
+                    f"Acesse este link para criar uma nova senha:\n{reset_url}\n\n"
+                    "Se você não solicitou a redefinição, ignore este e-mail."
+                ),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
+
+        return Response(
+            {
+                "detail": (
+                    "Se o e-mail estiver cadastrado, enviaremos instruções para "
+                    "redefinir a senha."
+                )
+            }
+        )
+
+
+class PasswordResetConfirmView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data["user"]
+        user.set_password(serializer.validated_data["new_password"])
+        user.save(update_fields=["password", "updated_at"])
+        Token.objects.filter(user=user).delete()
+        return Response({"detail": "Senha redefinida com sucesso."})
 
 
 class MFASetupView(APIView):

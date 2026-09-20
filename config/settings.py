@@ -182,6 +182,18 @@ DAILY_API_BASE_URL = env("DAILY_API_BASE_URL", default="https://api.daily.co/v1"
 DAILY_API_TIMEOUT_SECONDS = env.int("DAILY_API_TIMEOUT_SECONDS", default=10)
 DAILY_ROOM_DURATION_MINUTES = env.int("DAILY_ROOM_DURATION_MINUTES", default=180)
 MFA_ISSUER = env("MFA_ISSUER", default="Plataforma PSI")
+FRONTEND_BASE_URL = env("FRONTEND_BASE_URL", default="http://localhost:3001")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="no-reply@plataforma-psi.local")
+EMAIL_BACKEND = env(
+    "EMAIL_BACKEND",
+    default="django.core.mail.backends.console.EmailBackend",
+)
+EMAIL_HOST = env("EMAIL_HOST", default="localhost")
+EMAIL_PORT = env.int("EMAIL_PORT", default=25)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=False)
+EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=False)
 
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True

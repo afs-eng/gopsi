@@ -1,10 +1,12 @@
 from io import StringIO
+from urllib.parse import parse_qs, urlparse
 
 import pytest
-
 from django.contrib.auth import get_user_model
+from django.core import mail
 from django.core.exceptions import ValidationError
 from django.core.management import call_command
+from django.test import override_settings
 from django.urls import reverse
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
@@ -139,6 +141,109 @@ def test_user_can_setup_confirm_and_login_with_mfa():
 
 
 @pytest.mark.django_db
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    FRONTEND_BASE_URL="https://app.example.com",
+)
+def test_password_reset_sends_link_and_updates_password():
+    user = make_user("reset-password-user")
+    Token.objects.create(user=user)
+    client = APIClient()
+
+    request_response = client.post(
+        reverse("api-password-reset-request"),
+        {"email": user.email},
+        format="json",
+    )
+    reset_url = mail.outbox[0].body.split("\n")[3]
+    query = parse_qs(urlparse(reset_url).query)
+    confirm_response = client.post(
+        reverse("api-password-reset-confirm"),
+        {
+            "uid": query["reset_uid"][0],
+            "token": query["reset_token"][0],
+            "new_password": "tulipa-forte-7319",
+        },
+        format="json",
+    )
+    login_response = client.post(
+        reverse("api-token-auth"),
+        {"username": user.username, "password": "tulipa-forte-7319"},
+        format="json",
+    )
+
+    assert request_response.status_code == 200
+    assert confirm_response.status_code == 200
+    assert login_response.status_code == 200
+    assert Token.objects.filter(user=user).count() == 1
+
+
+@pytest.mark.django_db
+@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+def test_password_reset_does_not_reveal_missing_email():
+    client = APIClient()
+
+    response = client.post(
+        reverse("api-password-reset-request"),
+        {"email": "missing@example.com"},
+        format="json",
+    )
+
+    assert response.status_code == 200
+    assert len(mail.outbox) == 0
+
+
+@pytest.mark.django_db
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    FRONTEND_BASE_URL="https://app.example.com",
+)
+def test_password_reset_keeps_confirmed_mfa_required():
+    user = make_user("reset-password-mfa")
+    device = UserMFADevice.objects.create(
+        user=user,
+        secret="JBSWY3DPEHPK3PXP",
+        is_confirmed=True,
+    )
+    client = APIClient()
+
+    client.post(
+        reverse("api-password-reset-request"),
+        {"email": user.email},
+        format="json",
+    )
+    reset_url = mail.outbox[-1].body.split("\n")[3]
+    query = parse_qs(urlparse(reset_url).query)
+    client.post(
+        reverse("api-password-reset-confirm"),
+        {
+            "uid": query["reset_uid"][0],
+            "token": query["reset_token"][0],
+            "new_password": "tulipa-forte-7319",
+        },
+        format="json",
+    )
+    missing_mfa_response = client.post(
+        reverse("api-token-auth"),
+        {"username": user.username, "password": "tulipa-forte-7319"},
+        format="json",
+    )
+    mfa_response = client.post(
+        reverse("api-token-auth"),
+        {
+            "username": user.username,
+            "password": "tulipa-forte-7319",
+            "otp": totp_now(device.secret),
+        },
+        format="json",
+    )
+
+    assert missing_mfa_response.status_code == 400
+    assert missing_mfa_response.json()["mfa_required"] is True
+    assert mfa_response.status_code == 200
+
+
+@pytest.mark.django_db
 def test_django_superuser_is_not_implicitly_a_platform_operator():
     user = get_user_model().objects.create_superuser(
         username="technical-superuser",
@@ -183,7 +288,9 @@ def test_platform_and_clinic_identities_cannot_overlap():
 
 @pytest.mark.django_db
 def test_platform_preflight_reports_identity_findings_without_changing_data():
-    platform_with_membership = make_user("preflight-platform-membership", UserRole.SUPERADMIN)
+    platform_with_membership = make_user(
+        "preflight-platform-membership", UserRole.SUPERADMIN
+    )
     platform_with_profile = make_user("preflight-platform-profile", UserRole.SUPERADMIN)
     platform_with_profile.is_staff = True
     platform_with_profile.save(update_fields=["is_staff"])
@@ -191,10 +298,8 @@ def test_platform_preflight_reports_identity_findings_without_changing_data():
     inactive_membership_user = make_user("preflight-inactive-membership")
     inactive_membership_user.is_active = False
     inactive_membership_user.save(update_fields=["is_active"])
-    legacy_clinic_admin = make_user(
-        "preflight-legacy-clinic-admin", UserRole.CLINIC_ADMIN
-    )
-    technical_account = get_user_model().objects.create_user(
+    make_user("preflight-legacy-clinic-admin", UserRole.CLINIC_ADMIN)
+    get_user_model().objects.create_user(
         username="preflight-technical",
         email="preflight-technical@example.com",
         password="safe-test-password",
@@ -204,7 +309,7 @@ def test_platform_preflight_reports_identity_findings_without_changing_data():
     )
     membership_clinic = Clinic.objects.create(name="Preflight membership")
     profile_clinic = Clinic.objects.create(name="Preflight profile")
-    empty_clinic = Clinic.objects.create(name="Preflight empty")
+    Clinic.objects.create(name="Preflight empty")
     inactive_user_clinic = Clinic.objects.create(name="Preflight inactive user")
     ClinicMembership.objects.create(
         clinic=membership_clinic,
