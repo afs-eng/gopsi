@@ -2130,15 +2130,25 @@ h2 {
 
 .calendar-event {
   position: absolute;
-  right: 0.35rem;
-  left: 0.35rem;
+  box-sizing: border-box;
+  right: 0.55rem;
+  left: 0.55rem;
   overflow: hidden;
   border-left: 3px solid #11a8ff;
-  border-radius: 0.45rem;
+  border-radius: 0.7rem;
   background: #ddf3fb;
   color: #005981;
-  padding: 0.45rem 0.5rem;
+  padding: 0;
   box-shadow: 0 8px 18px rgb(31 73 111 / 8%);
+}
+
+.calendar-event-link {
+  display: grid;
+  height: 100%;
+  align-content: start;
+  gap: 0.12rem;
+  color: inherit;
+  padding: 0.5rem 0.58rem;
 }
 
 .calendar-event.is-online {
@@ -2163,8 +2173,11 @@ h2 {
 .calendar-event strong {
   display: block;
   margin: 0.12rem 0;
+  overflow: hidden;
   font-size: 0.78rem;
   line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .calendar-event span {
@@ -2193,6 +2206,34 @@ h2 {
   padding: 0.18rem 0.45rem;
   font-size: 0.68rem;
   font-weight: 900;
+}
+
+.appointment-detail-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-color: rgb(23 107 86 / 18%);
+  background:
+    radial-gradient(circle at 100% 0, rgb(220 238 229 / 78%) 0, transparent 14rem),
+    rgb(255 250 244 / 90%);
+}
+
+.appointment-detail-hero h2 {
+  color: var(--accent-dark);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+.appointment-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.75fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.appointment-detail-notes {
+  align-self: start;
 }
 
 @media (max-width: 1100px) {
@@ -4322,7 +4363,9 @@ fieldset.form-section > legend + * {
   .patient-flow-card,
   .patients-toolbar,
   .assessment-hero,
-  .assessment-row {
+  .assessment-row,
+  .appointment-detail-hero,
+  .appointment-detail-grid {
     grid-template-columns: 1fr;
   }
 

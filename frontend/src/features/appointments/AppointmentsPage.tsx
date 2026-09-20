@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { type CSSProperties, use, useEffect, useState, useTransition } from "react";
+import { type CSSProperties, use, useEffect, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
 import {
-  cancelAppointment,
   getClinic,
   listAppointments,
   listScheduleBlocks,
@@ -87,10 +86,8 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [scheduleBlocks, setScheduleBlocks] = useState<ScheduleBlock[]>([]);
   const [error, setError] = useState("");
-  const [cancelingId, setCancelingId] = useState("");
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
   const [search, setSearch] = useState("");
-  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     if (!user) {
@@ -121,32 +118,6 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
         </section>
       </AppShell>
     );
-  }
-
-  function handleCancelAppointment(appointment: Appointment) {
-    const confirmed = window.confirm(
-      `Você está prestes a cancelar a consulta de ${appointment.patient_name}, em ${formatDate(appointment.date)}, das ${appointment.start_time.slice(0, 5)} às ${appointment.end_time.slice(0, 5)}. Deseja continuar?`,
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    setError("");
-    setCancelingId(appointment.id);
-
-    startTransition(async () => {
-      try {
-        await cancelAppointment(appointment.id);
-        setAppointments((currentAppointments) =>
-          currentAppointments.filter((item) => item.id !== appointment.id),
-        );
-      } catch {
-        setError("Não foi possível cancelar a consulta.");
-      } finally {
-        setCancelingId("");
-      }
-    });
   }
 
   const today = dateKey(new Date());
@@ -324,21 +295,21 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
                         key={`${item.type}-${item.id}`}
                         style={eventStyle(item)}
                       >
-                        <time>{item.start_time.slice(0, 5)}–{item.end_time.slice(0, 5)}</time>
-                        <strong>{item.title}</strong>
-                        <span>{item.subtitle}</span>
                         {item.type === "appointment" ? (
-                          <div className="calendar-event-actions">
+                          <Link className="calendar-event-link" href={`/clinics/${id}/appointments/${item.id}`} aria-label={`Abrir consulta de ${item.title}`}>
+                            <time>{item.start_time.slice(0, 5)}–{item.end_time.slice(0, 5)}</time>
+                            <strong>{item.title}</strong>
+                            <span>{item.subtitle}</span>
                             <small>{statusLabel(item.status ?? "SCHEDULED")}</small>
-                            <button
-                              disabled={isPending && cancelingId === item.id}
-                              type="button"
-                              onClick={() => handleCancelAppointment(item.source as Appointment)}
-                            >
-                              {isPending && cancelingId === item.id ? "Cancelando" : "Cancelar"}
-                            </button>
+                          </Link>
+                        ) : (
+                          <div className="calendar-event-link">
+                            <time>{item.start_time.slice(0, 5)}–{item.end_time.slice(0, 5)}</time>
+                            <strong>{item.title}</strong>
+                            <span>{item.subtitle}</span>
+                            <small>Bloqueio</small>
                           </div>
-                        ) : <small>Bloqueio</small>}
+                        )}
                       </article>
                     ))}
                   </div>

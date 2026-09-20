@@ -171,6 +171,10 @@ export async function listAppointments(clinicId: string) {
   return apiFetch<Appointment[]>(`/api/v1/appointments/?clinic=${clinicId}`);
 }
 
+export async function getAppointment(id: string) {
+  return apiFetch<Appointment>(`/api/v1/appointments/${id}/`);
+}
+
 export async function createAppointment(payload: AppointmentPayload) {
   return apiFetch<Appointment>("/api/v1/appointments/", {
     method: "POST",
