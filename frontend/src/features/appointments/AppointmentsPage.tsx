@@ -29,10 +29,12 @@ type CalendarItem = {
   source: Appointment | ScheduleBlock;
 };
 
+type CalendarView = "week" | "month";
+
 const weekDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 const hourStart = 7;
 const hourEnd = 19;
-const hourHeight = 72;
+const hourHeight = 84;
 
 function dateKey(date: Date) {
   return date.toISOString().slice(0, 10);
@@ -52,15 +54,29 @@ function startOfWeek(date: Date) {
   return addDays(date, -date.getDay());
 }
 
+function startOfMonth(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), 1, 12);
+}
+
+function addMonths(date: Date, months: number) {
+  const next = new Date(date);
+  next.setMonth(next.getMonth() + months, 1);
+  return next;
+}
+
 function minutesFromStart(time: string) {
   const [hours, minutes] = time.split(":").map(Number);
   return (hours - hourStart) * 60 + minutes;
 }
 
+function durationMinutes(item: CalendarItem) {
+  return Math.max(30, minutesFromStart(item.end_time) - minutesFromStart(item.start_time));
+}
+
 function eventStyle(item: CalendarItem) {
   const top = Math.max(0, (minutesFromStart(item.start_time) / 60) * hourHeight);
-  const duration = Math.max(30, minutesFromStart(item.end_time) - minutesFromStart(item.start_time));
-  const height = Math.max(42, (duration / 60) * hourHeight - 6);
+  const duration = durationMinutes(item);
+  const height = Math.max(60, (duration / 60) * hourHeight - 6);
   return { height: `${height}px`, top: `${top}px` };
 }
 
@@ -87,6 +103,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
   const [scheduleBlocks, setScheduleBlocks] = useState<ScheduleBlock[]>([]);
   const [error, setError] = useState("");
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
+  const [calendarView, setCalendarView] = useState<CalendarView>("week");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -125,7 +142,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
   const weekEnd = addDays(weekStart, 6);
   const hours = Array.from({ length: hourEnd - hourStart }, (_, index) => hourStart + index);
   const normalizedSearch = search.trim().toLowerCase();
-  const calendarItems: CalendarItem[] = [
+  const allCalendarItems: CalendarItem[] = [
     ...appointments
       .filter((appointment) => appointment.is_active)
       .map((appointment) => ({
@@ -153,8 +170,6 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
         type: "block" as const,
       })),
   ].filter((item) => {
-    const itemDate = localDate(item.date);
-    const isInWeek = itemDate >= weekStart && itemDate <= weekEnd;
     const matchesSearch = !normalizedSearch || [
       item.title,
       item.subtitle,
@@ -163,19 +178,46 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
     ]
       .filter(Boolean)
       .some((value) => String(value).toLowerCase().includes(normalizedSearch));
-    return isInWeek && matchesSearch;
+    return matchesSearch;
+  });
+  const calendarItems = allCalendarItems.filter((item) => {
+    const itemDate = localDate(item.date);
+    return itemDate >= weekStart && itemDate <= weekEnd;
   });
   const todayAppointments = appointments.filter((appointment) => appointment.date === today && appointment.is_active);
-  const nextItems = calendarItems
+  const nextItems = allCalendarItems
     .filter((item) => `${item.date}T${item.start_time}` >= `${today}T00:00`)
     .sort((a, b) => `${a.date}T${a.start_time}`.localeCompare(`${b.date}T${b.start_time}`))
     .slice(0, 5);
+  const visibleMonth = startOfMonth(weekStart);
   const miniMonthDays = Array.from({ length: 35 }, (_, index) => {
-    const monthStart = new Date(weekStart.getFullYear(), weekStart.getMonth(), 1, 12);
-    const gridStart = startOfWeek(monthStart);
+    const gridStart = startOfWeek(visibleMonth);
     return addDays(gridStart, index);
   });
-  const monthLabel = new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" }).format(weekStart);
+  const monthGridDays = Array.from({ length: 42 }, (_, index) => addDays(startOfWeek(visibleMonth), index));
+  const monthLabel = new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" }).format(visibleMonth);
+  const viewTitle = calendarView === "month"
+    ? monthLabel
+    : `${formatDate(dateKey(weekStart))} – ${formatDate(dateKey(weekEnd))}`;
+
+  function goToPreviousPeriod() {
+    setWeekStart((current) => calendarView === "month" ? startOfWeek(addMonths(current, -1)) : addDays(current, -7));
+  }
+
+  function goToNextPeriod() {
+    setWeekStart((current) => calendarView === "month" ? startOfWeek(addMonths(current, 1)) : addDays(current, 7));
+  }
+
+  function goToToday() {
+    setWeekStart(startOfWeek(new Date()));
+  }
+
+  function switchView(view: CalendarView) {
+    setCalendarView(view);
+    if (view === "month") {
+      setWeekStart((current) => startOfWeek(startOfMonth(current)));
+    }
+  }
 
   return (
     <AppShell
@@ -207,8 +249,8 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
           <div className="calendar-sidebar-heading">
             <p>{monthLabel}</p>
             <div>
-              <button type="button" onClick={() => setWeekStart((current) => addDays(current, -7))} aria-label="Semana anterior">‹</button>
-              <button type="button" onClick={() => setWeekStart((current) => addDays(current, 7))} aria-label="Próxima semana">›</button>
+              <button type="button" onClick={goToPreviousPeriod} aria-label="Período anterior">‹</button>
+              <button type="button" onClick={goToNextPeriod} aria-label="Próximo período">›</button>
             </div>
           </div>
 
@@ -233,8 +275,8 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
 
           <div className="calendar-sidebar-stats">
             <div><span>Hoje</span><strong>{todayAppointments.length}</strong></div>
-            <div><span>Semana</span><strong>{calendarItems.filter((item) => item.type === "appointment").length}</strong></div>
-            <div><span>Bloqueios</span><strong>{calendarItems.filter((item) => item.type === "block").length}</strong></div>
+            <div><span>{calendarView === "month" ? "Mês" : "Semana"}</span><strong>{(calendarView === "month" ? allCalendarItems.filter((item) => localDate(item.date).getMonth() === visibleMonth.getMonth() && localDate(item.date).getFullYear() === visibleMonth.getFullYear()) : calendarItems).filter((item) => item.type === "appointment").length}</strong></div>
+            <div><span>Bloqueios</span><strong>{(calendarView === "month" ? allCalendarItems.filter((item) => localDate(item.date).getMonth() === visibleMonth.getMonth() && localDate(item.date).getFullYear() === visibleMonth.getFullYear()) : calendarItems).filter((item) => item.type === "block").length}</strong></div>
           </div>
 
           <div className="calendar-upcoming">
@@ -254,15 +296,26 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
         <div className="calendar-board">
           <div className="calendar-toolbar">
             <div className="calendar-nav-actions">
-              <button type="button" onClick={() => setWeekStart((current) => addDays(current, -7))} aria-label="Semana anterior">‹</button>
-              <button type="button" onClick={() => setWeekStart(startOfWeek(new Date()))}>Hoje</button>
-              <button type="button" onClick={() => setWeekStart((current) => addDays(current, 7))} aria-label="Próxima semana">›</button>
+              <button type="button" onClick={goToPreviousPeriod} aria-label="Período anterior">‹</button>
+              <button type="button" onClick={goToToday}>Hoje</button>
+              <button type="button" onClick={goToNextPeriod} aria-label="Próximo período">›</button>
+              <strong className="calendar-current-range">{viewTitle}</strong>
             </div>
-            <div className="calendar-view-tabs" aria-label="Visualização atual">
-              <span>Dia</span>
-              <strong>Semana</strong>
-              <span>Mês</span>
-              <span>Ano</span>
+            <div className="calendar-view-tabs" aria-label="Visualização da agenda">
+              <button
+                className={calendarView === "week" ? "is-active" : ""}
+                type="button"
+                onClick={() => switchView("week")}
+              >
+                Semana
+              </button>
+              <button
+                className={calendarView === "month" ? "is-active" : ""}
+                type="button"
+                onClick={() => switchView("month")}
+              >
+                Mês
+              </button>
             </div>
             <label className="calendar-search">
               <span>Buscar</span>
@@ -270,6 +323,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
             </label>
           </div>
 
+          {calendarView === "week" ? (
           <div className="week-calendar" style={{ "--hour-height": `${hourHeight}px` } as CSSProperties}>
             <div className="week-header" style={{ gridTemplateColumns: `4.6rem repeat(7, minmax(8.4rem, 1fr))` }}>
               <span />
@@ -291,7 +345,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
                   <div className={`calendar-day-column ${key === today ? "is-today" : ""}`} key={key}>
                     {dayItems.map((item) => (
                       <article
-                        className={`calendar-event ${item.type === "block" ? "is-block" : ""} ${item.modality === "ONLINE" ? "is-online" : ""}`}
+                        className={`calendar-event ${durationMinutes(item) < 60 ? "is-compact" : ""} ${item.type === "block" ? "is-block" : ""} ${item.modality === "ONLINE" ? "is-online" : ""}`}
                         key={`${item.type}-${item.id}`}
                         style={eventStyle(item)}
                       >
@@ -317,6 +371,43 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
               })}
             </div>
           </div>
+          ) : (
+            <div className="month-calendar" aria-label={`Calendário de ${monthLabel}`}>
+              <div className="month-weekdays">
+                {weekDays.map((day) => <span key={day}>{day}</span>)}
+              </div>
+              <div className="month-grid">
+                {monthGridDays.map((day) => {
+                  const key = dateKey(day);
+                  const dayItems = allCalendarItems
+                    .filter((item) => item.date === key)
+                    .sort((a, b) => a.start_time.localeCompare(b.start_time));
+                  const isCurrentMonth = day.getMonth() === visibleMonth.getMonth();
+                  return (
+                    <section className={`month-day ${key === today ? "is-today" : ""} ${!isCurrentMonth ? "is-outside" : ""}`} key={key} aria-label={formatDate(key)}>
+                      <button type="button" onClick={() => { setWeekStart(startOfWeek(day)); setCalendarView("week"); }}>
+                        {day.getDate()}
+                      </button>
+                      <div className="month-day-events">
+                        {dayItems.slice(0, 3).map((item) => item.type === "appointment" ? (
+                          <Link className={`month-event ${item.modality === "ONLINE" ? "is-online" : ""}`} href={`/clinics/${id}/appointments/${item.id}`} key={`${item.type}-${item.id}`}>
+                            <time>{item.start_time.slice(0, 5)}</time>
+                            <span>{item.title}</span>
+                          </Link>
+                        ) : (
+                          <span className="month-event is-block" key={`${item.type}-${item.id}`}>
+                            <time>{item.start_time.slice(0, 5)}</time>
+                            <span>{item.title}</span>
+                          </span>
+                        ))}
+                        {dayItems.length > 3 ? <small>+{dayItems.length - 3} mais</small> : null}
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </AppShell>
