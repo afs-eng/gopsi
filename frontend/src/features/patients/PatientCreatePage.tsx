@@ -125,8 +125,9 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
       try {
         await createPatientFormData(formData);
         router.replace(`/clinics/${id}/patients`);
-      } catch {
-        setError("Não foi possível cadastrar o paciente. Confira permissões e vínculo.");
+      } catch (submitError) {
+        const detail = submitError instanceof Error ? submitError.message : "";
+        setError(`Não foi possível cadastrar o paciente. ${detail || "Confira permissões e vínculo."}`);
       }
     });
   }

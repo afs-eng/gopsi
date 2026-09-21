@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import serializers
 
 from apps.accounts.models import has_explicit_platform_role
@@ -47,8 +49,16 @@ class ProfessionalPatientSerializer(serializers.ModelSerializer):
 class PatientSerializer(serializers.ModelSerializer):
     guardians = GuardianSerializer(many=True, required=False)
     professional_links = ProfessionalPatientSerializer(many=True, required=False)
-    guardians_json = serializers.JSONField(write_only=True, required=False)
-    professional_links_json = serializers.JSONField(write_only=True, required=False)
+    guardians_json = serializers.CharField(
+        write_only=True,
+        required=False,
+        allow_blank=True,
+    )
+    professional_links_json = serializers.CharField(
+        write_only=True,
+        required=False,
+        allow_blank=True,
+    )
 
     class Meta:
         model = Patient
@@ -111,6 +121,24 @@ class PatientSerializer(serializers.ModelSerializer):
 
         return links
 
+    def _parse_json_list(self, value, field_name):
+        if value in (None, ""):
+            return []
+
+        try:
+            parsed_value = json.loads(value)
+        except (TypeError, json.JSONDecodeError) as exc:
+            raise serializers.ValidationError(
+                {field_name: "Formato inválido."},
+            ) from exc
+
+        if not isinstance(parsed_value, list):
+            raise serializers.ValidationError(
+                {field_name: "Informe uma lista válida."},
+            )
+
+        return parsed_value
+
     def create(self, validated_data):
         validated_data["guardians"] = validated_data.pop(
             "guardians_json",
@@ -157,6 +185,14 @@ class PatientSerializer(serializers.ModelSerializer):
                 "Operadores da plataforma não acessam dados de pacientes."
             )
 
+        attrs["guardians_json"] = self._parse_json_list(
+            attrs.get("guardians_json"),
+            "guardians_json",
+        )
+        attrs["professional_links_json"] = self._parse_json_list(
+            attrs.get("professional_links_json"),
+            "professional_links_json",
+        )
         professional_links = attrs.get("professional_links_json", [])
         if professional_links:
             visible_professionals = professionals_visible_to_user(
