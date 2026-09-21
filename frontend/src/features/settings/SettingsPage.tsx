@@ -5,8 +5,8 @@ import { use, useEffect, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
 import { useAuthenticatedData } from "@/features/clinics/useAuthenticatedData";
-import { getClinic } from "@/lib/api";
-import type { Clinic } from "@/lib/types";
+import { getClinic, listDocumentTemplates, listProfessionals } from "@/lib/api";
+import type { Clinic, DocumentTemplate, Professional } from "@/lib/types";
 
 type SettingsPageProps = { params: Promise<{ id: string }> };
 
@@ -14,10 +14,20 @@ export function SettingsPage({ params }: SettingsPageProps) {
   const { id } = use(params);
   const { loading, user } = useAuthenticatedData();
   const [clinic, setClinic] = useState<Clinic | null>(null);
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [templates, setTemplates] = useState<DocumentTemplate[]>([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (user) getClinic(id).then(setClinic).catch(() => setError("Não foi possível carregar a clínica."));
+    if (!user) return;
+
+    Promise.all([getClinic(id), listProfessionals(id), listDocumentTemplates(id)])
+      .then(([clinicData, professionalData, templateData]) => {
+        setClinic(clinicData);
+        setProfessionals(professionalData);
+        setTemplates(templateData);
+      })
+      .catch(() => setError("Não foi possível carregar as configurações."));
   }, [id, user]);
 
   if (loading || !user) return <main className="loading-page" role="status" aria-live="polite">Carregando ambiente seguro...</main>;
@@ -25,21 +35,62 @@ export function SettingsPage({ params }: SettingsPageProps) {
 
   return (
     <AppShell activeNav="settings" currentClinic={clinic} eyebrow="Configurações" title="Configurações da clínica" user={user}>
-      <section className="panel-card" aria-labelledby="settings-title">
-        <p className="eyebrow">Espaço da clínica</p>
-        <h2 id="settings-title">Configurações em construção</h2>
-        <p className="muted">As configurações de {clinic.name} serão organizadas aqui quando houver suporte de gravação no servidor.</p>
-        <div className="clinic-list">
-          <article className="clinic-row">
-            <div><strong>Dados cadastrais</strong><p>Gerencie nome, contatos e identificação da clínica.</p></div>
-            <Link className="button-secondary button-compact" href={`/clinics/${id}`}>Abrir clínica</Link>
-          </article>
-          <article className="clinic-row">
-            <div><strong>Equipe e acessos</strong><p>Consulte os profissionais vinculados ao espaço atual.</p></div>
-            <Link className="button-secondary button-compact" href={`/clinics/${id}/professionals`}>Ver profissionais</Link>
-          </article>
+      <section className="settings-hero panel-card" aria-labelledby="settings-title">
+        <div>
+          <p className="eyebrow">Preparação comercial</p>
+          <h2 id="settings-title">Identidade, equipe e segurança de {clinic.name}</h2>
+          <p className="muted">Centralize os pontos que deixam a clínica pronta para uso comercial: dados cadastrais, documentos, equipe e LGPD.</p>
         </div>
-        <div className="empty-state"><h3>Nenhuma preferência salva</h3><p>Não há controles editáveis nesta versão. Esta indicação evita a impressão de que uma alteração foi aplicada.</p></div>
+        <span className="panel-pill">{professionals.filter((professional) => professional.is_active).length} profissional(is)</span>
+      </section>
+
+      <section className="settings-grid" aria-label="Áreas de configuração">
+        <article className="panel-card settings-card">
+          <p className="eyebrow">Identidade da clínica</p>
+          <h3>Dados cadastrais e marca</h3>
+          <p className="muted">Nome, documento, contatos, logomarca e cabeçalho padrão dos documentos.</p>
+          <dl>
+            <div><dt>Nome</dt><dd>{clinic.name}</dd></div>
+            <div><dt>Email</dt><dd>{clinic.email || "Não informado"}</dd></div>
+            <div><dt>Telefone</dt><dd>{clinic.phone || "Não informado"}</dd></div>
+          </dl>
+          <Link className="button-secondary button-compact" href={`/clinics/${id}`}>Abrir dados da clínica</Link>
+        </article>
+
+        <article className="panel-card settings-card">
+          <p className="eyebrow">Equipe e acessos</p>
+          <h3>Profissionais vinculados</h3>
+          <p className="muted">Base para perfis, permissões, assinatura profissional e responsabilidade técnica.</p>
+          <dl>
+            <div><dt>Ativos</dt><dd>{professionals.filter((professional) => professional.status === "ACTIVE").length}</dd></div>
+            <div><dt>Bloqueados</dt><dd>{professionals.filter((professional) => professional.status === "BLOCKED").length}</dd></div>
+            <div><dt>Duração padrão</dt><dd>{professionals[0]?.default_appointment_duration ? `${professionals[0].default_appointment_duration} min` : "Não definida"}</dd></div>
+          </dl>
+          <Link className="button-secondary button-compact" href={`/clinics/${id}/professionals`}>Gerenciar profissionais</Link>
+        </article>
+
+        <article className="panel-card settings-card">
+          <p className="eyebrow">Documentos psicológicos</p>
+          <h3>Modelos e emissão</h3>
+          <p className="muted">Prepare modelos de declaração, relatório, recibo e documentos avulsos para PDF.</p>
+          <dl>
+            <div><dt>Modelos ativos</dt><dd>{templates.filter((template) => template.is_active).length}</dd></div>
+            <div><dt>Tipos usados</dt><dd>{new Set(templates.map((template) => template.template_type)).size}</dd></div>
+          </dl>
+          <Link className="button-secondary button-compact" href={`/clinics/${id}/documents`}>Ver documentos</Link>
+        </article>
+
+        <article className="panel-card settings-card">
+          <p className="eyebrow">LGPD e segurança</p>
+          <h3>Controles pendentes</h3>
+          <p className="muted">Consentimentos, logs visíveis, exportação de dados e política de retenção precisam de endpoints dedicados.</p>
+          <ul className="settings-checklist">
+            <li>Perfis de acesso por papel</li>
+            <li>Consentimento do paciente</li>
+            <li>Auditoria de alterações sensíveis</li>
+          </ul>
+          <span className="panel-pill">Próxima etapa</span>
+        </article>
       </section>
     </AppShell>
   );

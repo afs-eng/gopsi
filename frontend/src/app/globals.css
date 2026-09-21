@@ -3946,6 +3946,112 @@ body:has(.app-shell) {
   border-top-color: #edf1fb;
 }
 
+.dashboard-today-list,
+.dashboard-task-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.dashboard-today-item,
+.dashboard-task-item {
+  display: grid;
+  gap: 0.18rem;
+  border: 1px solid #e5ebf7;
+  border-radius: 0.85rem;
+  background: #ffffff;
+  color: #142f5b;
+  padding: 0.72rem 0.8rem;
+}
+
+.dashboard-today-item:hover,
+.dashboard-task-item:hover {
+  border-color: #c8d5ef;
+}
+
+.dashboard-today-item strong,
+.dashboard-task-item strong {
+  font-size: 0.9rem;
+}
+
+.dashboard-today-item span,
+.dashboard-task-item span,
+.dashboard-today-item small {
+  overflow: hidden;
+  color: #63759b;
+  font-size: 0.78rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-today-item.is-block {
+  background: #fff8ed;
+}
+
+.settings-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: start;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #ffffff, #f4fbf8);
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.settings-card {
+  display: grid;
+  align-content: start;
+  gap: 0.85rem;
+}
+
+.settings-card h3 {
+  color: #142f5b;
+  font-size: 1.15rem;
+}
+
+.settings-card dl {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.settings-card dl div {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #e5ebf7;
+  border-radius: 0.75rem;
+  background: #fbfcff;
+  padding: 0.62rem 0.72rem;
+}
+
+.settings-card dt {
+  color: #63759b;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.settings-card dd {
+  margin: 0;
+  color: #142f5b;
+  font-weight: 850;
+  text-align: right;
+}
+
+.settings-checklist {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  color: #63759b;
+  font-size: 0.9rem;
+}
+
 .calendar-day.is-today {
   background: #7357d8;
 }
@@ -3964,6 +4070,10 @@ body:has(.app-shell) {
     order: 2;
     flex-basis: 100%;
     max-width: none;
+  }
+
+  .settings-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -4001,6 +4111,10 @@ body:has(.app-shell) {
   .panel-heading,
   .topbar {
     align-items: flex-start;
+  }
+
+  .settings-hero {
+    grid-template-columns: 1fr;
   }
 }
 
