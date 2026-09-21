@@ -26,7 +26,7 @@ Revise estas variáveis no serviço `gopsi-api`:
 
 ```text
 DEBUG=False
-ALLOWED_HOSTS=gopsi-api.onrender.com
+ALLOWED_HOSTS=gopsi.onrender.com
 CSRF_TRUSTED_ORIGINS=https://gopsi.vercel.app
 CORS_ALLOWED_ORIGINS=https://gopsi.vercel.app
 CORS_ALLOWED_ORIGIN_REGEXES=^https://.*-afs-eng.vercel.app$
@@ -57,7 +57,7 @@ Se o Render ou Vercel gerar outro domínio, substitua os valores acima.
 Health check esperado:
 
 ```text
-https://gopsi-api.onrender.com/health/
+https://gopsi.onrender.com/health/
 ```
 
 ## 2. Criar Ou Resetar Admin
@@ -125,7 +125,7 @@ No Vercel:
 Adicione a variável de ambiente:
 
 ```text
-NEXT_PUBLIC_API_BASE_URL=https://gopsi-api.onrender.com
+NEXT_PUBLIC_API_BASE_URL=https://gopsi.onrender.com
 ```
 
 Depois do deploy, copie o domínio final da Vercel e confira se ele está em:

@@ -49,11 +49,12 @@ export function LoginPage() {
     const username = String(formData.get("username") ?? "");
     const password = String(formData.get("password") ?? "");
     const otp = String(formData.get("otp") ?? "");
+    const remember = formData.get("remember") === "on";
 
     startTransition(async () => {
       try {
         const response = await login(username, password, otp || undefined);
-        setToken(response.token);
+        setToken(response.token, remember);
         const currentUser = await getCurrentUser();
         router.replace(currentUser.is_platform_admin ? "/platform" : "/");
       } catch (caughtError) {
