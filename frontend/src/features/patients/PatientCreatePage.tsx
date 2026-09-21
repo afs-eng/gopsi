@@ -34,7 +34,30 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
     setError("");
     const formData = new FormData(event.currentTarget);
     const professionalId = String(formData.get("professional") ?? "");
-    const guardianName = String(formData.get("guardian_full_name") ?? "");
+    const fatherName = String(formData.get("father_full_name") ?? "").trim();
+    const motherName = String(formData.get("mother_full_name") ?? "").trim();
+    const guardians = [
+      fatherName
+        ? {
+            full_name: fatherName,
+            relationship: "Pai",
+            cpf: "",
+            phone: "",
+            email: "",
+            has_authorization: false,
+          }
+        : null,
+      motherName
+        ? {
+            full_name: motherName,
+            relationship: "Mãe",
+            cpf: "",
+            phone: "",
+            email: "",
+            has_authorization: false,
+          }
+        : null,
+    ].filter((guardian) => guardian !== null);
 
     startTransition(async () => {
       try {
@@ -58,19 +81,7 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
           emergency_contact_phone: String(
             formData.get("emergency_contact_phone") ?? "",
           ),
-          guardians: guardianName
-            ? [
-                {
-                  full_name: guardianName,
-                  relationship: String(formData.get("guardian_relationship") ?? ""),
-                  cpf: String(formData.get("guardian_cpf") ?? ""),
-                  phone: String(formData.get("guardian_phone") ?? ""),
-                  email: String(formData.get("guardian_email") ?? ""),
-                  has_authorization:
-                    formData.get("guardian_has_authorization") === "on",
-                },
-              ]
-            : [],
+          guardians,
           professional_links: professionalId
             ? [{ professional: professionalId, is_primary: true }]
             : [],
@@ -173,35 +184,17 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
           </div>
 
           <div className="form-section">
-            <p className="eyebrow">Responsável opcional</p>
+            <p className="eyebrow">Responsáveis opcionais</p>
             <div className="field-grid">
               <div className="field-group">
-                <label htmlFor="guardian_full_name">Nome do responsável</label>
-                <input id="guardian_full_name" name="guardian_full_name" />
+                <label htmlFor="father_full_name">Nome do pai</label>
+                <input id="father_full_name" name="father_full_name" />
               </div>
               <div className="field-group">
-                <label htmlFor="guardian_relationship">Parentesco</label>
-                <input id="guardian_relationship" name="guardian_relationship" />
+                <label htmlFor="mother_full_name">Nome da mãe</label>
+                <input id="mother_full_name" name="mother_full_name" />
               </div>
             </div>
-            <div className="field-grid">
-              <div className="field-group">
-                <label htmlFor="guardian_cpf">CPF do responsável</label>
-                <input id="guardian_cpf" name="guardian_cpf" inputMode="numeric" maxLength={14} onInput={maskCpfInput} placeholder="000.000.000-00" />
-              </div>
-              <div className="field-group">
-                <label htmlFor="guardian_phone">Telefone do responsável</label>
-                <input id="guardian_phone" name="guardian_phone" inputMode="numeric" maxLength={14} onInput={maskPhoneInput} placeholder="(00)00000-0000" />
-              </div>
-            </div>
-            <div className="field-group">
-              <label htmlFor="guardian_email">E-mail do responsável</label>
-              <input id="guardian_email" name="guardian_email" type="email" />
-            </div>
-            <label className="checkbox-row" htmlFor="guardian_has_authorization">
-              <input id="guardian_has_authorization" name="guardian_has_authorization" type="checkbox" />
-              Possui autorização registrada
-            </label>
           </div>
           </fieldset>
 
