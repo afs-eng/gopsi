@@ -60,7 +60,9 @@ class ProfessionalSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if has_explicit_platform_role(self.context["request"].user):
-            raise serializers.ValidationError("Acesso de operador de plataforma negado.")
+            raise serializers.ValidationError(
+                "Acesso de operador de plataforma negado."
+            )
 
         profession = attrs.get("profession") or getattr(self.instance, "profession", "")
         crp = attrs.get("crp") or getattr(self.instance, "crp", "")

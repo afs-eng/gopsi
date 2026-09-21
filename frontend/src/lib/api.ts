@@ -38,6 +38,40 @@ const API_BASE_URL =
 
 type RequestOptions = RequestInit & { authenticated?: boolean };
 
+function buildQuery(params: Record<string, string | undefined>) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value) query.set(key, value);
+  });
+  const queryString = query.toString();
+  return queryString ? `?${queryString}` : "";
+}
+
+function extractApiError(message: string) {
+  const trimmedMessage = message.trim();
+  if (!trimmedMessage) return "Erro ao comunicar com a API.";
+
+  try {
+    const parsed = JSON.parse(trimmedMessage) as unknown;
+    if (typeof parsed === "string") return parsed;
+    if (parsed && typeof parsed === "object") {
+      const values = Object.entries(parsed as Record<string, unknown>).flatMap(([field, value]) => {
+        if (Array.isArray(value)) return value.map((item) => `${field}: ${String(item)}`);
+        return `${field}: ${String(value)}`;
+      });
+      if (values.length) return values.join(" ");
+    }
+  } catch {
+    // Fall back to stripping HTML below.
+  }
+
+  if (trimmedMessage.startsWith("<!doctype") || trimmedMessage.startsWith("<!DOCTYPE")) {
+    return "Erro interno no servidor. Tente novamente ou acione o suporte.";
+  }
+
+  return trimmedMessage;
+}
+
 async function apiFetch<T>(path: string, options: RequestOptions = {}) {
   const headers = new Headers(options.headers);
 
@@ -63,7 +97,7 @@ async function apiFetch<T>(path: string, options: RequestOptions = {}) {
 
   if (!response.ok) {
     const message = await response.text();
-    throw new Error(message || "Erro ao comunicar com a API.");
+    throw new Error(extractApiError(message));
   }
 
   if (response.status === 204) {
@@ -187,8 +221,17 @@ export async function updatePatient(id: string, payload: Partial<PatientPayload>
   });
 }
 
-export async function listAppointments(clinicId: string) {
-  return apiFetch<Appointment[]>(`/api/v1/appointments/?clinic=${clinicId}`);
+export async function updatePatientFormData(id: string, payload: FormData) {
+  return apiFetch<Patient>(`/api/v1/patients/${id}/`, {
+    method: "PATCH",
+    body: payload,
+  });
+}
+
+export async function listAppointments(clinicId: string, patientId?: string) {
+  return apiFetch<Appointment[]>(
+    `/api/v1/appointments/${buildQuery({ clinic: clinicId, patient: patientId })}`,
+  );
 }
 
 export async function getAppointment(id: string) {
@@ -208,9 +251,9 @@ export async function cancelAppointment(id: string) {
   });
 }
 
-export async function listPsychologicalAssessments(clinicId: string) {
+export async function listPsychologicalAssessments(clinicId: string, patientId?: string) {
   return apiFetch<PsychologicalAssessment[]>(
-    `/api/v1/psychological-assessments/?clinic=${clinicId}`,
+    `/api/v1/psychological-assessments/${buildQuery({ clinic: clinicId, patient: patientId })}`,
   );
 }
 
@@ -245,8 +288,10 @@ export async function createDocumentTemplate(payload: DocumentTemplatePayload) {
   });
 }
 
-export async function listGeneratedDocuments(clinicId: string) {
-  return apiFetch<GeneratedDocument[]>(`/api/v1/documents/?clinic=${clinicId}`);
+export async function listGeneratedDocuments(clinicId: string, patientId?: string) {
+  return apiFetch<GeneratedDocument[]>(
+    `/api/v1/documents/${buildQuery({ clinic: clinicId, patient: patientId })}`,
+  );
 }
 
 export async function createGeneratedDocument(payload: GeneratedDocumentPayload) {
@@ -323,8 +368,10 @@ export async function enterPublicWaitingRoom(
   });
 }
 
-export async function listInvoices(clinicId: string) {
-  return apiFetch<Invoice[]>(`/api/v1/billing/invoices/?clinic=${clinicId}`);
+export async function listInvoices(clinicId: string, patientId?: string) {
+  return apiFetch<Invoice[]>(
+    `/api/v1/billing/invoices/${buildQuery({ clinic: clinicId, patient: patientId })}`,
+  );
 }
 
 export async function createInvoice(payload: InvoicePayload) {
@@ -355,8 +402,10 @@ export async function listTransactions(clinicId: string) {
   return apiFetch<Transaction[]>(`/api/v1/billing/transactions/?clinic=${clinicId}`);
 }
 
-export async function listMedicalRecords(clinicId: string) {
-  return apiFetch<MedicalRecordEntry[]>(`/api/v1/medical-records/?clinic=${clinicId}`);
+export async function listMedicalRecords(clinicId: string, patientId?: string) {
+  return apiFetch<MedicalRecordEntry[]>(
+    `/api/v1/medical-records/${buildQuery({ clinic: clinicId, patient: patientId })}`,
+  );
 }
 
 export async function createMedicalRecord(payload: MedicalRecordPayload) {

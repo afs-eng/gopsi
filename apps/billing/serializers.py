@@ -83,7 +83,9 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if has_explicit_platform_role(self.context["request"].user):
-            raise serializers.ValidationError("Acesso de operador de plataforma negado.")
+            raise serializers.ValidationError(
+                "Acesso de operador de plataforma negado."
+            )
 
         data = {}
         for field in Subscription._meta.fields:
@@ -176,7 +178,9 @@ class InvoiceSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if has_explicit_platform_role(self.context["request"].user):
-            raise serializers.ValidationError("Acesso de operador de plataforma negado.")
+            raise serializers.ValidationError(
+                "Acesso de operador de plataforma negado."
+            )
 
         data = {}
         for field in Invoice._meta.fields:
@@ -254,7 +258,9 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if has_explicit_platform_role(self.context["request"].user):
-            raise serializers.ValidationError("Acesso de operador de plataforma negado.")
+            raise serializers.ValidationError(
+                "Acesso de operador de plataforma negado."
+            )
 
         data = {}
         for field in Payment._meta.fields:
@@ -273,13 +279,16 @@ class PaymentSerializer(serializers.ModelSerializer):
                         "Somente cobranças abertas ou vencidas podem receber pagamento."
                     )
                 if invoice.payments.filter(status=PaymentStatus.PAID).exists():
-                    raise serializers.ValidationError("Cobrança já possui pagamento registrado.")
+                    raise serializers.ValidationError(
+                        "Cobrança já possui pagamento registrado."
+                    )
 
             status = attrs.get("status") or getattr(self.instance, "status", None)
             amount = attrs.get("amount") or getattr(self.instance, "amount", None)
             if status == PaymentStatus.PAID and amount != invoice.amount:
                 raise serializers.ValidationError(
-                    "Pagamentos parciais não são suportados. Informe o valor integral da cobrança."
+                    "Pagamentos parciais não são suportados. Informe o valor "
+                    "integral da cobrança."
                 )
 
         if not self.instance:

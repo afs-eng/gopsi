@@ -7,7 +7,10 @@ from apps.clinics.models import Clinic, ClinicMembership
 
 
 class Command(BaseCommand):
-    help = "Relata inconsistências de identidade entre plataforma e clínicas sem alterar dados."
+    help = (
+        "Relata inconsistências de identidade entre plataforma e clínicas sem "
+        "alterar dados."
+    )
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -47,7 +50,10 @@ class Command(BaseCommand):
                 f"membership_count={user.membership_count} "
                 f"active_membership_count={user.active_membership_count}"
             ),
-            "Review the identity split; platform users must have no clinic memberships.",
+            (
+                "Review the identity split; platform users must have no clinic "
+                "memberships."
+            ),
         )
 
         platform_profile_users = (
@@ -74,7 +80,10 @@ class Command(BaseCommand):
                 f"profile_count={user.profile_count} "
                 f"active_profile_count={user.active_profile_count}"
             ),
-            "Review the identity split; platform users must have no professional profiles.",
+            (
+                "Review the identity split; platform users must have no "
+                "professional profiles."
+            ),
         )
 
         platform_technical_users = user_model.objects.filter(
@@ -87,7 +96,10 @@ class Command(BaseCommand):
                 f"user_id={user.id} global_role={user.global_role} "
                 f"is_superuser={user.is_superuser} is_staff={user.is_staff}"
             ),
-            "Review the identity split manually; do not convert the technical account in place.",
+            (
+                "Review the identity split manually; do not convert the technical "
+                "account in place."
+            ),
         )
 
         invalid_memberships = ClinicMembership.objects.filter(
@@ -117,7 +129,10 @@ class Command(BaseCommand):
             "GLOBAL_CLINIC_ADMIN_WITHOUT_ACTIVE_MEMBERSHIP",
             legacy_clinic_admins,
             lambda user: f"user_id={user.id} global_role={user.global_role}",
-            "Assign an active clinic-admin membership or resolve the legacy role manually.",
+            (
+                "Assign an active clinic-admin membership or resolve the legacy "
+                "role manually."
+            ),
         )
 
         clinics_without_admin = (
@@ -166,7 +181,8 @@ class Command(BaseCommand):
         self.stdout.write(f"PREFLIGHT_SUMMARY findings={findings}")
         if findings:
             self.stdout.write(
-                "ACTION_REQUIRED: resolve findings manually; this command did not change data."
+                "ACTION_REQUIRED: resolve findings manually; this command did "
+                "not change data."
             )
         else:
             self.stdout.write("STATUS: no identity or membership findings.")

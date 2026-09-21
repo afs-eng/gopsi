@@ -218,7 +218,7 @@ def test_user_cannot_retrieve_appointment_from_other_tenant():
 
 
 @pytest.mark.django_db
-def test_platform_operator_cannot_access_appointments_or_schedule_with_accidental_access():
+def test_platform_operator_denied_schedule_with_accidental_access():
     platform_operator = make_user("platform-schedule-denial", UserRole.SUPERADMIN)
     clinic = Clinic.objects.create(name="Clínica agenda protegida")
     ClinicMembership.objects.create(

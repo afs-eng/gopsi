@@ -96,6 +96,73 @@ def test_clinic_admin_cannot_create_patient_for_other_clinic():
 
 
 @pytest.mark.django_db
+def test_clinic_admin_can_update_guardians_and_professional_link():
+    user = make_user("clinic-admin-update")
+    clinic = Clinic.objects.create(name="Clínica Atualização")
+    first_professional = Professional.objects.create(
+        clinic=clinic,
+        full_name="Dra. Inicial",
+        profession="Psicóloga",
+    )
+    second_professional = Professional.objects.create(
+        clinic=clinic,
+        full_name="Dra. Final",
+        profession="Psicóloga",
+    )
+    ClinicMembership.objects.create(
+        clinic=clinic,
+        user=user,
+        role=UserRole.CLINIC_ADMIN,
+    )
+    patient = Patient.objects.create(
+        clinic=clinic,
+        full_name="Paciente Atualizar",
+        created_by=user,
+    )
+    Guardian.objects.create(
+        patient=patient,
+        full_name="Responsável antigo",
+        relationship="Mãe",
+    )
+    ProfessionalPatient.objects.create(
+        patient=patient,
+        professional=first_professional,
+        is_primary=True,
+    )
+    client = APIClient()
+    client.force_authenticate(user=user)
+
+    response = client.patch(
+        reverse("patient-detail", kwargs={"pk": patient.id}),
+        {
+            "guardians": [
+                {
+                    "full_name": "Responsável novo",
+                    "relationship": "Pai",
+                    "has_authorization": False,
+                }
+            ],
+            "professional_links": [
+                {"professional": str(second_professional.id), "is_primary": True}
+            ],
+        },
+        format="json",
+    )
+
+    assert response.status_code == 200
+    assert patient.guardians.filter(full_name="Responsável antigo").exists() is False
+    assert patient.guardians.filter(full_name="Responsável novo").exists()
+    assert (
+        patient.professional_links.filter(professional=first_professional).exists()
+        is False
+    )
+    assert patient.professional_links.filter(
+        professional=second_professional,
+        is_primary=True,
+    ).exists()
+
+
+@pytest.mark.django_db
 def test_user_lists_only_patients_from_own_clinic():
     user = make_user("clinic-member", UserRole.RECEPTIONIST)
     own_clinic = Clinic.objects.create(name="Clínica A")
@@ -151,7 +218,7 @@ def test_user_cannot_retrieve_patient_from_other_tenant():
 
 
 @pytest.mark.django_db
-def test_platform_operator_cannot_list_retrieve_or_create_patients_with_accidental_access():
+def test_platform_operator_denied_patients_with_accidental_access():
     platform_operator = make_user("platform-patient-denial", UserRole.SUPERADMIN)
     clinic = Clinic.objects.create(name="Clínica protegida")
     ClinicMembership.objects.create(

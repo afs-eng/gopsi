@@ -140,14 +140,12 @@ class PatientSerializer(serializers.ModelSerializer):
         return parsed_value
 
     def create(self, validated_data):
-        validated_data["guardians"] = validated_data.pop(
-            "guardians_json",
-            validated_data.get("guardians", []),
-        )
-        validated_data["professional_links"] = validated_data.pop(
-            "professional_links_json",
-            validated_data.get("professional_links", []),
-        )
+        guardians_json = validated_data.pop("guardians_json", None)
+        professional_links_json = validated_data.pop("professional_links_json", None)
+        if guardians_json:
+            validated_data["guardians"] = guardians_json
+        if professional_links_json:
+            validated_data["professional_links"] = professional_links_json
         guardians = validated_data.pop("guardians", [])
         professional_links = validated_data.pop("professional_links", [])
         validated_data.pop("is_active", None)
@@ -175,11 +173,37 @@ class PatientSerializer(serializers.ModelSerializer):
         return patient
 
     def update(self, instance, validated_data):
-        validated_data.pop("guardians", None)
-        validated_data.pop("guardians_json", None)
-        validated_data.pop("professional_links", None)
-        validated_data.pop("professional_links_json", None)
-        return super().update(instance, validated_data)
+        guardians_json = validated_data.pop("guardians_json", None)
+        professional_links_json = validated_data.pop("professional_links_json", None)
+        guardians = validated_data.pop("guardians", None)
+        professional_links = validated_data.pop("professional_links", None)
+
+        patient = super().update(instance, validated_data)
+
+        if guardians_json is not None:
+            guardians = guardians_json
+        if guardians is not None:
+            patient.guardians.all().delete()
+            for guardian in guardians:
+                Guardian.objects.create(patient=patient, **guardian)
+
+        if professional_links_json is not None:
+            professional_links = professional_links_json
+        if professional_links is not None:
+            patient.professional_links.all().delete()
+            for link in professional_links:
+                professional = link.get("professional")
+                if hasattr(professional, "id"):
+                    ProfessionalPatient.objects.create(patient=patient, **link)
+                else:
+                    ProfessionalPatient.objects.create(
+                        patient=patient,
+                        professional_id=professional,
+                        is_primary=link.get("is_primary", False),
+                        is_active=link.get("is_active", True),
+                    )
+
+        return patient
 
     def validate(self, attrs):
         if has_explicit_platform_role(self.context["request"].user):
@@ -187,14 +211,16 @@ class PatientSerializer(serializers.ModelSerializer):
                 "Operadores da plataforma não acessam dados de pacientes."
             )
 
-        attrs["guardians_json"] = self._parse_json_list(
-            attrs.get("guardians_json"),
-            "guardians_json",
-        )
-        attrs["professional_links_json"] = self._parse_json_list(
-            attrs.get("professional_links_json"),
-            "professional_links_json",
-        )
+        if "guardians_json" in attrs:
+            attrs["guardians_json"] = self._parse_json_list(
+                attrs.get("guardians_json"),
+                "guardians_json",
+            )
+        if "professional_links_json" in attrs:
+            attrs["professional_links_json"] = self._parse_json_list(
+                attrs.get("professional_links_json"),
+                "professional_links_json",
+            )
         professional_links = attrs.get("professional_links_json", [])
         if professional_links:
             visible_professionals = professionals_visible_to_user(

@@ -2,6 +2,7 @@ from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 from apps.accounts.models import has_explicit_platform_role
 
+
 class CanAccessPsychologicalAssessments(BasePermission):
     def has_permission(self, request, view) -> bool:
         user = request.user

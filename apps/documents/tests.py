@@ -142,7 +142,7 @@ def test_authenticated_user_can_download_document_pdf():
 
 
 @pytest.mark.django_db
-def test_platform_operator_is_denied_documents_list_detail_write_download_and_finalize():
+def test_platform_operator_denied_documents_crud_download_and_finalize():
     user, clinic, professional, patient = make_context()
     template = DocumentTemplate.objects.create(
         clinic=clinic,

@@ -150,7 +150,7 @@ def test_user_cannot_list_assessments_from_other_tenant():
 
 
 @pytest.mark.django_db
-def test_platform_operator_cannot_access_assessments_or_results_with_accidental_access():
+def test_platform_operator_denied_assessments_with_accidental_access():
     platform_operator = make_user("platform-assessment-denial", UserRole.SUPERADMIN)
     clinic = Clinic.objects.create(name="Clínica avaliação protegida")
     ClinicMembership.objects.create(

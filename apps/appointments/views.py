@@ -28,6 +28,10 @@ class AppointmentViewSet(ModelViewSet):
         if professional_id:
             queryset = queryset.filter(professional_id=professional_id)
 
+        patient_id = self.request.query_params.get("patient")
+        if patient_id:
+            queryset = queryset.filter(patient_id=patient_id)
+
         date = self.request.query_params.get("date")
         if date:
             queryset = queryset.filter(date=date)

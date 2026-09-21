@@ -1,5 +1,4 @@
 from apps.accounts.models import UserRole, has_explicit_platform_role
-from apps.clinics.models import ClinicMembership
 
 
 def has_active_clinic_membership(user, clinic_id, role=None) -> bool:

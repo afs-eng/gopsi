@@ -7,8 +7,8 @@ from apps.accounts.models import UserRole
 from apps.audit.models import AuditAction, AuditEvent
 from apps.clinics.models import Clinic, ClinicMembership
 from apps.patients.models import Patient
-from apps.professionals.models import Professional
 from apps.privacy.models import DataSubjectRequest, DataSubjectRequestStatus
+from apps.professionals.models import Professional
 
 
 def make_user(username: str, role: str = UserRole.CLINIC_ADMIN):

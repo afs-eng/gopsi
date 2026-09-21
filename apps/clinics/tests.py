@@ -411,7 +411,9 @@ def test_clinic_admin_cannot_create_delete_deactivate_or_provision_from_workspac
     assert clinic.is_active is True
     assert not Clinic.objects.filter(name="Clínica não permitida").exists()
     assert not get_user_model().objects.filter(username="admin-não-permitido").exists()
-    assert not get_user_model().objects.filter(username="admin-não-permitido-2").exists()
+    assert not get_user_model().objects.filter(
+        username="admin-não-permitido-2"
+    ).exists()
 
 
 @pytest.mark.django_db
