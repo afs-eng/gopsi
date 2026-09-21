@@ -109,23 +109,6 @@ export function PatientsPage({ params }: PatientsPageProps) {
         />
       </section>
 
-      <section className="panel-card patient-flow-card" aria-labelledby="patient-flow-title">
-        <div>
-          <p className="eyebrow">Fluxo recomendado</p>
-          <h2 id="patient-flow-title">Do cadastro ao acompanhamento</h2>
-          <p className="muted">
-            Use o paciente como ponto de partida para agendar, registrar evolução, gerar documentos e iniciar avaliações psicológicas.
-          </p>
-        </div>
-        <div className="patient-flow-steps" aria-label="Fluxo comercial do paciente">
-          <span>Cadastro</span>
-          <span>Agenda</span>
-          <span>Prontuário</span>
-          <span>Documentos</span>
-          <span>Avaliações</span>
-        </div>
-      </section>
-
       <section className="panel-card patients-panel">
         <div className="panel-heading">
           <div>
