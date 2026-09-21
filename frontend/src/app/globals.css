@@ -2289,10 +2289,6 @@ h2 {
   background: repeating-linear-gradient(to bottom, #ffffff 0, #ffffff calc(var(--hour-height) - 1px), #f1f3f4 calc(var(--hour-height) - 1px), #f1f3f4 var(--hour-height));
 }
 
-.calendar-day-column:hover {
-  cursor: crosshair;
-}
-
 .calendar-day-column.is-today {
   background: repeating-linear-gradient(to bottom, #f8fbff 0, #f8fbff calc(var(--hour-height) - 1px), #e8f0fe calc(var(--hour-height) - 1px), #e8f0fe var(--hour-height));
 }
