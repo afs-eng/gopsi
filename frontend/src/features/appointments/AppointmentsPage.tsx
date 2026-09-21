@@ -245,13 +245,8 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
     >
       {error ? <div className="alert" role="alert" aria-live="assertive">{error}</div> : null}
 
-      <section className="calendar-shell" aria-label="Agenda semanal">
+      <section className="calendar-shell" aria-label={calendarView === "month" ? "Agenda mensal" : "Agenda semanal"}>
         <aside className="calendar-sidebar" aria-label="Resumo da agenda">
-          <div className="calendar-sidebar-window-controls" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </div>
           <div className="calendar-sidebar-heading">
             <p>{monthLabel}</p>
             <div>
@@ -336,7 +331,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
               {days.map((day) => (
                 <div className={dateKey(day) === today ? "is-today" : ""} key={dateKey(day)}>
                   <span>{weekDays[day.getDay()]}</span>
-                  <strong>{day.getDate()}</strong>
+                  <strong><span>{day.getDate()}</span></strong>
                 </div>
               ))}
             </div>
