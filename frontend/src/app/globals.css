@@ -2347,6 +2347,36 @@ h2 {
   align-content: center;
 }
 
+.calendar-event.is-start-stacked {
+  border-left-width: 0;
+  border-radius: 0.28rem;
+}
+
+.calendar-event.is-start-stacked .calendar-event-link {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 0.45rem;
+  align-content: center;
+  align-items: center;
+  padding: 0.24rem 0.5rem;
+}
+
+.calendar-event.is-start-stacked time,
+.calendar-event.is-start-stacked strong {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+.calendar-event.is-start-stacked time {
+  color: inherit;
+}
+
+.calendar-event.is-start-stacked span,
+.calendar-event.is-start-stacked small {
+  display: none;
+}
+
 .appointment-detail-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

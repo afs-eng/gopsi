@@ -341,7 +341,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
                       const layout = dayItemLayouts.get(item);
                       return (
                         <article
-                          className={`calendar-event ${durationMinutes(item) < 60 ? "is-compact" : ""} ${item.type === "block" ? "is-block" : ""} ${item.modality === "ONLINE" ? "is-online" : ""}`}
+                          className={`calendar-event ${durationMinutes(item) < 60 ? "is-compact" : ""} ${(layout?.stackedStartCount ?? 0) > 1 ? "is-start-stacked" : ""} ${item.type === "block" ? "is-block" : ""} ${item.modality === "ONLINE" ? "is-online" : ""}`}
                           key={`${item.type}-${item.id}`}
                           style={{
                             height: `${layout?.height ?? 0}px`,

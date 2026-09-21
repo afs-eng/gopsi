@@ -65,4 +65,23 @@ describe("calendar event positioning", () => {
     assertClose(layouts.get(events[1])?.leftPercent ?? -1, 50);
     assertClose(layouts.get(events[2])?.widthPercent ?? -1, 100);
   });
+
+  it("stacks events with the same start time as full-width rows", () => {
+    const events = [
+      { id: "a", start_time: "11:00", end_time: "11:55" },
+      { id: "b", start_time: "11:00", end_time: "11:55" },
+      { id: "c", start_time: "11:00", end_time: "11:55" },
+    ];
+    const layouts = layoutCalendarEvents(events);
+
+    assertClose(layouts.get(events[0])?.top ?? -1, 336);
+    assertClose(layouts.get(events[1])?.top ?? -1, 364);
+    assertClose(layouts.get(events[2])?.top ?? -1, 392);
+    assertClose(layouts.get(events[0])?.widthPercent ?? -1, 100);
+    assertClose(layouts.get(events[1])?.widthPercent ?? -1, 100);
+    assertClose(layouts.get(events[2])?.widthPercent ?? -1, 100);
+    assert.equal(layouts.get(events[0])?.stackedStartIndex, 0);
+    assert.equal(layouts.get(events[1])?.stackedStartIndex, 1);
+    assert.equal(layouts.get(events[2])?.stackedStartIndex, 2);
+  });
 });
