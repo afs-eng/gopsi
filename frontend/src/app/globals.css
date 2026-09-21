@@ -4506,6 +4506,188 @@ body:has(.app-shell) {
   accent-color: #7357d8;
 }
 
+.patient-profile-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.patient-profile-breadcrumb {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  color: #63759b;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.patient-profile-breadcrumb a {
+  color: #7357d8;
+}
+
+.patient-profile-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(24rem, auto);
+  gap: 1rem;
+  align-items: center;
+}
+
+.patient-profile-main {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.patient-profile-avatar {
+  display: grid;
+  width: 5.5rem;
+  height: 5.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #176b56, #0d4f4d);
+  color: white;
+  font-size: 2.4rem;
+  font-weight: 900;
+}
+
+.patient-profile-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.patient-profile-title-row h2 {
+  color: #142f5b;
+  font-size: clamp(1.9rem, 3vw, 2.5rem);
+}
+
+.patient-profile-main p {
+  color: #63759b;
+  font-weight: 700;
+}
+
+.patient-profile-contact {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.patient-profile-contact div {
+  border-radius: 1rem;
+  background: #f7f8ff;
+  padding: 0.8rem;
+}
+
+.patient-profile-contact strong,
+.patient-profile-contact span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.patient-profile-contact strong {
+  color: #142f5b;
+  font-size: 0.88rem;
+}
+
+.patient-profile-contact span {
+  color: #63759b;
+  font-size: 0.78rem;
+}
+
+.patient-profile-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  border-bottom: 1px solid #e5ebf7;
+}
+
+.patient-profile-tabs a,
+.patient-profile-tabs span {
+  border-bottom: 3px solid transparent;
+  color: #41568b;
+  padding: 0.8rem 0.95rem;
+  font-size: 0.88rem;
+  font-weight: 850;
+}
+
+.patient-profile-tabs .is-active {
+  border-bottom-color: #7357d8;
+  color: #5e45c4;
+}
+
+.patient-profile-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 0.85fr);
+  gap: 1rem;
+}
+
+.patient-profile-card,
+.patient-profile-observations {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+}
+
+.patient-profile-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.patient-profile-list div {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.55fr) minmax(0, 1fr);
+  gap: 1rem;
+  border-bottom: 1px solid #e5ebf7;
+  padding: 0.72rem 0;
+}
+
+.patient-profile-list div:last-child {
+  border-bottom: 0;
+}
+
+.patient-profile-list dt {
+  color: #63759b;
+  font-weight: 750;
+}
+
+.patient-profile-list dd {
+  margin: 0;
+  color: #142f5b;
+  font-weight: 800;
+}
+
+.patient-profile-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.patient-profile-stat {
+  display: grid;
+  gap: 0.28rem;
+}
+
+.patient-profile-stat strong {
+  color: #142f5b;
+  font-size: 1.25rem;
+}
+
+.patient-profile-stat span {
+  color: #63759b;
+}
+
+.patient-profile-stat a {
+  width: fit-content;
+  color: #7357d8;
+  font-weight: 850;
+}
+
 .calendar-day.is-today {
   background: #7357d8;
 }
@@ -4527,6 +4709,12 @@ body:has(.app-shell) {
   }
 
   .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .patient-profile-hero,
+  .patient-profile-grid,
+  .patient-profile-stat-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -4569,6 +4757,21 @@ body:has(.app-shell) {
 
   .settings-hero {
     grid-template-columns: 1fr;
+  }
+
+  .patient-profile-main,
+  .patient-profile-contact {
+    grid-template-columns: 1fr;
+  }
+
+  .patient-profile-main {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .patient-profile-list div {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
   }
 }
 

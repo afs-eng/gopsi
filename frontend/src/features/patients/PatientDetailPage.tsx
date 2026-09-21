@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { use, useEffect, useState, useTransition } from "react";
 
 import { AppShell } from "@/components/AppShell";
-import { MetricCard } from "@/components/MetricCard";
 import { deletePatient, getClinic, getPatient } from "@/lib/api";
 import type { Clinic, Patient } from "@/lib/types";
 import { useAuthenticatedData } from "@/features/clinics/useAuthenticatedData";
@@ -32,6 +31,16 @@ function formatDate(date: string | null) {
   return new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium" }).format(
     new Date(`${date}T12:00:00`),
   );
+}
+
+function calculateAge(date: string | null) {
+  if (!date) return "--";
+  const birthDate = new Date(`${date}T12:00:00`);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age -= 1;
+  return age >= 0 ? `${age} anos` : "--";
 }
 
 export function PatientDetailPage({ params }: PatientDetailPageProps) {
@@ -74,6 +83,7 @@ export function PatientDetailPage({ params }: PatientDetailPageProps) {
   const displayName = patient.social_name || patient.full_name;
   const primaryProfessional = patient.professional_links.find((link) => link.is_primary);
   const activeGuardians = patient.guardians.filter((guardian) => guardian.is_active);
+  const mainGuardian = activeGuardians[0];
 
   function handleDeletePatient() {
     if (!patient) return;
@@ -116,109 +126,91 @@ export function PatientDetailPage({ params }: PatientDetailPageProps) {
         </>
       }
     >
-      <section className="patient-detail-hero panel-card" aria-labelledby="patient-detail-title">
-        <div className="patient-detail-avatar" aria-hidden="true">
-          {displayName.slice(0, 1).toUpperCase()}
+      <section className="patient-profile-page">
+        <div className="patient-profile-breadcrumb">
+          <Link href={`/clinics/${id}/patients`}>Pacientes</Link>
+          <span>/</span>
+          <strong>{displayName}</strong>
         </div>
-        <div>
-          <p className="eyebrow">Nome do paciente</p>
-          <h2 id="patient-detail-title">{displayName}</h2>
-          {patient.social_name ? <p className="muted">Nome civil: {patient.full_name}</p> : null}
-          <div className="patient-detail-badges" aria-label="Dados principais do paciente">
-            <span className="status-badge">{patientStatus(patient.status)}</span>
-            <span>{patient.email || "E-mail não informado"}</span>
-            <span>{patient.phone || "Telefone não informado"}</span>
-          </div>
-        </div>
-      </section>
 
-      <section className="metrics-grid" aria-label="Resumo do paciente">
-        <MetricCard label="Nascimento" value={formatDate(patient.birth_date)} description={`Sexo: ${sexLabel(patient.sex)}`} />
-        <MetricCard label="Responsáveis" value={activeGuardians.length} description="Contatos autorizados vinculados ao paciente." />
-        <MetricCard label="Profissional principal" value={primaryProfessional?.professional_name || "Não definido"} description="Vínculo clínico de referência." />
-      </section>
-
-      <section className="patient-detail-grid">
-        <article className="panel-card patient-journey-card patient-journey-card-full">
-          <div className="panel-heading">
+        <section className="patient-profile-hero panel-card" aria-labelledby="patient-detail-title">
+          <div className="patient-profile-main">
+            <div className="patient-profile-avatar" aria-hidden="true">{displayName.slice(0, 1).toUpperCase()}</div>
             <div>
-              <p className="eyebrow">Fluxo clínico</p>
-              <h2>Próximas ações</h2>
-              <p className="muted">Parta do paciente para agenda, prontuário, documentos, financeiro e avaliação psicológica.</p>
-            </div>
-          </div>
-          <div className="patient-journey-actions">
-            <Link href={`/clinics/${id}/appointments/new`}>
-              <strong>Agenda</strong>
-              <span>Marcar sessão presencial ou online.</span>
-            </Link>
-            <Link href={`/clinics/${id}/medical-records`}>
-              <strong>Prontuário</strong>
-              <span>Registrar evolução, anamnese e plano terapêutico.</span>
-            </Link>
-            <Link href={`/clinics/${id}/documents/new`}>
-              <strong>Documento</strong>
-              <span>Preparar declaração, relatório, parecer ou laudo.</span>
-            </Link>
-            <Link href={`/clinics/${id}/billing`}>
-              <strong>Financeiro</strong>
-              <span>Acompanhar pagamentos e pendências.</span>
-            </Link>
-            <Link href={`/clinics/${id}/assessments/new`}>
-              <strong>Avaliação psicológica</strong>
-              <span>Organizar instrumentos, resultados e síntese integrativa.</span>
-            </Link>
-          </div>
-        </article>
-
-      </section>
-
-      <section className="patient-detail-grid">
-        <article className="panel-card">
-          <div className="panel-heading">
-            <div>
-              <p className="eyebrow">Cadastro</p>
-              <h2>Dados de contato</h2>
-            </div>
-          </div>
-          <dl className="patient-data-list">
-            <div><dt>CPF</dt><dd>{patient.cpf || "Não informado"}</dd></div>
-            <div><dt>E-mail</dt><dd>{patient.email || "Não informado"}</dd></div>
-            <div><dt>Telefone</dt><dd>{patient.phone || "Não informado"}</dd></div>
-            <div><dt>Endereço</dt><dd>{patient.address || "Não informado"}</dd></div>
-            <div><dt>Contato de emergência</dt><dd>{patient.emergency_contact_name || "Não informado"}</dd></div>
-            <div><dt>Telefone de emergência</dt><dd>{patient.emergency_contact_phone || "Não informado"}</dd></div>
-          </dl>
-        </article>
-
-        <article className="panel-card">
-          <div className="panel-heading">
-            <div>
-              <p className="eyebrow">Rede de cuidado</p>
-              <h2>Responsáveis e profissionais</h2>
-            </div>
-          </div>
-          <div className="patient-related-list">
-            <h3>Responsáveis</h3>
-            {activeGuardians.length ? activeGuardians.map((guardian) => (
-              <div key={guardian.id}>
-                <strong>{guardian.full_name}</strong>
-                <span>{guardian.relationship} · {guardian.phone || guardian.email || "Contato não informado"}</span>
+              <div className="patient-profile-title-row">
+                <h2 id="patient-detail-title">{displayName}</h2>
+                <span className="status-badge">{patientStatus(patient.status)}</span>
               </div>
-            )) : <p className="muted">Nenhum responsável ativo cadastrado.</p>}
-            <h3>Profissionais vinculados</h3>
-            {patient.professional_links.length ? patient.professional_links.map((link) => (
-              <div key={link.id}>
-                <strong>
-                  <Link className="patient-name-link" href={`/clinics/${id}/professionals/${link.professional}`}>
-                    {link.professional_name}
-                  </Link>
-                </strong>
-                <span>{link.is_primary ? "Profissional principal" : "Profissional vinculado"}</span>
-              </div>
-            )) : <p className="muted">Nenhum profissional vinculado.</p>}
+              <p>{calculateAge(patient.birth_date)} · {formatDate(patient.birth_date)} · {sexLabel(patient.sex)}</p>
+            </div>
           </div>
-        </article>
+          <div className="patient-profile-contact">
+            <div><strong>{patient.phone || "Telefone não informado"}</strong><span>Telefone</span></div>
+            <div><strong>{patient.email || "E-mail não informado"}</strong><span>E-mail</span></div>
+          </div>
+        </section>
+
+        <nav className="patient-profile-tabs" aria-label="Áreas do paciente">
+          <span className="is-active">Visão geral</span>
+          <Link href={`/clinics/${id}/appointments`}>Agenda</Link>
+          <Link href={`/clinics/${id}/medical-records`}>Prontuário</Link>
+          <Link href={`/clinics/${id}/documents`}>Documentos</Link>
+          <Link href={`/clinics/${id}/assessments`}>Avaliação psicológica</Link>
+          <Link href={`/clinics/${id}/billing`}>Financeiro</Link>
+        </nav>
+
+        {error ? <div className="alert" role="alert" aria-live="assertive">{error}</div> : null}
+
+        <section className="patient-profile-grid">
+          <article className="panel-card patient-profile-card">
+            <div className="panel-heading">
+              <div><p className="eyebrow">Cadastro</p><h2>Dados do paciente</h2></div>
+              <Link className="button-secondary button-compact" href={`/clinics/${id}/patients/${patient.id}/edit`}>Editar</Link>
+            </div>
+            <dl className="patient-profile-list">
+              <div><dt>Nome completo</dt><dd>{patient.full_name}</dd></div>
+              <div><dt>Data de nascimento</dt><dd>{formatDate(patient.birth_date)}</dd></div>
+              <div><dt>Idade</dt><dd>{calculateAge(patient.birth_date)}</dd></div>
+              <div><dt>Sexo</dt><dd>{sexLabel(patient.sex)}</dd></div>
+              <div><dt>Estado civil</dt><dd>{patient.marital_status || "-"}</dd></div>
+              <div><dt>Profissão</dt><dd>{patient.profession || "-"}</dd></div>
+              <div><dt>Escolaridade</dt><dd>{patient.education || "-"}</dd></div>
+              <div><dt>Responsável</dt><dd>{mainGuardian ? `${mainGuardian.full_name} (${mainGuardian.relationship})` : "-"}</dd></div>
+            </dl>
+          </article>
+
+          <article className="panel-card patient-profile-card">
+            <div className="panel-heading">
+              <div><p className="eyebrow">Contato</p><h2>Contato e endereço</h2></div>
+              <Link className="button-secondary button-compact" href={`/clinics/${id}/patients/${patient.id}/edit`}>Editar</Link>
+            </div>
+            <dl className="patient-profile-list">
+              <div><dt>Telefone</dt><dd>{patient.phone || "-"}</dd></div>
+              <div><dt>E-mail</dt><dd>{patient.email || "-"}</dd></div>
+              <div><dt>Endereço</dt><dd>{patient.address || "-"}</dd></div>
+              <div><dt>Contato de emergência</dt><dd>{patient.emergency_contact_name || "-"}</dd></div>
+              <div><dt>Telefone de emergência</dt><dd>{patient.emergency_contact_phone || "-"}</dd></div>
+              <div><dt>Profissional principal</dt><dd>{primaryProfessional?.professional_name || "-"}</dd></div>
+            </dl>
+          </article>
+        </section>
+
+        <section className="patient-profile-stat-grid" aria-label="Resumo operacional">
+          <article className="panel-card patient-profile-stat"><strong>Não agendada</strong><span>Próxima consulta</span><Link href={`/clinics/${id}/appointments/new`}>Agendar agora</Link></article>
+          <article className="panel-card patient-profile-stat"><strong>0</strong><span>Documentos</span><Link href={`/clinics/${id}/documents`}>Ver documentos</Link></article>
+          <article className="panel-card patient-profile-stat"><strong>0</strong><span>Avaliações</span><Link href={`/clinics/${id}/assessments`}>Ver avaliações</Link></article>
+        </section>
+
+        <section className="panel-card patient-profile-observations">
+          <div className="panel-heading">
+            <div><p className="eyebrow">Observações</p><h2>Observações</h2></div>
+            <Link className="button-secondary button-compact" href={`/clinics/${id}/patients/${patient.id}/edit`}>Editar</Link>
+          </div>
+          <div className="empty-state">
+            <h3>Nenhuma observação registrada.</h3>
+            <p>Utilize este espaço para informações importantes sobre o paciente.</p>
+          </div>
+        </section>
       </section>
     </AppShell>
   );
