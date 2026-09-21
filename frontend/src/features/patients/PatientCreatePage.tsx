@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, use, useEffect, useState, useTransition } from "react";
 
+import { AppShell } from "@/components/AppShell";
 import { createPatient, listProfessionals } from "@/lib/api";
 import { maskCpfInput, maskPhoneInput } from "@/lib/formMasks";
 import type { Professional } from "@/lib/types";
@@ -13,6 +14,23 @@ type PatientCreatePageProps = {
   params: Promise<{ id: string }>;
 };
 
+function calculateAge(birthDate: string) {
+  if (!birthDate) return "--";
+
+  const date = new Date(`${birthDate}T12:00:00`);
+  if (Number.isNaN(date.getTime())) return "--";
+
+  const today = new Date();
+  let age = today.getFullYear() - date.getFullYear();
+  const monthDiff = today.getMonth() - date.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < date.getDate())) {
+    age -= 1;
+  }
+
+  return age >= 0 ? String(age) : "--";
+}
+
 export function PatientCreatePage({ params }: PatientCreatePageProps) {
   const { id } = use(params);
   const router = useRouter();
@@ -21,6 +39,7 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
   const [error, setError] = useState("");
   const [preview, setPreview] = useState({ birth_date: "", cpf: "", full_name: "", phone: "" });
   const [isPending, startTransition] = useTransition();
+  const age = calculateAge(preview.birth_date);
 
   function updatePreview(event: ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.currentTarget;
@@ -106,22 +125,29 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
   }
 
   return (
-    <main className="patient-intake-page">
+    <AppShell
+      activeNav="patients"
+      eyebrow="Cadastro protegido"
+      title="Cadastrar paciente"
+      user={user}
+      actions={
+        <Link className="button-secondary button-compact" href={`/clinics/${id}/patients`}>
+          Voltar para pacientes
+        </Link>
+      }
+    >
+    <section className="patient-intake-page">
       <section className="patient-intake-shell" aria-labelledby="patient-form-title">
         <div className="patient-intake-topline">
           <div>
             <p className="patient-breadcrumb">Pacientes / Novo paciente</p>
             <div className="patient-intake-heading">
-              <span className="patient-intake-icon" aria-hidden="true">+</span>
               <div>
                 <h1 id="patient-form-title">Cadastro de Paciente</h1>
                 <p>Preencha as informações para criar um novo paciente na sua clínica.</p>
               </div>
             </div>
           </div>
-          <Link className="back-link" href={`/clinics/${id}/patients`}>
-            Voltar para pacientes
-          </Link>
         </div>
 
         <nav className="patient-intake-tabs" aria-label="Etapas do cadastro">
@@ -150,7 +176,7 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
                 </div>
                 <div className="patient-intake-field">
                   <label htmlFor="patient_age">Idade</label>
-                  <input id="patient_age" value="--" readOnly aria-label="Idade gerada automaticamente" />
+                  <input id="patient_age" value={age} readOnly aria-label="Idade gerada automaticamente" />
                 </div>
                 <div className="patient-intake-field">
                   <label htmlFor="sex">Sexo biológico</label>
@@ -362,6 +388,7 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
               <dl>
                 <div><dt>Nome</dt><dd>{preview.full_name || "Não preenchido"}</dd></div>
                 <div><dt>Data de nascimento</dt><dd>{preview.birth_date || "--"}</dd></div>
+                <div><dt>Idade</dt><dd>{age === "--" ? "--" : `${age} anos`}</dd></div>
                 <div><dt>CPF</dt><dd>{preview.cpf || "--"}</dd></div>
                 <div><dt>Contato</dt><dd>{preview.phone || "--"}</dd></div>
                 <div><dt>Paciente ativo</dt><dd>Sim</dd></div>
@@ -374,6 +401,7 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
           </aside>
         </div>
       </section>
-    </main>
+    </section>
+    </AppShell>
   );
 }

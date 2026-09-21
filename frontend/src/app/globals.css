@@ -4399,6 +4399,94 @@ body:has(.app-shell) {
   }
 }
 
+/* Patient intake aligned with the app shell visual system. */
+.patient-intake-page {
+  min-height: auto;
+  background: transparent;
+  padding: 0;
+}
+
+.patient-intake-shell {
+  max-width: none;
+  margin: 0;
+}
+
+.patient-intake-topline {
+  padding: 0;
+}
+
+.patient-breadcrumb,
+.patient-intake-heading p,
+.patient-intake-field small,
+.patient-photo-card p,
+.patient-summary-card dd,
+.patient-active-toggle small {
+  color: var(--muted);
+}
+
+.patient-intake-heading {
+  margin-top: 0.35rem;
+}
+
+.patient-intake-heading h1,
+.patient-intake-form legend,
+.patient-intake-field label,
+.patient-radio-row label,
+.patient-active-toggle,
+.patient-photo-card h2,
+.patient-summary-card h2,
+.patient-summary-card dt,
+.patient-quote-card p {
+  color: var(--accent-dark);
+}
+
+.patient-intake-tabs,
+.patient-intake-form,
+.patient-photo-card,
+.patient-summary-card,
+.patient-quote-card {
+  border-color: var(--line);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-soft);
+}
+
+.patient-intake-tabs span {
+  border-right-color: var(--line);
+  color: var(--muted);
+}
+
+.patient-intake-tabs .is-active {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+}
+
+.patient-intake-form fieldset,
+.patient-intake-footer {
+  border-color: var(--line);
+}
+
+.patient-intake-field input,
+.patient-intake-field select {
+  border-color: var(--line);
+  background: var(--surface-strong);
+  color: var(--text);
+}
+
+.patient-intake-field input[readonly] {
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.patient-photo-placeholder,
+.patient-quote-card {
+  background: linear-gradient(135deg, var(--accent-soft), var(--surface-strong));
+  color: var(--accent-dark);
+}
+
+.patient-active-toggle input {
+  accent-color: var(--accent);
+}
+
 .calendar-day.is-today {
   background: #7357d8;
 }
