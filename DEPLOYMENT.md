@@ -86,6 +86,27 @@ docker compose --env-file .env.production -f docker-compose.prod.yml exec web uv
 - MFA deve ser habilitado para superadmins e administradores de clínica antes de uso real.
 - Acompanhe `GET /api/v1/audit/` e `GET /api/v1/privacy/requests/` na rotina operacional.
 
+## Render + Supabase
+
+No Render, este projeto deve usar o banco do Supabase em produção.
+
+- Configure `DATABASE_URL` manualmente no painel do Render com a connection string do Supabase.
+- Use a URL do pooler com `sslmode=require`, por exemplo:
+
+```text
+postgresql://postgres.PROJECT_REF:SENHA@aws-0-us-east-1.pooler.supabase.com:6543/postgres?sslmode=require
+```
+
+- Não use o banco Postgres gerenciado pelo Render para produção se a base oficial for Supabase.
+- O `render.yaml` deixa `DATABASE_URL` como `sync: false` para evitar commitar segredo ou criar banco errado.
+- Deixe `RUN_MIGRATIONS=true` apenas quando quiser que o deploy aplique migrations automaticamente no Supabase.
+
+Após alterar `DATABASE_URL`, valide:
+
+```bash
+curl https://gopsi.onrender.com/health/
+```
+
 ## Serviços
 
 - `nginx`: proxy HTTPS.
