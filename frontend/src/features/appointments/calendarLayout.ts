@@ -34,6 +34,12 @@ export function minutesFromGridStart(time: string, gridStartHour = GRID_START_HO
   return timeToMinutes(time) - gridStartHour * 60;
 }
 
+export function minutesToTime(minutes: number) {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  return `${String(hours).padStart(2, "0")}:${String(remainingMinutes).padStart(2, "0")}`;
+}
+
 export function calendarEventDurationMinutes(item: TimeRange) {
   return timeToMinutes(item.end_time) - timeToMinutes(item.start_time);
 }

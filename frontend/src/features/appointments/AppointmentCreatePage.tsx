@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, use, useEffect, useState, useTransition } from "react";
 
 import { createAppointment, listPatients, listProfessionals } from "@/lib/api";
@@ -15,11 +15,16 @@ type AppointmentCreatePageProps = {
 export function AppointmentCreatePage({ params }: AppointmentCreatePageProps) {
   const { id } = use(params);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { loading, user } = useAuthenticatedData();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
+  const defaultDate = searchParams.get("date") ?? "";
+  const defaultStartTime = searchParams.get("start_time") ?? "";
+  const defaultEndTime = searchParams.get("end_time") ?? "";
+  const defaultProfessional = searchParams.get("professional") ?? "";
 
   useEffect(() => {
     if (!user) {
@@ -93,7 +98,7 @@ export function AppointmentCreatePage({ params }: AppointmentCreatePageProps) {
             </div>
             <div className="field-group">
               <label htmlFor="professional">Profissional</label>
-              <select id="professional" name="professional" required defaultValue="">
+              <select id="professional" name="professional" required defaultValue={defaultProfessional}>
                 <option value="">Selecione</option>
                 {professionals.map((professional) => (
                   <option key={professional.id} value={professional.id}>{professional.full_name}</option>
@@ -107,7 +112,7 @@ export function AppointmentCreatePage({ params }: AppointmentCreatePageProps) {
           <div className="field-grid">
             <div className="field-group">
               <label htmlFor="date">Data</label>
-              <input id="date" name="date" type="date" required />
+              <input id="date" name="date" type="date" required defaultValue={defaultDate} />
             </div>
             <div className="field-group">
               <label htmlFor="modality">Modalidade</label>
@@ -121,11 +126,11 @@ export function AppointmentCreatePage({ params }: AppointmentCreatePageProps) {
           <div className="field-grid">
             <div className="field-group">
               <label htmlFor="start_time">Hora inicial</label>
-              <input id="start_time" name="start_time" type="time" required />
+              <input id="start_time" name="start_time" type="time" required defaultValue={defaultStartTime} />
             </div>
             <div className="field-group">
               <label htmlFor="end_time">Hora final</label>
-              <input id="end_time" name="end_time" type="time" required />
+              <input id="end_time" name="end_time" type="time" required defaultValue={defaultEndTime} />
             </div>
           </div>
           <div className="field-group">

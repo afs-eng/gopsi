@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { type CSSProperties, use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { type CSSProperties, type MouseEvent, use, useEffect, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
 import {
@@ -10,6 +11,7 @@ import {
   HOUR_HEIGHT,
   calendarEventDurationMinutes,
   layoutCalendarEvents,
+  minutesToTime,
 } from "@/features/appointments/calendarLayout";
 import {
   getClinic,
@@ -98,6 +100,7 @@ function itemSearchValues(item: CalendarItem) {
 
 export function AppointmentsPage({ params }: AppointmentsPageProps) {
   const { id } = use(params);
+  const router = useRouter();
   const { loading, user } = useAuthenticatedData();
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -106,6 +109,9 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
   const [calendarView, setCalendarView] = useState<CalendarView>("week");
   const [search, setSearch] = useState("");
+  const [professionalFilter, setProfessionalFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [modalityFilter, setModalityFilter] = useState("all");
 
   useEffect(() => {
     if (!user) {
@@ -143,7 +149,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
   const weekEnd = addDays(weekStart, 6);
   const hours = Array.from({ length: GRID_END_HOUR - GRID_START_HOUR }, (_, index) => GRID_START_HOUR + index);
   const normalizedSearch = search.trim().toLowerCase();
-  const allCalendarItems: CalendarItem[] = [
+  const searchableCalendarItems: CalendarItem[] = [
     ...appointments
       .filter((appointment) => appointment.is_active)
       .map((appointment) => ({
@@ -177,6 +183,17 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
       .filter(Boolean)
       .some((value) => String(value).toLowerCase().includes(normalizedSearch));
     return matchesSearch;
+  });
+  const professionalOptions = Array.from(new Map(searchableCalendarItems.map((item) => [
+    item.type === "appointment" ? item.source.professional : item.source.professional,
+    item.subtitle,
+  ])).entries()).sort((a, b) => a[1].localeCompare(b[1]));
+  const allCalendarItems = searchableCalendarItems.filter((item) => {
+    const sourceProfessional = item.source.professional;
+    const matchesProfessional = professionalFilter === "all" || sourceProfessional === professionalFilter;
+    const matchesStatus = statusFilter === "all" || (item.type === "appointment" && item.status === statusFilter);
+    const matchesModality = modalityFilter === "all" || (item.type === "appointment" && item.modality === modalityFilter);
+    return matchesProfessional && matchesStatus && matchesModality;
   });
   const calendarItems = allCalendarItems.filter((item) => {
     const itemDate = localDate(item.date);
@@ -215,6 +232,29 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
     if (view === "month") {
       setWeekStart((current) => startOfWeek(startOfMonth(current)));
     }
+  }
+
+  function openCreateAppointmentAt(day: Date, event: MouseEvent<HTMLDivElement>) {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    const clickY = Math.max(0, event.clientY - rect.top);
+    const minutesFromStart = Math.round(((clickY / HOUR_HEIGHT) * 60) / 15) * 15;
+    const startMinutes = GRID_START_HOUR * 60 + minutesFromStart;
+    const endMinutes = Math.min(GRID_END_HOUR * 60, startMinutes + 50);
+    const query = new URLSearchParams({
+      date: dateKey(day),
+      end_time: minutesToTime(endMinutes),
+      start_time: minutesToTime(startMinutes),
+    });
+
+    if (professionalFilter !== "all") {
+      query.set("professional", professionalFilter);
+    }
+
+    router.push(`/clinics/${id}/appointments/new?${query.toString()}`);
   }
 
   return (
@@ -314,6 +354,29 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
               <span>Buscar</span>
               <input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Paciente, profissional ou status" />
             </label>
+            <div className="calendar-filter-row" aria-label="Filtros da agenda">
+              <select value={professionalFilter} onChange={(event) => setProfessionalFilter(event.target.value)} aria-label="Filtrar por profissional">
+                <option value="all">Profissionais</option>
+                {professionalOptions.map(([professionalId, professionalName]) => (
+                  <option key={professionalId} value={professionalId}>{professionalName}</option>
+                ))}
+              </select>
+              <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} aria-label="Filtrar por status">
+                <option value="all">Status</option>
+                <option value="SCHEDULED">Agendada</option>
+                <option value="CONFIRMED">Confirmada</option>
+                <option value="IN_PROGRESS">Em atendimento</option>
+                <option value="COMPLETED">Concluída</option>
+                <option value="CANCELLED">Cancelada</option>
+                <option value="NO_SHOW">Faltou</option>
+              </select>
+              <select value={modalityFilter} onChange={(event) => setModalityFilter(event.target.value)} aria-label="Filtrar por modalidade">
+                <option value="all">Modalidades</option>
+                <option value="IN_PERSON">Presencial</option>
+                <option value="ONLINE">Online</option>
+                <option value="HYBRID">Híbrida</option>
+              </select>
+            </div>
           </div>
 
           {calendarView === "week" ? (
@@ -336,7 +399,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
                 const dayItems = calendarItems.filter((item) => item.date === key);
                 const dayItemLayouts = layoutCalendarEvents(dayItems);
                 return (
-                  <div className={`calendar-day-column ${key === today ? "is-today" : ""}`} key={key}>
+                  <div className={`calendar-day-column ${key === today ? "is-today" : ""}`} key={key} onClick={(event) => openCreateAppointmentAt(day, event)} title="Clique em um horário vazio para agendar">
                     {dayItems.map((item) => {
                       const layout = dayItemLayouts.get(item);
                       return (

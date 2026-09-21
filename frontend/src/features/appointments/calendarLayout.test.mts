@@ -6,6 +6,7 @@ import {
   calendarEventDurationMinutes,
   calendarEventPosition,
   layoutCalendarEvents,
+  minutesToTime,
 } from "./calendarLayout.ts";
 
 function assertClose(actual: number, expected: number) {
@@ -13,6 +14,12 @@ function assertClose(actual: number, expected: number) {
 }
 
 describe("calendar event positioning", () => {
+  it("formats minutes as time strings", () => {
+    assert.equal(minutesToTime(7 * 60), "07:00");
+    assert.equal(minutesToTime(8 * 60 + 15), "08:15");
+    assert.equal(minutesToTime(18 * 60 + 50), "18:50");
+  });
+
   it("positions events from their exact start time", () => {
     const cases = [
       ["07:00", "08:00", 0, 84],
