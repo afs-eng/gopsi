@@ -1,3 +1,4 @@
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.viewsets import ModelViewSet
 
 from apps.patients.models import PatientStatus
@@ -9,6 +10,7 @@ from apps.patients.serializers import PatientSerializer
 class PatientViewSet(ModelViewSet):
     serializer_class = PatientSerializer
     permission_classes = [CanManageClinicPatients]
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
 
     def get_queryset(self):
         queryset = patients_visible_to_user(self.request.user).prefetch_related(

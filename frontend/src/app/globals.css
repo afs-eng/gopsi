@@ -4437,7 +4437,7 @@ body:has(.app-shell) {
 .patient-summary-card h2,
 .patient-summary-card dt,
 .patient-quote-card p {
-  color: var(--accent-dark);
+  color: #142f5b;
 }
 
 .patient-intake-tabs,
@@ -4456,8 +4456,8 @@ body:has(.app-shell) {
 }
 
 .patient-intake-tabs .is-active {
-  background: var(--accent-soft);
-  color: var(--accent-dark);
+  background: #eee9ff;
+  color: #5e45c4;
 }
 
 .patient-intake-form fieldset,
@@ -4479,12 +4479,31 @@ body:has(.app-shell) {
 
 .patient-photo-placeholder,
 .patient-quote-card {
-  background: linear-gradient(135deg, var(--accent-soft), var(--surface-strong));
-  color: var(--accent-dark);
+  background: linear-gradient(135deg, #eee9ff, var(--surface-strong));
+  color: #5e45c4;
+}
+
+.patient-photo-placeholder {
+  background-position: center;
+  background-size: cover;
+}
+
+.patient-photo-button {
+  cursor: pointer;
+  justify-content: center;
+}
+
+.patient-photo-button input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 .patient-active-toggle input {
-  accent-color: var(--accent);
+  accent-color: #7357d8;
 }
 
 .calendar-day.is-today {

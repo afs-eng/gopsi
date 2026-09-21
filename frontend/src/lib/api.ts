@@ -41,7 +41,7 @@ type RequestOptions = RequestInit & { authenticated?: boolean };
 async function apiFetch<T>(path: string, options: RequestOptions = {}) {
   const headers = new Headers(options.headers);
 
-  if (!headers.has("Content-Type") && options.body) {
+  if (!headers.has("Content-Type") && options.body && !(options.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
 
@@ -164,6 +164,13 @@ export async function createPatient(payload: PatientPayload) {
   return apiFetch<Patient>("/api/v1/patients/", {
     method: "POST",
     body: JSON.stringify(payload),
+  });
+}
+
+export async function createPatientFormData(payload: FormData) {
+  return apiFetch<Patient>("/api/v1/patients/", {
+    method: "POST",
+    body: payload,
   });
 }
 

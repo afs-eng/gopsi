@@ -47,6 +47,8 @@ class ProfessionalPatientSerializer(serializers.ModelSerializer):
 class PatientSerializer(serializers.ModelSerializer):
     guardians = GuardianSerializer(many=True, required=False)
     professional_links = ProfessionalPatientSerializer(many=True, required=False)
+    guardians_json = serializers.JSONField(write_only=True, required=False)
+    professional_links_json = serializers.JSONField(write_only=True, required=False)
 
     class Meta:
         model = Patient
@@ -58,15 +60,34 @@ class PatientSerializer(serializers.ModelSerializer):
             "cpf",
             "birth_date",
             "sex",
+            "gender_identity",
+            "photo",
+            "record_number",
+            "marital_status",
+            "education",
+            "profession",
+            "occupation",
             "phone",
             "email",
             "address",
+            "zip_code",
+            "address_number",
+            "address_complement",
+            "district",
+            "city",
+            "state",
+            "has_health_plan",
+            "health_plan",
+            "health_plan_card",
+            "referral_source",
             "emergency_contact_name",
             "emergency_contact_phone",
             "status",
             "is_active",
             "guardians",
+            "guardians_json",
             "professional_links",
+            "professional_links_json",
             "created_at",
             "updated_at",
         ]
@@ -91,6 +112,14 @@ class PatientSerializer(serializers.ModelSerializer):
         return links
 
     def create(self, validated_data):
+        validated_data["guardians"] = validated_data.pop(
+            "guardians_json",
+            validated_data.get("guardians", []),
+        )
+        validated_data["professional_links"] = validated_data.pop(
+            "professional_links_json",
+            validated_data.get("professional_links", []),
+        )
         guardians = validated_data.pop("guardians", [])
         professional_links = validated_data.pop("professional_links", [])
         patient = Patient.objects.create(
@@ -102,13 +131,24 @@ class PatientSerializer(serializers.ModelSerializer):
             Guardian.objects.create(patient=patient, **guardian)
 
         for link in professional_links:
-            ProfessionalPatient.objects.create(patient=patient, **link)
+            professional = link.get("professional")
+            if hasattr(professional, "id"):
+                ProfessionalPatient.objects.create(patient=patient, **link)
+            else:
+                ProfessionalPatient.objects.create(
+                    patient=patient,
+                    professional_id=professional,
+                    is_primary=link.get("is_primary", False),
+                    is_active=link.get("is_active", True),
+                )
 
         return patient
 
     def update(self, instance, validated_data):
         validated_data.pop("guardians", None)
+        validated_data.pop("guardians_json", None)
         validated_data.pop("professional_links", None)
+        validated_data.pop("professional_links_json", None)
         return super().update(instance, validated_data)
 
     def validate(self, attrs):
@@ -116,4 +156,17 @@ class PatientSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Operadores da plataforma não acessam dados de pacientes."
             )
+
+        professional_links = attrs.get("professional_links_json", [])
+        if professional_links:
+            visible_professionals = professionals_visible_to_user(
+                self.context["request"].user,
+            )
+            for link in professional_links:
+                professional_id = link.get("professional")
+                if not visible_professionals.filter(id=professional_id).exists():
+                    raise serializers.ValidationError(
+                        "Profissional não encontrado."
+                    )
+
         return attrs

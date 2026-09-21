@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, use, useEffect, useState, useTransition } from "react";
 
 import { AppShell } from "@/components/AppShell";
-import { createPatient, listProfessionals } from "@/lib/api";
+import { createPatientFormData, listProfessionals } from "@/lib/api";
 import { maskCpfInput, maskPhoneInput } from "@/lib/formMasks";
 import type { Professional } from "@/lib/types";
 import { useAuthenticatedData } from "@/features/clinics/useAuthenticatedData";
@@ -37,6 +37,7 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
   const { loading, user } = useAuthenticatedData();
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [error, setError] = useState("");
+  const [photoPreview, setPhotoPreview] = useState("");
   const [preview, setPreview] = useState({ birth_date: "", cpf: "", full_name: "", phone: "" });
   const [isPending, startTransition] = useTransition();
   const age = calculateAge(preview.birth_date);
@@ -48,6 +49,16 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
     }
   }
 
+  function handlePhotoChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.currentTarget.files?.[0];
+    if (!file) return;
+
+    setPhotoPreview((current) => {
+      if (current) URL.revokeObjectURL(current);
+      return URL.createObjectURL(file);
+    });
+  }
+
   useEffect(() => {
     if (!user) {
       return;
@@ -55,6 +66,10 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
 
     listProfessionals(id).then(setProfessionals).catch(() => setProfessionals([]));
   }, [id, user]);
+
+  useEffect(() => () => {
+    if (photoPreview) URL.revokeObjectURL(photoPreview);
+  }, [photoPreview]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -86,33 +101,29 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
         : null,
     ].filter((guardian) => guardian !== null);
 
+    formData.set("clinic", id);
+    formData.set("has_health_plan", formData.get("has_health_plan") === "yes" ? "true" : "false");
+    formData.set("guardians_json", JSON.stringify(guardians));
+    formData.set("professional_links_json", JSON.stringify(professionalId ? [{ professional: professionalId, is_primary: true }] : []));
+    formData.delete("father_full_name");
+    formData.delete("mother_full_name");
+    formData.delete("professional");
+
+    if (!String(formData.get("birth_date") ?? "")) {
+      formData.delete("birth_date");
+    }
+
+    const photo = formData.get("patient_photo");
+    if (photo instanceof File && !photo.name) {
+      formData.delete("patient_photo");
+    } else if (photo instanceof File) {
+      formData.set("photo", photo);
+      formData.delete("patient_photo");
+    }
+
     startTransition(async () => {
       try {
-        await createPatient({
-          clinic: id,
-          full_name: String(formData.get("full_name") ?? ""),
-          social_name: String(formData.get("social_name") ?? ""),
-          cpf: String(formData.get("cpf") ?? ""),
-          birth_date: String(formData.get("birth_date") ?? "") || null,
-          sex: String(formData.get("sex") ?? "NOT_INFORMED") as
-            | "FEMALE"
-            | "MALE"
-            | "OTHER"
-            | "NOT_INFORMED",
-          phone: String(formData.get("phone") ?? ""),
-          email: String(formData.get("email") ?? ""),
-          address: String(formData.get("address") ?? ""),
-          emergency_contact_name: String(
-            formData.get("emergency_contact_name") ?? "",
-          ),
-          emergency_contact_phone: String(
-            formData.get("emergency_contact_phone") ?? "",
-          ),
-          guardians,
-          professional_links: professionalId
-            ? [{ professional: professionalId, is_primary: true }]
-            : [],
-        });
+        await createPatientFormData(formData);
         router.replace(`/clinics/${id}/patients`);
       } catch {
         setError("Não foi possível cadastrar o paciente. Confira permissões e vínculo.");
@@ -137,17 +148,9 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
       }
     >
     <section className="patient-intake-page">
-      <section className="patient-intake-shell" aria-labelledby="patient-form-title">
+      <section className="patient-intake-shell" aria-label="Formulário de cadastro de paciente">
         <div className="patient-intake-topline">
-          <div>
-            <p className="patient-breadcrumb">Pacientes / Novo paciente</p>
-            <div className="patient-intake-heading">
-              <div>
-                <h1 id="patient-form-title">Cadastro de Paciente</h1>
-                <p>Preencha as informações para criar um novo paciente na sua clínica.</p>
-              </div>
-            </div>
-          </div>
+          <p className="patient-breadcrumb">Pacientes / Novo paciente</p>
         </div>
 
         <nav className="patient-intake-tabs" aria-label="Etapas do cadastro">
@@ -233,10 +236,17 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
                   <label htmlFor="education">Escolaridade</label>
                   <select id="education" name="education" defaultValue="">
                     <option value="">Selecione</option>
-                    <option>Ensino fundamental</option>
-                    <option>Ensino médio</option>
-                    <option>Ensino superior</option>
-                    <option>Pós-graduação</option>
+                    <option>Educação Infantil</option>
+                    <option>Ensino Fundamental Incompleto</option>
+                    <option>Ensino Fundamental Completo</option>
+                    <option>Ensino Médio Incompleto</option>
+                    <option>Ensino Médio Completo</option>
+                    <option>Ensino Técnico</option>
+                    <option>Ensino Superior Incompleto</option>
+                    <option>Ensino Superior Completo</option>
+                    <option>Pós-Graduação / Especialização / MBA</option>
+                    <option>Mestrado</option>
+                    <option>Doutorado / Pós-Doutorado</option>
                   </select>
                 </div>
                 <div className="patient-intake-field">
@@ -378,8 +388,17 @@ export function PatientCreatePage({ params }: PatientCreatePageProps) {
           <aside className="patient-intake-sidebar" aria-label="Resumo do cadastro">
             <article className="patient-photo-card">
               <h2>Foto do paciente</h2>
-              <div className="patient-photo-placeholder" aria-hidden="true">P</div>
-              <button className="button-secondary button-compact" type="button" disabled>Adicionar foto</button>
+              <div
+                className="patient-photo-placeholder"
+                style={photoPreview ? { backgroundImage: `url(${photoPreview})` } : undefined}
+                aria-hidden="true"
+              >
+                {photoPreview ? null : "P"}
+              </div>
+              <label className="button-secondary button-compact patient-photo-button" htmlFor="patient_photo">
+                Adicionar foto
+                <input id="patient_photo" name="patient_photo" type="file" accept="image/png,image/jpeg,image/webp" onChange={handlePhotoChange} />
+              </label>
               <p>JPG, PNG ou WEBP (máx. 5MB)</p>
             </article>
 
