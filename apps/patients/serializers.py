@@ -150,6 +150,7 @@ class PatientSerializer(serializers.ModelSerializer):
         )
         guardians = validated_data.pop("guardians", [])
         professional_links = validated_data.pop("professional_links", [])
+        validated_data.pop("is_active", None)
         patient = Patient.objects.create(
             **validated_data,
             is_active=True,
