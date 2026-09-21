@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { use, useEffect, useState, useTransition } from "react";
 
 import { AppShell } from "@/components/AppShell";
@@ -25,6 +25,7 @@ const defaultBody = "Declaro, para os devidos fins, que o atendimento foi regist
 export function DocumentCreatePage({ params }: DocumentCreatePageProps) {
   const { id } = use(params);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { loading, user } = useAuthenticatedData();
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [templates, setTemplates] = useState<DocumentTemplate[]>([]);
@@ -33,6 +34,7 @@ export function DocumentCreatePage({ params }: DocumentCreatePageProps) {
   const [mode, setMode] = useState<"document" | "template">("document");
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
+  const defaultPatient = searchParams.get("patient") ?? "";
 
   useEffect(() => {
     if (!user) {
@@ -176,7 +178,7 @@ export function DocumentCreatePage({ params }: DocumentCreatePageProps) {
                   </select></label>
               </div>
               <div className="field-grid">
-                <label className="field-group" htmlFor="patient">Paciente<select id="patient" name="patient" defaultValue="">
+                <label className="field-group" htmlFor="patient">Paciente<select id="patient" name="patient" defaultValue={defaultPatient}>
                     <option value="">Sem paciente</option>
                     {patients.map((patient) => (
                       <option key={patient.id} value={patient.id}>{patient.full_name}</option>

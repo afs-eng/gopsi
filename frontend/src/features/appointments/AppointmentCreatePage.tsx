@@ -25,6 +25,7 @@ export function AppointmentCreatePage({ params }: AppointmentCreatePageProps) {
   const defaultStartTime = searchParams.get("start_time") ?? "";
   const defaultEndTime = searchParams.get("end_time") ?? "";
   const defaultProfessional = searchParams.get("professional") ?? "";
+  const defaultPatient = searchParams.get("patient") ?? "";
 
   useEffect(() => {
     if (!user) {
@@ -89,7 +90,7 @@ export function AppointmentCreatePage({ params }: AppointmentCreatePageProps) {
           <div className="field-grid">
             <div className="field-group">
               <label htmlFor="patient">Paciente</label>
-              <select id="patient" name="patient" required defaultValue="">
+              <select id="patient" name="patient" required defaultValue={defaultPatient}>
                 <option value="">Selecione</option>
                 {patients.map((patient) => (
                   <option key={patient.id} value={patient.id}>{patient.full_name}</option>

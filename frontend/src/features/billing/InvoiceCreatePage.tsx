@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, use, useEffect, useState, useTransition } from "react";
 
 import { AppShell } from "@/components/AppShell";
@@ -16,12 +16,14 @@ type InvoiceCreatePageProps = {
 export function InvoiceCreatePage({ params }: InvoiceCreatePageProps) {
   const { id } = use(params);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { loading, user } = useAuthenticatedData();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
+  const defaultPatient = searchParams.get("patient") ?? "";
 
   useEffect(() => {
     if (!user) {
@@ -102,7 +104,7 @@ export function InvoiceCreatePage({ params }: InvoiceCreatePageProps) {
           <div className="field-grid">
             <div className="field-group">
               <label htmlFor="patient">Paciente</label>
-              <select id="patient" name="patient" defaultValue="">
+              <select id="patient" name="patient" defaultValue={defaultPatient}>
                 <option value="">Sem paciente</option>
                 {patients.map((patient) => (
                   <option key={patient.id} value={patient.id}>{patient.full_name}</option>

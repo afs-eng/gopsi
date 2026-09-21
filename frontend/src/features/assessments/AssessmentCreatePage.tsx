@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, use, useEffect, useState, useTransition } from "react";
 
 import { AppShell } from "@/components/AppShell";
@@ -26,12 +26,14 @@ type AssessmentCreatePageProps = {
 export function AssessmentCreatePage({ params }: AssessmentCreatePageProps) {
   const { id } = use(params);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { loading, user } = useAuthenticatedData();
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
+  const defaultPatient = searchParams.get("patient") ?? "";
 
   useEffect(() => {
     if (!user) return;
@@ -120,7 +122,7 @@ export function AssessmentCreatePage({ params }: AssessmentCreatePageProps) {
             <div className="field-grid">
               <label className="field-group" htmlFor="patient">
                 Paciente
-                <select id="patient" name="patient" required defaultValue="">
+                <select id="patient" name="patient" required defaultValue={defaultPatient}>
                   <option value="">Selecione</option>
                   {patients.map((patient) => (
                     <option key={patient.id} value={patient.id}>{patient.full_name}</option>

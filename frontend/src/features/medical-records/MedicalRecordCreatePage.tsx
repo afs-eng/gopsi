@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, use, useEffect, useState, useTransition } from "react";
 
 import {
@@ -20,12 +20,14 @@ type MedicalRecordCreatePageProps = {
 export function MedicalRecordCreatePage({ params }: MedicalRecordCreatePageProps) {
   const { id } = use(params);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { loading, user } = useAuthenticatedData();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
+  const defaultPatient = searchParams.get("patient") ?? "";
 
   useEffect(() => {
     if (!user) {
@@ -87,7 +89,7 @@ export function MedicalRecordCreatePage({ params }: MedicalRecordCreatePageProps
           <div className="field-grid">
             <div className="field-group">
               <label htmlFor="patient">Paciente</label>
-              <select id="patient" name="patient" required defaultValue="">
+              <select id="patient" name="patient" required defaultValue={defaultPatient}>
                 <option value="">Selecione</option>
                 {patients.map((patient) => (
                   <option key={patient.id} value={patient.id}>{patient.full_name}</option>
