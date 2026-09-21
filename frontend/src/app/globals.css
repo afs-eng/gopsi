@@ -2400,6 +2400,156 @@ h2 {
   display: none;
 }
 
+.quick-appointment-backdrop {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  display: grid;
+  align-items: start;
+  justify-items: center;
+  background: rgb(32 33 36 / 18%);
+  padding: clamp(1rem, 8vh, 4rem) 1rem 1rem;
+}
+
+.quick-appointment-modal {
+  width: min(34rem, 100%);
+  overflow: hidden;
+  border: 1px solid #dfe3ea;
+  border-radius: 1.5rem;
+  background: #f8fbff;
+  box-shadow: 0 22px 56px rgb(32 33 36 / 26%);
+}
+
+.quick-appointment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #eef3fb;
+  color: #5f6368;
+  padding: 0.8rem 1rem;
+  font-weight: 800;
+}
+
+.quick-appointment-header button {
+  cursor: pointer;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #3c4043;
+  font: inherit;
+  padding: 0.25rem 0.5rem;
+}
+
+.quick-appointment-header button:hover {
+  background: #e2e8f0;
+}
+
+.quick-appointment-form {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem 1rem 1.05rem;
+}
+
+.quick-appointment-title {
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid #1a73e8;
+  background: transparent;
+  color: #202124;
+  padding: 0.25rem 0 0.35rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.quick-appointment-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+  color: #3c4043;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.quick-appointment-tabs span {
+  border-radius: 0.55rem;
+  padding: 0.5rem 0.65rem;
+}
+
+.quick-appointment-tabs .is-active {
+  background: #d2e3fc;
+  color: #174ea6;
+}
+
+.quick-appointment-row {
+  display: grid;
+  grid-template-columns: 4.2rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+  color: #5f6368;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.quick-appointment-row > span {
+  color: #5f6368;
+  font-size: 0.72rem;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.quick-appointment-row input,
+.quick-appointment-row select,
+.quick-appointment-row textarea {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 0.65rem;
+  background: #ffffff;
+  color: #202124;
+  padding: 0.68rem 0.75rem;
+  font: inherit;
+}
+
+.quick-appointment-row input:focus,
+.quick-appointment-row select:focus,
+.quick-appointment-row textarea:focus,
+.quick-appointment-title:focus {
+  outline: 2px solid rgb(26 115 232 / 26%);
+  outline-offset: 2px;
+}
+
+.quick-appointment-time-grid {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1.3fr) repeat(2, minmax(6rem, 0.85fr));
+  gap: 0.5rem;
+}
+
+.quick-appointment-time-grid label {
+  display: grid;
+  gap: 0.25rem;
+  color: #5f6368;
+  font-size: 0.72rem;
+}
+
+.quick-appointment-footer {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 0.25rem;
+}
+
+@media (max-width: 620px) {
+  .quick-appointment-row,
+  .quick-appointment-time-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-appointment-row > span {
+    text-align: left;
+  }
+}
+
 .appointment-detail-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

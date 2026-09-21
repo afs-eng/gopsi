@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { type CSSProperties, type MouseEvent, use, useEffect, useState } from "react";
+import { type CSSProperties, type FormEvent, type MouseEvent, use, useEffect, useState, useTransition } from "react";
 
 import { AppShell } from "@/components/AppShell";
 import {
@@ -14,11 +13,14 @@ import {
   minutesToTime,
 } from "@/features/appointments/calendarLayout";
 import {
+  createAppointment,
   getClinic,
+  listPatients,
   listAppointments,
+  listProfessionals,
   listScheduleBlocks,
 } from "@/lib/api";
-import type { Appointment, Clinic, ScheduleBlock } from "@/lib/types";
+import type { Appointment, Clinic, Patient, Professional, ScheduleBlock } from "@/lib/types";
 import { useAuthenticatedData } from "@/features/clinics/useAuthenticatedData";
 
 type AppointmentsPageProps = {
@@ -39,6 +41,13 @@ type CalendarItem = {
 };
 
 type CalendarView = "week" | "month";
+
+type AppointmentDraft = {
+  date: string;
+  end_time: string;
+  professional: string;
+  start_time: string;
+};
 
 const weekDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
@@ -100,29 +109,35 @@ function itemSearchValues(item: CalendarItem) {
 
 export function AppointmentsPage({ params }: AppointmentsPageProps) {
   const { id } = use(params);
-  const router = useRouter();
   const { loading, user } = useAuthenticatedData();
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [scheduleBlocks, setScheduleBlocks] = useState<ScheduleBlock[]>([]);
   const [error, setError] = useState("");
+  const [modalError, setModalError] = useState("");
+  const [appointmentDraft, setAppointmentDraft] = useState<AppointmentDraft | null>(null);
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
   const [calendarView, setCalendarView] = useState<CalendarView>("week");
   const [search, setSearch] = useState("");
   const [professionalFilter, setProfessionalFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [modalityFilter, setModalityFilter] = useState("all");
+  const [isSavingAppointment, startSavingAppointment] = useTransition();
 
   useEffect(() => {
     if (!user) {
       return;
     }
 
-    Promise.all([getClinic(id), listAppointments(id), listScheduleBlocks(id)])
-      .then(([clinicData, appointmentsData, blockData]) => {
+    Promise.all([getClinic(id), listAppointments(id), listScheduleBlocks(id), listPatients(id), listProfessionals(id)])
+      .then(([clinicData, appointmentsData, blockData, patientData, professionalData]) => {
         setClinic(clinicData);
         setAppointments(appointmentsData);
         setScheduleBlocks(blockData);
+        setPatients(patientData);
+        setProfessionals(professionalData);
       })
       .catch(() => setError("Não foi possível carregar a agenda."));
   }, [id, user]);
@@ -184,10 +199,10 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
       .some((value) => String(value).toLowerCase().includes(normalizedSearch));
     return matchesSearch;
   });
-  const professionalOptions = Array.from(new Map(searchableCalendarItems.map((item) => [
-    item.type === "appointment" ? item.source.professional : item.source.professional,
-    item.subtitle,
-  ])).entries()).sort((a, b) => a[1].localeCompare(b[1]));
+  const professionalOptions = professionals
+    .filter((professional) => professional.is_active)
+    .map((professional) => [professional.id, professional.full_name] as const)
+    .sort((a, b) => a[1].localeCompare(b[1]));
   const allCalendarItems = searchableCalendarItems.filter((item) => {
     const sourceProfessional = item.source.professional;
     const matchesProfessional = professionalFilter === "all" || sourceProfessional === professionalFilter;
@@ -244,17 +259,49 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
     const minutesFromStart = Math.round(((clickY / HOUR_HEIGHT) * 60) / 15) * 15;
     const startMinutes = GRID_START_HOUR * 60 + minutesFromStart;
     const endMinutes = Math.min(GRID_END_HOUR * 60, startMinutes + 50);
-    const query = new URLSearchParams({
+    setModalError("");
+    setAppointmentDraft({
       date: dateKey(day),
       end_time: minutesToTime(endMinutes),
+      professional: professionalFilter === "all" ? "" : professionalFilter,
       start_time: minutesToTime(startMinutes),
     });
+  }
 
-    if (professionalFilter !== "all") {
-      query.set("professional", professionalFilter);
+  function closeAppointmentModal() {
+    if (isSavingAppointment) {
+      return;
     }
 
-    router.push(`/clinics/${id}/appointments/new?${query.toString()}`);
+    setAppointmentDraft(null);
+    setModalError("");
+  }
+
+  function handleQuickAppointmentSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setModalError("");
+    const formData = new FormData(event.currentTarget);
+
+    startSavingAppointment(async () => {
+      try {
+        const appointment = await createAppointment({
+          clinic: id,
+          patient: String(formData.get("patient") ?? ""),
+          professional: String(formData.get("professional") ?? ""),
+          date: String(formData.get("date") ?? ""),
+          start_time: String(formData.get("start_time") ?? ""),
+          end_time: String(formData.get("end_time") ?? ""),
+          modality: String(formData.get("modality") ?? "IN_PERSON") as "IN_PERSON" | "ONLINE" | "HYBRID",
+          value: String(formData.get("value") ?? "0"),
+          administrative_notes: String(formData.get("administrative_notes") ?? ""),
+        });
+
+        setAppointments((current) => [appointment, ...current]);
+        setAppointmentDraft(null);
+      } catch {
+        setModalError("Não foi possível agendar. Verifique paciente, profissional e conflito de horário.");
+      }
+    });
   }
 
   return (
@@ -476,6 +523,95 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
           )}
         </div>
       </section>
+
+      {appointmentDraft ? (
+        <div className="quick-appointment-backdrop" role="presentation" onMouseDown={closeAppointmentModal}>
+          <section className="quick-appointment-modal" aria-labelledby="quick-appointment-title" role="dialog" aria-modal="true" onMouseDown={(event) => event.stopPropagation()}>
+            <div className="quick-appointment-header">
+              <span aria-hidden="true">=</span>
+              <button type="button" onClick={closeAppointmentModal} aria-label="Fechar agendamento rápido">x</button>
+            </div>
+
+            <form className="quick-appointment-form" onSubmit={handleQuickAppointmentSubmit}>
+              <input className="quick-appointment-title" id="quick-appointment-title" value="Nova consulta" readOnly aria-label="Nova consulta" />
+
+              <div className="quick-appointment-tabs" aria-label="Tipo de agendamento">
+                <span className="is-active">Consulta</span>
+                <span>Bloqueio</span>
+                <span>Retorno</span>
+              </div>
+
+              {modalError ? <div className="alert" role="alert" aria-live="assertive">{modalError}</div> : null}
+
+              <div className="quick-appointment-row">
+                <span aria-hidden="true">Hora</span>
+                <div className="quick-appointment-time-grid">
+                  <label>
+                    <span>Data</span>
+                    <input name="date" type="date" required defaultValue={appointmentDraft.date} />
+                  </label>
+                  <label>
+                    <span>Início</span>
+                    <input name="start_time" type="time" required defaultValue={appointmentDraft.start_time} />
+                  </label>
+                  <label>
+                    <span>Fim</span>
+                    <input name="end_time" type="time" required defaultValue={appointmentDraft.end_time} />
+                  </label>
+                </div>
+              </div>
+
+              <label className="quick-appointment-row">
+                <span aria-hidden="true">Paciente</span>
+                <select name="patient" required defaultValue="">
+                  <option value="">Selecionar paciente</option>
+                  {patients.map((patient) => (
+                    <option key={patient.id} value={patient.id}>{patient.full_name}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="quick-appointment-row">
+                <span aria-hidden="true">Prof.</span>
+                <select name="professional" required defaultValue={appointmentDraft.professional}>
+                  <option value="">Selecionar profissional</option>
+                  {professionals.map((professional) => (
+                    <option key={professional.id} value={professional.id}>{professional.full_name}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="quick-appointment-row">
+                <span aria-hidden="true">Modo</span>
+                <select name="modality" defaultValue="IN_PERSON">
+                  <option value="IN_PERSON">Presencial</option>
+                  <option value="ONLINE">Online</option>
+                  <option value="HYBRID">Híbrida</option>
+                </select>
+              </label>
+
+              <label className="quick-appointment-row">
+                <span aria-hidden="true">R$</span>
+                <input name="value" type="number" min="0" step="0.01" defaultValue="0" placeholder="Valor" />
+              </label>
+
+              <label className="quick-appointment-row">
+                <span aria-hidden="true">Nota</span>
+                <textarea name="administrative_notes" rows={3} placeholder="Observações administrativas" />
+              </label>
+
+              <div className="quick-appointment-footer">
+                <Link href={`/clinics/${id}/appointments/new?date=${appointmentDraft.date}&start_time=${appointmentDraft.start_time}&end_time=${appointmentDraft.end_time}`} className="text-link">
+                  Mais opções
+                </Link>
+                <button className="button-primary button-compact" type="submit" disabled={isSavingAppointment || !patients.length || !professionals.length}>
+                  {isSavingAppointment ? "Salvando..." : "Salvar"}
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      ) : null}
     </AppShell>
   );
 }
