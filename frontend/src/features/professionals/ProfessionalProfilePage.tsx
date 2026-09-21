@@ -9,7 +9,7 @@ import type { Clinic, Professional } from "@/lib/types";
 import { useAuthenticatedData } from "@/features/clinics/useAuthenticatedData";
 
 type ProfessionalProfilePageProps = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; professionalId?: string }>;
 };
 
 function statusLabel(status: Professional["status"]) {
@@ -29,7 +29,7 @@ function modalityLabel(modality: Professional["appointment_modalities"]) {
 }
 
 export function ProfessionalProfilePage({ params }: ProfessionalProfilePageProps) {
-  const { id } = use(params);
+  const { id, professionalId } = use(params);
   const { loading, user } = useAuthenticatedData();
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [professionals, setProfessionals] = useState<Professional[]>([]);
@@ -54,7 +54,7 @@ export function ProfessionalProfilePage({ params }: ProfessionalProfilePageProps
 
   if (error || !clinic) {
     return (
-      <AppShell activeNav="profile" eyebrow="Perfil" title="Acesso bloqueado" user={user}>
+      <AppShell activeNav="professionals" eyebrow="Perfil" title="Acesso bloqueado" user={user}>
         <section className="panel-card">
           <div className="alert" role="alert" aria-live="assertive">{error || "Clínica não encontrada."}</div>
           <Link className="button-secondary button-compact" href="/">
@@ -65,11 +65,13 @@ export function ProfessionalProfilePage({ params }: ProfessionalProfilePageProps
     );
   }
 
-  const professional = professionals.find((item) => item.user === user.id) ?? professionals[0];
+  const professional = professionalId
+    ? professionals.find((item) => item.id === professionalId)
+    : professionals.find((item) => item.user === user.id) ?? professionals[0];
   const activeProfessionals = professionals.filter((item) => item.is_active).length;
 
   return (
-    <AppShell activeNav="profile" currentClinic={clinic} eyebrow="Perfil" title="Dados do profissional" user={user}>
+    <AppShell activeNav="professionals" currentClinic={clinic} eyebrow="Perfil profissional" title="Dados do profissional" user={user}>
       {professional ? (
         <section className="profile-showcase" aria-label="Perfil profissional">
           <article className="profile-showcase-hero">

@@ -136,15 +136,6 @@ export function AppShell({
                 <span>Clínica</span>
               </Link>
               <Link
-                aria-current={activeNav === "profile" ? "page" : undefined}
-                className={activeNav === "profile" ? "active" : ""}
-                data-icon="profile"
-                href={`/clinics/${currentClinic.id}/profile`}
-                onClick={() => setMenuOpen(false)}
-              >
-                <span>Perfil</span>
-              </Link>
-              <Link
                 aria-current={activeNav === "professionals" ? "page" : undefined}
                 className={activeNav === "professionals" ? "active" : ""}
                 data-icon="people"

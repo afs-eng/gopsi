@@ -132,8 +132,8 @@ export function DashboardPage() {
         <section className="dashboard-welcome" aria-labelledby="dashboard-welcome-title">
           <div>
             <p className="eyebrow">{dateLabel}</p>
-            <h2 id="dashboard-welcome-title">Bom dia, {user.full_name || user.username}.</h2>
-            <p className="muted">Agenda, pacientes, prontuário, documentos, financeiro e avaliação psicológica em um só lugar.</p>
+            <h2 id="dashboard-welcome-title">Bom dia, {primaryClinic?.name || "sua clínica"}.</h2>
+            <p className="muted">Gestão clínica, agenda, documentos, financeiro e avaliação psicológica em um só lugar.</p>
           </div>
           <div className="dashboard-welcome-mark" aria-hidden="true">✦</div>
         </section>

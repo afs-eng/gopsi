@@ -93,7 +93,11 @@ export function ProfessionalsPage({ params }: ProfessionalsPageProps) {
                 <div className="professional-card-body">
                   <div className="professional-card-header">
                     <div>
-                      <h3>{professional.full_name}</h3>
+                      <h3>
+                        <Link className="professional-name-link" href={`/clinics/${id}/professionals/${professional.id}`}>
+                          {professional.full_name}
+                        </Link>
+                      </h3>
                       <span className="professional-tag">{professional.profession}</span>
                     </div>
                     <strong className="professional-score">{professional.default_appointment_duration} min</strong>
