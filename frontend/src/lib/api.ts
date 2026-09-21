@@ -174,6 +174,19 @@ export async function createPatientFormData(payload: FormData) {
   });
 }
 
+export async function deletePatient(id: string) {
+  return apiFetch<void>(`/api/v1/patients/${id}/`, {
+    method: "DELETE",
+  });
+}
+
+export async function updatePatient(id: string, payload: Partial<PatientPayload>) {
+  return apiFetch<Patient>(`/api/v1/patients/${id}/`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function listAppointments(clinicId: string) {
   return apiFetch<Appointment[]>(`/api/v1/appointments/?clinic=${clinicId}`);
 }

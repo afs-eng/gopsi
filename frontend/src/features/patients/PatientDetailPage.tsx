@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { use, useEffect, useState, useTransition } from "react";
 
 import { AppShell } from "@/components/AppShell";
 import { MetricCard } from "@/components/MetricCard";
-import { getClinic, getPatient } from "@/lib/api";
+import { deletePatient, getClinic, getPatient } from "@/lib/api";
 import type { Clinic, Patient } from "@/lib/types";
 import { useAuthenticatedData } from "@/features/clinics/useAuthenticatedData";
 
@@ -35,10 +36,12 @@ function formatDate(date: string | null) {
 
 export function PatientDetailPage({ params }: PatientDetailPageProps) {
   const { id, patientId } = use(params);
+  const router = useRouter();
   const { loading, user } = useAuthenticatedData();
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [patient, setPatient] = useState<Patient | null>(null);
   const [error, setError] = useState("");
+  const [isDeleting, startDeleting] = useTransition();
 
   useEffect(() => {
     if (!user) return;
@@ -72,6 +75,23 @@ export function PatientDetailPage({ params }: PatientDetailPageProps) {
   const primaryProfessional = patient.professional_links.find((link) => link.is_primary);
   const activeGuardians = patient.guardians.filter((guardian) => guardian.is_active);
 
+  function handleDeletePatient() {
+    if (!patient) return;
+
+    const confirmed = window.confirm(`Excluir ${displayName} da lista de pacientes?`);
+    if (!confirmed) return;
+
+    setError("");
+    startDeleting(async () => {
+      try {
+        await deletePatient(patient.id);
+        router.replace(`/clinics/${id}/patients`);
+      } catch {
+        setError("Não foi possível excluir o paciente.");
+      }
+    });
+  }
+
   return (
     <AppShell
       activeNav="patients"
@@ -84,6 +104,12 @@ export function PatientDetailPage({ params }: PatientDetailPageProps) {
           <Link className="button-secondary button-compact" href={`/clinics/${id}/patients`}>
             Pacientes
           </Link>
+          <Link className="button-secondary button-compact" href={`/clinics/${id}/patients/${patient.id}/edit`}>
+            Atualizar paciente
+          </Link>
+          <button className="button-secondary button-compact" type="button" onClick={handleDeletePatient} disabled={isDeleting}>
+            {isDeleting ? "Excluindo..." : "Excluir"}
+          </button>
           <Link className="button-primary button-compact" href={`/clinics/${id}/appointments/new`}>
             Agendar consulta
           </Link>
@@ -95,11 +121,9 @@ export function PatientDetailPage({ params }: PatientDetailPageProps) {
           {displayName.slice(0, 1).toUpperCase()}
         </div>
         <div>
-          <p className="eyebrow">Resumo administrativo</p>
+          <p className="eyebrow">Nome do paciente</p>
           <h2 id="patient-detail-title">{displayName}</h2>
-          <p className="muted">
-            {patient.social_name ? `Nome civil: ${patient.full_name}` : "Cadastro administrativo do paciente."}
-          </p>
+          {patient.social_name ? <p className="muted">Nome civil: {patient.full_name}</p> : null}
           <div className="patient-detail-badges" aria-label="Dados principais do paciente">
             <span className="status-badge">{patientStatus(patient.status)}</span>
             <span>{patient.email || "E-mail não informado"}</span>
@@ -115,7 +139,7 @@ export function PatientDetailPage({ params }: PatientDetailPageProps) {
       </section>
 
       <section className="patient-detail-grid">
-        <article className="panel-card patient-journey-card">
+        <article className="panel-card patient-journey-card patient-journey-card-full">
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Fluxo clínico</p>
@@ -147,13 +171,6 @@ export function PatientDetailPage({ params }: PatientDetailPageProps) {
           </div>
         </article>
 
-        <aside className="panel-card patient-privacy-card">
-          <p className="eyebrow">Privacidade</p>
-          <h2>Conteúdo clínico protegido</h2>
-          <p className="muted">
-            Esta página resume dados administrativos. Evoluções, hipóteses e interpretações devem permanecer no prontuário e em avaliações protegidas por permissão.
-          </p>
-        </aside>
       </section>
 
       <section className="patient-detail-grid">

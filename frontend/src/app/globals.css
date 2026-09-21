@@ -5099,6 +5099,10 @@ fieldset.form-section > legend + * {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.patient-journey-card-full {
+  grid-column: 1 / -1;
+}
+
 .patient-journey-actions a,
 .patient-related-list div,
 .patient-data-list div {
