@@ -5,6 +5,13 @@ import { type CSSProperties, use, useEffect, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
 import {
+  GRID_END_HOUR,
+  GRID_START_HOUR,
+  HOUR_HEIGHT,
+  calendarEventDurationMinutes,
+  layoutCalendarEvents,
+} from "@/features/appointments/calendarLayout";
+import {
   getClinic,
   listAppointments,
   listScheduleBlocks,
@@ -32,9 +39,6 @@ type CalendarItem = {
 type CalendarView = "week" | "month";
 
 const weekDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-const hourStart = 7;
-const hourEnd = 19;
-const hourHeight = 84;
 
 function dateKey(date: Date) {
   return date.toISOString().slice(0, 10);
@@ -64,20 +68,8 @@ function addMonths(date: Date, months: number) {
   return next;
 }
 
-function minutesFromStart(time: string) {
-  const [hours, minutes] = time.split(":").map(Number);
-  return (hours - hourStart) * 60 + minutes;
-}
-
 function durationMinutes(item: CalendarItem) {
-  return Math.max(30, minutesFromStart(item.end_time) - minutesFromStart(item.start_time));
-}
-
-function eventStyle(item: CalendarItem) {
-  const top = Math.max(0, (minutesFromStart(item.start_time) / 60) * hourHeight);
-  const duration = durationMinutes(item);
-  const height = Math.max(60, (duration / 60) * hourHeight - 6);
-  return { height: `${height}px`, top: `${top}px` };
+  return calendarEventDurationMinutes(item);
 }
 
 function formatDate(date: string) {
@@ -149,7 +141,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
   const today = dateKey(new Date());
   const days = Array.from({ length: 7 }, (_, index) => addDays(weekStart, index));
   const weekEnd = addDays(weekStart, 6);
-  const hours = Array.from({ length: hourEnd - hourStart }, (_, index) => hourStart + index);
+  const hours = Array.from({ length: GRID_END_HOUR - GRID_START_HOUR }, (_, index) => GRID_START_HOUR + index);
   const normalizedSearch = search.trim().toLowerCase();
   const allCalendarItems: CalendarItem[] = [
     ...appointments
@@ -325,7 +317,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
           </div>
 
           {calendarView === "week" ? (
-          <div className="week-calendar" style={{ "--hour-height": `${hourHeight}px` } as CSSProperties}>
+          <div className="week-calendar" style={{ "--hour-height": `${HOUR_HEIGHT}px` } as CSSProperties}>
             <div className="week-header" style={{ gridTemplateColumns: `4.6rem repeat(7, minmax(8.4rem, 1fr))` }}>
               <span />
               {days.map((day) => (
@@ -342,31 +334,41 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
               {days.map((day) => {
                 const key = dateKey(day);
                 const dayItems = calendarItems.filter((item) => item.date === key);
+                const dayItemLayouts = layoutCalendarEvents(dayItems);
                 return (
                   <div className={`calendar-day-column ${key === today ? "is-today" : ""}`} key={key}>
-                    {dayItems.map((item) => (
-                      <article
-                        className={`calendar-event ${durationMinutes(item) < 60 ? "is-compact" : ""} ${item.type === "block" ? "is-block" : ""} ${item.modality === "ONLINE" ? "is-online" : ""}`}
-                        key={`${item.type}-${item.id}`}
-                        style={eventStyle(item)}
-                      >
-                        {item.type === "appointment" ? (
-                          <Link className="calendar-event-link" href={`/clinics/${id}/appointments/${item.id}`} aria-label={`Abrir consulta de ${item.title}`}>
-                            <time>{item.start_time.slice(0, 5)}–{item.end_time.slice(0, 5)}</time>
-                            <strong>{item.title}</strong>
-                            <span>{item.subtitle}</span>
-                            <small>{statusLabel(item.status ?? "SCHEDULED")}</small>
-                          </Link>
-                        ) : (
-                          <div className="calendar-event-link">
-                            <time>{item.start_time.slice(0, 5)}–{item.end_time.slice(0, 5)}</time>
-                            <strong>{item.title}</strong>
-                            <span>{item.subtitle}</span>
-                            <small>Bloqueio</small>
-                          </div>
-                        )}
-                      </article>
-                    ))}
+                    {dayItems.map((item) => {
+                      const layout = dayItemLayouts.get(item);
+                      return (
+                        <article
+                          className={`calendar-event ${durationMinutes(item) < 60 ? "is-compact" : ""} ${item.type === "block" ? "is-block" : ""} ${item.modality === "ONLINE" ? "is-online" : ""}`}
+                          key={`${item.type}-${item.id}`}
+                          style={{
+                            height: `${layout?.height ?? 0}px`,
+                            left: `calc(${layout?.leftPercent ?? 0}% + 4px)`,
+                            right: "auto",
+                            top: `${layout?.top ?? 0}px`,
+                            width: `calc(${layout?.widthPercent ?? 100}% - 8px)`,
+                          }}
+                        >
+                          {item.type === "appointment" ? (
+                            <Link className="calendar-event-link" href={`/clinics/${id}/appointments/${item.id}`} aria-label={`Abrir consulta de ${item.title}`}>
+                              <time>{item.start_time.slice(0, 5)}–{item.end_time.slice(0, 5)}</time>
+                              <strong>{item.title}</strong>
+                              <span>{item.subtitle}</span>
+                              <small>{statusLabel(item.status ?? "SCHEDULED")}</small>
+                            </Link>
+                          ) : (
+                            <div className="calendar-event-link">
+                              <time>{item.start_time.slice(0, 5)}–{item.end_time.slice(0, 5)}</time>
+                              <strong>{item.title}</strong>
+                              <span>{item.subtitle}</span>
+                              <small>Bloqueio</small>
+                            </div>
+                          )}
+                        </article>
+                      );
+                    })}
                   </div>
                 );
               })}

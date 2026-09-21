@@ -2190,6 +2190,12 @@ h2 {
   background: #ffffff;
 }
 
+.week-header > *,
+.time-gutter span,
+.calendar-day-column {
+  box-sizing: border-box;
+}
+
 .week-header > div {
   min-height: 4.7rem;
   border-left: 1px solid #e8eaed;
