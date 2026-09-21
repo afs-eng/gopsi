@@ -84,4 +84,23 @@ describe("calendar event positioning", () => {
     assert.equal(layouts.get(events[1])?.stackedStartIndex, 1);
     assert.equal(layouts.get(events[2])?.stackedStartIndex, 2);
   });
+
+  it("keeps same-start rows aligned when another event overlaps the group", () => {
+    const events = [
+      { id: "a", start_time: "13:00", end_time: "13:50" },
+      { id: "b", start_time: "13:00", end_time: "13:50" },
+      { id: "c", start_time: "13:15", end_time: "13:55" },
+    ];
+    const layouts = layoutCalendarEvents(events);
+
+    assertClose(layouts.get(events[0])?.top ?? -1, 504);
+    assertClose(layouts.get(events[1])?.top ?? -1, 532);
+    assertClose(layouts.get(events[2])?.top ?? -1, 525);
+    assertClose(layouts.get(events[0])?.leftPercent ?? -1, 0);
+    assertClose(layouts.get(events[1])?.leftPercent ?? -1, 0);
+    assertClose(layouts.get(events[2])?.leftPercent ?? -1, 50);
+    assertClose(layouts.get(events[0])?.widthPercent ?? -1, 50);
+    assertClose(layouts.get(events[1])?.widthPercent ?? -1, 50);
+    assertClose(layouts.get(events[2])?.widthPercent ?? -1, 50);
+  });
 });

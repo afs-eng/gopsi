@@ -9,6 +9,10 @@ type TimeRange = {
   start_time: string;
 };
 
+type TimeGroup<T extends TimeRange> = TimeRange & {
+  items: T[];
+};
+
 export type CalendarPosition = {
   height: number;
   top: number;
@@ -47,42 +51,37 @@ function rangesOverlap(a: TimeRange, b: TimeRange) {
 }
 
 function layoutCluster<T extends TimeRange>(cluster: T[], hourHeight: number) {
-  const lanes: T[][] = [];
+  const lanes: TimeGroup<T>[][] = [];
   const startGroups = new Map<string, T[]>();
 
   for (const item of cluster) {
     startGroups.set(item.start_time, [...(startGroups.get(item.start_time) ?? []), item]);
   }
 
-  return cluster.map((item) => {
-    const startGroup = startGroups.get(item.start_time) ?? [];
-    const stackedStartCount = startGroup.length;
-    const stackedStartIndex = startGroup.indexOf(item);
+  const groups = Array.from(startGroups.entries()).map(([start_time, items]) => ({
+    end_time: items.reduce((latestEndTime, item) => (
+      timeToMinutes(item.end_time) > timeToMinutes(latestEndTime) ? item.end_time : latestEndTime
+    ), items[0].end_time),
+    items,
+    start_time,
+  }));
 
-    if (stackedStartCount > 1) {
-      return {
-        item,
-        laneIndex: 0,
-        stackedStartCount,
-        stackedStartIndex,
-      };
-    }
-
-    let laneIndex = lanes.findIndex((lane) => !rangesOverlap(lane[lane.length - 1], item));
+  return groups.flatMap((group) => {
+    let laneIndex = lanes.findIndex((lane) => !rangesOverlap(lane[lane.length - 1], group));
 
     if (laneIndex === -1) {
       laneIndex = lanes.length;
       lanes.push([]);
     }
 
-    lanes[laneIndex].push(item);
+    lanes[laneIndex].push(group);
 
-    return {
+    return group.items.map((item, stackedStartIndex) => ({
       item,
       laneIndex,
-      stackedStartCount,
+      stackedStartCount: group.items.length,
       stackedStartIndex,
-    };
+    }));
   }).map(({ item, laneIndex, stackedStartCount, stackedStartIndex }) => {
     const position = calendarEventPosition(item, hourHeight);
     const isStackedStart = stackedStartCount > 1;
@@ -91,11 +90,11 @@ function layoutCluster<T extends TimeRange>(cluster: T[], hourHeight: number) {
       item,
       layout: {
         height: isStackedStart ? STACKED_EVENT_HEIGHT : position.height,
-        leftPercent: isStackedStart ? 0 : (laneIndex / lanes.length) * 100,
+        leftPercent: (laneIndex / lanes.length) * 100,
         stackedStartCount,
         stackedStartIndex,
         top: isStackedStart ? position.top + stackedStartIndex * (STACKED_EVENT_HEIGHT + STACKED_EVENT_GAP) : position.top,
-        widthPercent: isStackedStart ? 100 : 100 / lanes.length,
+        widthPercent: 100 / lanes.length,
       },
     };
   });
