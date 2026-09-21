@@ -21,6 +21,7 @@ export function PatientsPage({ params }: PatientsPageProps) {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | Patient["status"]>("ALL");
+  const [professionalFilter, setProfessionalFilter] = useState("ALL");
 
   useEffect(() => {
     if (!user) {
@@ -54,11 +55,15 @@ export function PatientsPage({ params }: PatientsPageProps) {
 
   const activePatients = patients.filter((patient) => patient.is_active).length;
   const archivedPatients = patients.filter((patient) => patient.status === "ARCHIVED").length;
+  const withoutProfessional = patients.filter((patient) => !patient.professional_links.length).length;
   const patientStatus = (status: string) =>
     ({ ACTIVE: "Ativo", INACTIVE: "Inativo", ARCHIVED: "Arquivado" }[status] ?? status);
+  const professionalOptions = Array.from(new Map(patients.flatMap((patient) => patient.professional_links.map((link) => [link.professional, link.professional_name] as const))).entries())
+    .sort((a, b) => a[1].localeCompare(b[1]));
   const normalizedSearch = search.trim().toLowerCase();
   const filteredPatients = patients.filter((patient) => {
     const matchesStatus = statusFilter === "ALL" || patient.status === statusFilter;
+    const matchesProfessional = professionalFilter === "ALL" || patient.professional_links.some((link) => link.professional === professionalFilter);
     const searchableFields = [
       patient.full_name,
       patient.social_name,
@@ -70,7 +75,7 @@ export function PatientsPage({ params }: PatientsPageProps) {
       .filter(Boolean)
       .some((value) => value.toLowerCase().includes(normalizedSearch));
 
-    return matchesStatus && matchesSearch;
+    return matchesStatus && matchesProfessional && matchesSearch;
   });
 
   return (
@@ -98,9 +103,9 @@ export function PatientsPage({ params }: PatientsPageProps) {
           description="Histórico preservado sem poluir a rotina diária."
         />
         <MetricCard
-          label="Fluxo clínico"
-          value="Paciente -> cuidado"
-          description="Agenda, prontuário, documentos, financeiro e avaliações."
+          label="Sem profissional"
+          value={withoutProfessional}
+          description="Pacientes que ainda precisam de vínculo clínico."
         />
       </section>
 
@@ -153,6 +158,18 @@ export function PatientsPage({ params }: PatientsPageProps) {
               <option value="ARCHIVED">Arquivados</option>
             </select>
           </label>
+          <label className="patients-filter-field">
+            <span>Profissional</span>
+            <select
+              value={professionalFilter}
+              onChange={(event) => setProfessionalFilter(event.target.value)}
+            >
+              <option value="ALL">Todos</option>
+              {professionalOptions.map(([professionalId, professionalName]) => (
+                <option key={professionalId} value={professionalId}>{professionalName}</option>
+              ))}
+            </select>
+          </label>
         </div>
 
         {filteredPatients.length ? (
@@ -170,13 +187,18 @@ export function PatientsPage({ params }: PatientsPageProps) {
                     {patient.full_name.slice(0, 1).toUpperCase()}
                   </span>
                   <div>
-                  <strong>{patient.full_name}</strong>
-                    <p>{patient.social_name ? `Nome social: ${patient.social_name}` : "Cadastro administrativo"}</p>
+                    <strong>
+                      <Link className="patient-name-link" href={`/clinics/${id}/patients/${patient.id}`}>
+                        {patient.full_name}
+                      </Link>
+                    </strong>
+                    <p>{patient.social_name ? `Nome social: ${patient.social_name}` : patient.professional_links[0]?.professional_name || "Sem profissional vinculado"}</p>
                   </div>
                 </div>
-                <p className="patient-contact">
-                  {patient.email ? patient.email : patient.phone ? patient.phone : "Contato não informado"}
-                </p>
+                <div className="patient-contact">
+                  <span>{patient.email ? patient.email : patient.phone ? patient.phone : "Contato não informado"}</span>
+                  <small>{patient.guardians.length ? `${patient.guardians.length} responsável(is)` : "Sem responsável"}</small>
+                </div>
                 <span className="status-badge" aria-label={`Status: ${patientStatus(patient.status)}`}>
                   {patientStatus(patient.status)}
                 </span>

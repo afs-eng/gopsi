@@ -192,7 +192,11 @@ export function PatientDetailPage({ params }: PatientDetailPageProps) {
             <h3>Profissionais vinculados</h3>
             {patient.professional_links.length ? patient.professional_links.map((link) => (
               <div key={link.id}>
-                <strong>{link.professional_name}</strong>
+                <strong>
+                  <Link className="patient-name-link" href={`/clinics/${id}/professionals/${link.professional}`}>
+                    {link.professional_name}
+                  </Link>
+                </strong>
                 <span>{link.is_primary ? "Profissional principal" : "Profissional vinculado"}</span>
               </div>
             )) : <p className="muted">Nenhum profissional vinculado.</p>}
