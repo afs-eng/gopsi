@@ -194,6 +194,29 @@ def test_password_reset_does_not_reveal_missing_email():
 
 
 @pytest.mark.django_db
+def test_password_reset_does_not_fail_when_email_delivery_fails(monkeypatch):
+    user = make_user("reset-email-fails")
+    client = APIClient()
+
+    def fail_send_mail(*args, **kwargs):
+        raise RuntimeError("email service unavailable")
+
+    monkeypatch.setattr("apps.accounts.views.send_mail", fail_send_mail)
+
+    response = client.post(
+        reverse("api-password-reset-request"),
+        {"email": user.email},
+        format="json",
+    )
+
+    assert response.status_code == 200
+    assert response.data["detail"] == (
+        "Se o e-mail estiver cadastrado, enviaremos instruções para redefinir "
+        "a senha."
+    )
+
+
+@pytest.mark.django_db
 @override_settings(
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
     FRONTEND_BASE_URL="https://app.example.com",

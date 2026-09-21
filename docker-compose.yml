@@ -18,6 +18,10 @@ services:
     build: .
     command: uv run python manage.py runserver 0.0.0.0:8000 --noreload
     env_file: .env
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      DATABASE_URL: postgres://plataforma_psi:plataforma_psi@postgres:5432/plataforma_psi
     volumes:
       - .:/app
       - web_venv:/app/.venv
@@ -54,6 +58,10 @@ services:
     build: .
     command: uv run celery -A config worker -l INFO
     env_file: .env
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      DATABASE_URL: postgres://plataforma_psi:plataforma_psi@postgres:5432/plataforma_psi
     volumes:
       - .:/app
       - celery_venv:/app/.venv
@@ -67,6 +75,10 @@ services:
     build: .
     command: uv run celery -A config beat -l INFO
     env_file: .env
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      DATABASE_URL: postgres://plataforma_psi:plataforma_psi@postgres:5432/plataforma_psi
     volumes:
       - .:/app
       - celery_beat_venv:/app/.venv

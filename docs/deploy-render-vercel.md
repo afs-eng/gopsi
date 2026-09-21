@@ -35,6 +35,23 @@ RUN_COLLECTSTATIC=true
 MFA_ISSUER=GoPsi
 ```
 
+Configure também o SMTP transacional no Render. Para Brevo, use os dados de
+**SMTP & API > SMTP**:
+
+```text
+DEFAULT_FROM_EMAIL=no-reply@seu-dominio.com
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp-relay.brevo.com
+EMAIL_PORT=587
+EMAIL_HOST_USER=seu-login-smtp-do-brevo
+EMAIL_HOST_PASSWORD=sua-chave-smtp-do-brevo
+EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
+EMAIL_TIMEOUT=10
+```
+
+O `DEFAULT_FROM_EMAIL` precisa ser um remetente/domínio validado no Brevo.
+
 Se o Render ou Vercel gerar outro domínio, substitua os valores acima.
 
 Health check esperado:

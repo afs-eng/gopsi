@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.tokens import default_token_generator
@@ -21,6 +23,8 @@ from apps.accounts.serializers import (
 )
 from apps.audit.models import AuditAction
 from apps.audit.services import record_audit_event
+
+logger = logging.getLogger(__name__)
 
 SENSITIVE_MFA_ROLES = {"SUPERADMIN", "CLINIC_ADMIN"}
 
@@ -154,17 +158,20 @@ class PasswordResetRequestView(APIView):
                 f"{settings.FRONTEND_BASE_URL}/login?"
                 f"reset_uid={uid}&reset_token={token}"
             )
-            send_mail(
-                subject="Redefinição de senha - Plataforma PSI",
-                message=(
-                    "Recebemos uma solicitação para redefinir sua senha.\n\n"
-                    f"Acesse este link para criar uma nova senha:\n{reset_url}\n\n"
-                    "Se você não solicitou a redefinição, ignore este e-mail."
-                ),
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[user.email],
-                fail_silently=False,
-            )
+            try:
+                send_mail(
+                    subject="Redefinição de senha - Plataforma PSI",
+                    message=(
+                        "Recebemos uma solicitação para redefinir sua senha.\n\n"
+                        f"Acesse este link para criar uma nova senha:\n{reset_url}\n\n"
+                        "Se você não solicitou a redefinição, ignore este e-mail."
+                    ),
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=False,
+                )
+            except Exception:
+                logger.exception("Failed to send password reset email.")
 
         return Response(
             {
