@@ -95,6 +95,15 @@ function statusLabel(status: Appointment["status"]) {
   }[status];
 }
 
+function itemSearchValues(item: CalendarItem) {
+  return [
+    item.title,
+    item.subtitle,
+    item.type === "appointment" ? statusLabel(item.status ?? "SCHEDULED") : "Bloqueio",
+    item.type === "appointment" ? item.modality : "",
+  ];
+}
+
 export function AppointmentsPage({ params }: AppointmentsPageProps) {
   const { id } = use(params);
   const { loading, user } = useAuthenticatedData();
@@ -171,10 +180,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
       })),
   ].filter((item) => {
     const matchesSearch = !normalizedSearch || [
-      item.title,
-      item.subtitle,
-      item.type === "appointment" ? item.status : "Bloqueio",
-      item.type === "appointment" ? item.modality : "",
+      ...itemSearchValues(item),
     ]
       .filter(Boolean)
       .some((value) => String(value).toLowerCase().includes(normalizedSearch));
@@ -189,7 +195,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
     .filter((item) => `${item.date}T${item.start_time}` >= `${today}T00:00`)
     .sort((a, b) => `${a.date}T${a.start_time}`.localeCompare(`${b.date}T${b.start_time}`))
     .slice(0, 5);
-  const visibleMonth = startOfMonth(weekStart);
+  const visibleMonth = startOfMonth(calendarView === "month" ? addDays(weekStart, 6) : weekStart);
   const miniMonthDays = Array.from({ length: 35 }, (_, index) => {
     const gridStart = startOfWeek(visibleMonth);
     return addDays(gridStart, index);
@@ -201,11 +207,11 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
     : `${formatDate(dateKey(weekStart))} – ${formatDate(dateKey(weekEnd))}`;
 
   function goToPreviousPeriod() {
-    setWeekStart((current) => calendarView === "month" ? startOfWeek(addMonths(current, -1)) : addDays(current, -7));
+    setWeekStart((current) => calendarView === "month" ? startOfWeek(addMonths(addDays(current, 6), -1)) : addDays(current, -7));
   }
 
   function goToNextPeriod() {
-    setWeekStart((current) => calendarView === "month" ? startOfWeek(addMonths(current, 1)) : addDays(current, 7));
+    setWeekStart((current) => calendarView === "month" ? startOfWeek(addMonths(addDays(current, 6), 1)) : addDays(current, 7));
   }
 
   function goToToday() {
