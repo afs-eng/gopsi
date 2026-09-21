@@ -23,7 +23,7 @@ class GuardianSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["id", "created_at", "updated_at"]
+        read_only_fields = ["id", "is_active", "created_at", "updated_at"]
 
 
 class ProfessionalPatientSerializer(serializers.ModelSerializer):
@@ -152,6 +152,7 @@ class PatientSerializer(serializers.ModelSerializer):
         professional_links = validated_data.pop("professional_links", [])
         patient = Patient.objects.create(
             **validated_data,
+            is_active=True,
             created_by=self.context["request"].user,
         )
 
