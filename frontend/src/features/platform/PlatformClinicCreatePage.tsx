@@ -7,7 +7,7 @@ import { FormEvent, useState, useTransition } from "react";
 import { PlatformShell } from "@/components/PlatformShell";
 import { useAuthenticatedData } from "@/features/clinics/useAuthenticatedData";
 import { createPlatformClinic } from "@/lib/api";
-import { maskPhoneInput } from "@/lib/formMasks";
+import { maskCpfCnpjInput, maskPhoneInput } from "@/lib/formMasks";
 
 export function PlatformClinicCreatePage() {
   const { loading, user } = useAuthenticatedData();
@@ -77,7 +77,14 @@ export function PlatformClinicCreatePage() {
               </div>
               <div className="field-group">
                 <label htmlFor="document">CNPJ/CPF</label>
-                <input id="document" name="document" />
+                <input
+                  id="document"
+                  name="document"
+                  inputMode="numeric"
+                  maxLength={18}
+                  onInput={maskCpfCnpjInput}
+                  placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                />
               </div>
             </div>
             <div className="field-grid">
