@@ -616,6 +616,53 @@ def test_clinic_admin_can_create_staff_with_system_access_and_disable_later():
 
 
 @pytest.mark.django_db
+def test_clinic_admin_can_enable_access_for_existing_staff_without_user():
+    admin_user = get_user_model().objects.create_user(
+        username="staff-edit-access-admin",
+        email="staff-edit-access-admin@example.com",
+        password="safe-test-password",
+        full_name="Admin Edita Acesso",
+        global_role=UserRole.CLINIC_ADMIN,
+    )
+    clinic = Clinic.objects.create(name="Clínica Edita Acesso")
+    ClinicMembership.objects.create(
+        clinic=clinic,
+        user=admin_user,
+        role=UserRole.CLINIC_ADMIN,
+    )
+    staff = ClinicStaff.objects.create(
+        clinic=clinic,
+        full_name="Beatriz Silva Pereira",
+        role="RECEPTIONIST",
+        email="beatriz.staff@example.com",
+        phone="(65)46123-1654",
+        position="Secretária",
+        status="ACTIVE",
+        access_enabled=False,
+    )
+    client = APIClient()
+    client.force_authenticate(user=admin_user)
+
+    response = client.patch(
+        reverse("clinic-staff-detail", kwargs={"pk": staff.id}),
+        {
+            "access_enabled": True,
+            "access_username": "beatriz.staff",
+            "access_password": "safe-test-password-123",
+        },
+        format="json",
+    )
+
+    staff.refresh_from_db()
+    access_user = get_user_model().objects.get(username="beatriz.staff")
+    membership = ClinicMembership.objects.get(clinic=clinic, user=access_user)
+    assert response.status_code == 200
+    assert staff.user == access_user
+    assert staff.access_enabled is True
+    assert membership.is_active is True
+
+
+@pytest.mark.django_db
 def test_non_admin_cannot_manage_staff():
     receptionist = get_user_model().objects.create_user(
         username="staff-receptionist",
