@@ -22,14 +22,14 @@ describe("calendar event positioning", () => {
 
   it("positions events from their exact start time", () => {
     const cases = [
-      ["07:00", "08:00", 0, 84],
-      ["08:00", "09:00", 84, 84],
-      ["08:20", "09:21", 112, 85.4],
-      ["08:30", "09:00", 126, 42],
-      ["09:26", "10:11", 204.4, 63],
-      ["10:45", "12:15", 315, 126],
-      ["14:00", "14:30", 588, 42],
-      ["17:20", "18:21", 868, 85.4],
+      ["07:00", "08:00", 588, 84],
+      ["08:00", "09:00", 672, 84],
+      ["08:20", "09:21", 700, 85.4],
+      ["08:30", "09:00", 714, 42],
+      ["09:26", "10:11", 792.4, 63],
+      ["10:45", "12:15", 903, 126],
+      ["14:00", "14:30", 1176, 42],
+      ["17:20", "18:21", 1456, 85.4],
     ] as const;
 
     for (const [start_time, end_time, top, height] of cases) {
@@ -64,8 +64,8 @@ describe("calendar event positioning", () => {
     ];
     const layouts = layoutCalendarEvents(events);
 
-    assertClose(layouts.get(events[0])?.top ?? -1, 84);
-    assertClose(layouts.get(events[1])?.top ?? -1, 126);
+    assertClose(layouts.get(events[0])?.top ?? -1, 672);
+    assertClose(layouts.get(events[1])?.top ?? -1, 714);
     assertClose(layouts.get(events[0])?.widthPercent ?? -1, 50);
     assertClose(layouts.get(events[1])?.widthPercent ?? -1, 50);
     assertClose(layouts.get(events[0])?.leftPercent ?? -1, 0);
@@ -81,9 +81,9 @@ describe("calendar event positioning", () => {
     ];
     const layouts = layoutCalendarEvents(events);
 
-    assertClose(layouts.get(events[0])?.top ?? -1, 336);
-    assertClose(layouts.get(events[1])?.top ?? -1, 364);
-    assertClose(layouts.get(events[2])?.top ?? -1, 392);
+    assertClose(layouts.get(events[0])?.top ?? -1, 924);
+    assertClose(layouts.get(events[1])?.top ?? -1, 952);
+    assertClose(layouts.get(events[2])?.top ?? -1, 980);
     assertClose(layouts.get(events[0])?.widthPercent ?? -1, 100);
     assertClose(layouts.get(events[1])?.widthPercent ?? -1, 100);
     assertClose(layouts.get(events[2])?.widthPercent ?? -1, 100);
@@ -100,9 +100,9 @@ describe("calendar event positioning", () => {
     ];
     const layouts = layoutCalendarEvents(events);
 
-    assertClose(layouts.get(events[0])?.top ?? -1, 504);
-    assertClose(layouts.get(events[1])?.top ?? -1, 532);
-    assertClose(layouts.get(events[2])?.top ?? -1, 525);
+    assertClose(layouts.get(events[0])?.top ?? -1, 1092);
+    assertClose(layouts.get(events[1])?.top ?? -1, 1120);
+    assertClose(layouts.get(events[2])?.top ?? -1, 1113);
     assertClose(layouts.get(events[0])?.leftPercent ?? -1, 0);
     assertClose(layouts.get(events[1])?.leftPercent ?? -1, 0);
     assertClose(layouts.get(events[2])?.leftPercent ?? -1, 50);
