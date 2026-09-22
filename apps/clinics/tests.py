@@ -564,6 +564,58 @@ def test_clinic_admin_can_manage_staff_crud():
 
 
 @pytest.mark.django_db
+def test_clinic_admin_can_create_staff_with_system_access_and_disable_later():
+    admin_user = get_user_model().objects.create_user(
+        username="staff-access-admin",
+        email="staff-access-admin@example.com",
+        password="safe-test-password",
+        full_name="Admin Acesso",
+        global_role=UserRole.CLINIC_ADMIN,
+    )
+    clinic = Clinic.objects.create(name="Clínica Acesso Funcionário")
+    ClinicMembership.objects.create(
+        clinic=clinic,
+        user=admin_user,
+        role=UserRole.CLINIC_ADMIN,
+    )
+    client = APIClient()
+    client.force_authenticate(user=admin_user)
+
+    create_response = client.post(
+        reverse("clinic-staff-list"),
+        {
+            "clinic": str(clinic.id),
+            "full_name": "Paula Recepção",
+            "role": "RECEPTIONIST",
+            "email": "paula.recepcao@example.com",
+            "status": "ACTIVE",
+            "access_enabled": True,
+            "access_username": "paula.recepcao",
+            "access_password": "safe-test-password-123",
+        },
+        format="json",
+    )
+    staff_id = create_response.json()["id"]
+    staff = ClinicStaff.objects.get(id=staff_id)
+    access_user = get_user_model().objects.get(username="paula.recepcao")
+    disable_response = client.patch(
+        reverse("clinic-staff-detail", kwargs={"pk": staff_id}),
+        {"access_enabled": False},
+        format="json",
+    )
+
+    staff.refresh_from_db()
+    membership = ClinicMembership.objects.get(clinic=clinic, user=access_user)
+    assert create_response.status_code == 201
+    assert staff.user == access_user
+    assert access_user.global_role == UserRole.RECEPTIONIST
+    assert access_user.check_password("safe-test-password-123")
+    assert disable_response.status_code == 200
+    assert staff.access_enabled is False
+    assert membership.is_active is False
+
+
+@pytest.mark.django_db
 def test_non_admin_cannot_manage_staff():
     receptionist = get_user_model().objects.create_user(
         username="staff-receptionist",

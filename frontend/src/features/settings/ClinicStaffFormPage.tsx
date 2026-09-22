@@ -54,7 +54,6 @@ export function ClinicStaffFormPage({ params, mode }: ClinicStaffFormPageProps) 
     const data = new FormData(event.currentTarget);
     const payload = {
       clinic: id,
-      user: null,
       full_name: String(data.get("full_name") ?? ""),
       role: String(data.get("role") ?? "ADMINISTRATIVE") as ClinicStaffRole,
       cpf: String(data.get("cpf") ?? ""),
@@ -64,6 +63,8 @@ export function ClinicStaffFormPage({ params, mode }: ClinicStaffFormPageProps) 
       notes: String(data.get("notes") ?? ""),
       status: String(data.get("status") ?? "ACTIVE") as ClinicStaffStatus,
       access_enabled: data.get("access_enabled") === "on",
+      access_username: String(data.get("access_username") ?? ""),
+      access_password: String(data.get("access_password") ?? ""),
     };
 
     startTransition(async () => {
@@ -146,9 +147,33 @@ export function ClinicStaffFormPage({ params, mode }: ClinicStaffFormPageProps) 
           </div>
 
           <label className="checkbox-card" htmlFor="access_enabled">
-            <input id="access_enabled" name="access_enabled" type="checkbox" defaultChecked={staff?.access_enabled ?? false} disabled />
-            Acesso ao sistema será habilitado em etapa separada de convite de usuário.
+            <input id="access_enabled" name="access_enabled" type="checkbox" defaultChecked={staff?.access_enabled ?? false} />
+            Habilitar acesso ao sistema para este funcionário.
           </label>
+
+          <div className="field-grid">
+            <div className="field-group">
+              <label htmlFor="access_username">Usuário de acesso</label>
+              <input
+                id="access_username"
+                name="access_username"
+                placeholder="ex: maria.recepcao"
+                disabled={Boolean(staff?.user)}
+              />
+              <span className="field-hint">Obrigatório ao habilitar acesso para funcionário sem usuário vinculado.</span>
+            </div>
+            <div className="field-group">
+              <label htmlFor="access_password">Senha provisória</label>
+              <input
+                id="access_password"
+                name="access_password"
+                type="password"
+                minLength={8}
+                disabled={Boolean(staff?.user)}
+              />
+              <span className="field-hint">Informe uma senha inicial e peça a troca no primeiro acesso.</span>
+            </div>
+          </div>
 
           <div className="field-group">
             <label htmlFor="notes">Notas internas</label>

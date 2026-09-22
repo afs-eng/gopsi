@@ -1,3 +1,4 @@
+from django.contrib.auth import password_validation
 from django.db import transaction
 from rest_framework import serializers
 
@@ -150,6 +151,19 @@ class ClinicMembershipSerializer(serializers.ModelSerializer):
 class ClinicStaffSerializer(serializers.ModelSerializer):
     role_label = serializers.CharField(source="get_role_display", read_only=True)
     status_label = serializers.CharField(source="get_status_display", read_only=True)
+    access_username = serializers.CharField(
+        max_length=150,
+        required=False,
+        write_only=True,
+        allow_blank=True,
+    )
+    access_password = serializers.CharField(
+        min_length=8,
+        required=False,
+        write_only=True,
+        allow_blank=True,
+        trim_whitespace=False,
+    )
 
     class Meta:
         model = ClinicStaff
@@ -168,6 +182,8 @@ class ClinicStaffSerializer(serializers.ModelSerializer):
             "status",
             "status_label",
             "access_enabled",
+            "access_username",
+            "access_password",
             "is_active",
             "created_at",
             "updated_at",
@@ -190,29 +206,106 @@ class ClinicStaffSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         user = attrs.get("user") or getattr(self.instance, "user", None)
         clinic = attrs.get("clinic") or getattr(self.instance, "clinic", None)
+        username = attrs.pop("access_username", "")
+        password = attrs.pop("access_password", "")
+        email = attrs.get("email") or getattr(self.instance, "email", "")
         access_enabled = attrs.get(
             "access_enabled",
             getattr(self.instance, "access_enabled", False),
         )
-        status = attrs.get("status", getattr(self.instance, "status", ClinicStaffStatus.ACTIVE))
+        status = attrs.get(
+            "status",
+            getattr(self.instance, "status", ClinicStaffStatus.ACTIVE),
+        )
 
         if user and user.global_role == UserRole.SUPERADMIN:
             raise serializers.ValidationError(
                 {"user": "Contas da plataforma não podem ser funcionários da clínica."}
             )
-        if user and clinic and not user.clinic_memberships.filter(
-            clinic=clinic,
-            is_active=True,
-        ).exists():
+        if (
+            user
+            and clinic
+            and not user.clinic_memberships.filter(clinic=clinic).exists()
+        ):
             raise serializers.ValidationError(
                 {"user": "Usuário precisa estar vinculado à clínica."}
             )
         if access_enabled and not user:
-            raise serializers.ValidationError(
-                {"user": "Informe um usuário para habilitar acesso ao sistema."}
-            )
+            if not email:
+                raise serializers.ValidationError(
+                    {"email": "Informe e-mail para criar acesso."}
+                )
+            if not username:
+                raise serializers.ValidationError(
+                    {"access_username": "Informe usuário de acesso."}
+                )
+            if not password:
+                raise serializers.ValidationError(
+                    {"access_password": "Informe senha provisória."}
+                )
+            if User.objects.filter(username=username).exists():
+                raise serializers.ValidationError(
+                    {"access_username": "Nome de usuário já está em uso."}
+                )
+            if User.objects.filter(email__iexact=email).exists():
+                raise serializers.ValidationError(
+                    {"email": "E-mail já está em uso por outro usuário."}
+                )
+            password_validation.validate_password(password)
+            attrs["_access_username"] = username
+            attrs["_access_password"] = password
         if status == ClinicStaffStatus.BLOCKED and access_enabled:
             raise serializers.ValidationError(
-                {"access_enabled": "Funcionário bloqueado não pode manter acesso ativo."}
+                {
+                    "access_enabled": (
+                        "Funcionário bloqueado não pode manter acesso ativo."
+                    )
+                }
             )
         return attrs
+
+    def _sync_access(self, staff, username="", password=""):
+        if staff.access_enabled and not staff.user_id:
+            staff.user = User.objects.create_user(
+                username=username,
+                email=staff.email,
+                password=password,
+                full_name=staff.full_name,
+                global_role=UserRole.RECEPTIONIST,
+            )
+            staff.save(update_fields=["user", "updated_at"])
+
+        if staff.user_id:
+            membership, _created = ClinicMembership.objects.get_or_create(
+                clinic=staff.clinic,
+                user=staff.user,
+                defaults={"role": UserRole.RECEPTIONIST},
+            )
+            if staff.access_enabled:
+                membership.role = UserRole.RECEPTIONIST
+                membership.is_active = True
+                membership.save(update_fields=["role", "is_active", "updated_at"])
+                if not staff.user.is_active:
+                    staff.user.is_active = True
+                    staff.user.save(update_fields=["is_active", "updated_at"])
+            else:
+                membership.is_active = False
+                membership.save(update_fields=["is_active", "updated_at"])
+
+    @transaction.atomic
+    def create(self, validated_data):
+        username = validated_data.pop("_access_username", "")
+        password = validated_data.pop("_access_password", "")
+        staff = ClinicStaff.objects.create(**validated_data)
+        self._sync_access(staff, username=username, password=password)
+        return staff
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        username = validated_data.pop("_access_username", "")
+        password = validated_data.pop("_access_password", "")
+        for field, value in validated_data.items():
+            setattr(instance, field, value)
+        instance.save()
+        self._sync_access(instance, username=username, password=password)
+        return instance

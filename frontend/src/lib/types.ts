@@ -85,6 +85,8 @@ export type ClinicStaffPayload = {
   notes: string;
   status: ClinicStaffStatus;
   access_enabled: boolean;
+  access_username?: string;
+  access_password?: string;
 };
 
 export type Professional = {

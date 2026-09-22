@@ -79,7 +79,7 @@ export function ClinicStaffPage({ params }: ClinicStaffPageProps) {
               <article className="clinic-row" key={member.id}>
                 <div>
                   <strong>{member.full_name}</strong>
-                  <p>{member.role_label} · {member.position || "Cargo não informado"} · {member.email || "E-mail não informado"}</p>
+                  <p>{member.role_label} · {member.position || "Cargo não informado"} · {member.email || "E-mail não informado"} · {member.access_enabled ? "com acesso" : "sem acesso"}</p>
                 </div>
                 <div className="form-actions">
                   <span className="status-badge">{member.status_label}</span>
