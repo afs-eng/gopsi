@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.clinics.models import Clinic, ClinicMembership
+from apps.clinics.models import Clinic, ClinicMembership, ClinicStaff
 
 
 @admin.register(Clinic)
@@ -17,4 +17,8 @@ class ClinicMembershipAdmin(admin.ModelAdmin):
     list_filter = ("role", "is_active")
 
 
-# Register your models here.
+@admin.register(ClinicStaff)
+class ClinicStaffAdmin(admin.ModelAdmin):
+    list_display = ("full_name", "clinic", "role", "status", "access_enabled")
+    search_fields = ("full_name", "email", "cpf", "clinic__name")
+    list_filter = ("role", "status", "access_enabled", "clinic")

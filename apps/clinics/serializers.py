@@ -2,7 +2,8 @@ from django.db import transaction
 from rest_framework import serializers
 
 from apps.accounts.models import User, UserRole
-from apps.clinics.models import Clinic, ClinicMembership
+from apps.clinics.models import Clinic, ClinicMembership, ClinicStaff, ClinicStaffStatus
+from apps.clinics.policies import is_clinic_admin
 
 
 class ClinicAdminUserSerializer(serializers.Serializer):
@@ -144,3 +145,74 @@ class ClinicMembershipSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
+
+
+class ClinicStaffSerializer(serializers.ModelSerializer):
+    role_label = serializers.CharField(source="get_role_display", read_only=True)
+    status_label = serializers.CharField(source="get_status_display", read_only=True)
+
+    class Meta:
+        model = ClinicStaff
+        fields = [
+            "id",
+            "clinic",
+            "user",
+            "full_name",
+            "role",
+            "role_label",
+            "cpf",
+            "email",
+            "phone",
+            "position",
+            "notes",
+            "status",
+            "status_label",
+            "access_enabled",
+            "is_active",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = [
+            "id",
+            "role_label",
+            "status_label",
+            "is_active",
+            "created_at",
+            "updated_at",
+        ]
+
+    def validate_clinic(self, clinic):
+        request = self.context["request"]
+        if not is_clinic_admin(request.user, clinic.id):
+            raise serializers.ValidationError("Clínica não encontrada.")
+        return clinic
+
+    def validate(self, attrs):
+        user = attrs.get("user") or getattr(self.instance, "user", None)
+        clinic = attrs.get("clinic") or getattr(self.instance, "clinic", None)
+        access_enabled = attrs.get(
+            "access_enabled",
+            getattr(self.instance, "access_enabled", False),
+        )
+        status = attrs.get("status", getattr(self.instance, "status", ClinicStaffStatus.ACTIVE))
+
+        if user and user.global_role == UserRole.SUPERADMIN:
+            raise serializers.ValidationError(
+                {"user": "Contas da plataforma não podem ser funcionários da clínica."}
+            )
+        if user and clinic and not user.clinic_memberships.filter(
+            clinic=clinic,
+            is_active=True,
+        ).exists():
+            raise serializers.ValidationError(
+                {"user": "Usuário precisa estar vinculado à clínica."}
+            )
+        if access_enabled and not user:
+            raise serializers.ValidationError(
+                {"user": "Informe um usuário para habilitar acesso ao sistema."}
+            )
+        if status == ClinicStaffStatus.BLOCKED and access_enabled:
+            raise serializers.ValidationError(
+                {"access_enabled": "Funcionário bloqueado não pode manter acesso ativo."}
+            )
+        return attrs

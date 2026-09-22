@@ -11,6 +11,8 @@ import type {
   AppointmentPayload,
   Clinic,
   ClinicPayload,
+  ClinicStaff,
+  ClinicStaffPayload,
   DocumentTemplate,
   DocumentTemplatePayload,
   GeneratedDocument,
@@ -160,6 +162,34 @@ export async function createClinic(payload: ClinicPayload) {
   return apiFetch<Clinic>("/api/v1/clinics/", {
     method: "POST",
     body: JSON.stringify(payload),
+  });
+}
+
+export async function listClinicStaff(clinicId: string) {
+  return apiFetch<ClinicStaff[]>(`/api/v1/clinics/staff/?clinic=${clinicId}`);
+}
+
+export async function getClinicStaff(id: string) {
+  return apiFetch<ClinicStaff>(`/api/v1/clinics/staff/${id}/`);
+}
+
+export async function createClinicStaff(payload: ClinicStaffPayload) {
+  return apiFetch<ClinicStaff>("/api/v1/clinics/staff/", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateClinicStaff(id: string, payload: Partial<ClinicStaffPayload>) {
+  return apiFetch<ClinicStaff>(`/api/v1/clinics/staff/${id}/`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteClinicStaff(id: string) {
+  return apiFetch<void>(`/api/v1/clinics/staff/${id}/`, {
+    method: "DELETE",
   });
 }
 

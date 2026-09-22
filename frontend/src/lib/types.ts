@@ -42,6 +42,51 @@ export type ClinicPayload = {
   };
 };
 
+export type ClinicStaffRole =
+  | "RECEPTIONIST"
+  | "FINANCE"
+  | "ADMINISTRATIVE"
+  | "OPERATIONAL"
+  | "ACCOUNTANT"
+  | "CLEANING"
+  | "OTHER";
+
+export type ClinicStaffStatus = "ACTIVE" | "INACTIVE" | "BLOCKED";
+
+export type ClinicStaff = {
+  id: string;
+  clinic: string;
+  user: string | null;
+  full_name: string;
+  role: ClinicStaffRole;
+  role_label: string;
+  cpf: string;
+  email: string;
+  phone: string;
+  position: string;
+  notes: string;
+  status: ClinicStaffStatus;
+  status_label: string;
+  access_enabled: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ClinicStaffPayload = {
+  clinic: string;
+  user?: string | null;
+  full_name: string;
+  role: ClinicStaffRole;
+  cpf: string;
+  email: string;
+  phone: string;
+  position: string;
+  notes: string;
+  status: ClinicStaffStatus;
+  access_enabled: boolean;
+};
+
 export type Professional = {
   id: string;
   clinic: string;

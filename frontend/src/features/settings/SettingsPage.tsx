@@ -5,8 +5,8 @@ import { use, useEffect, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
 import { useAuthenticatedData } from "@/features/clinics/useAuthenticatedData";
-import { getClinic, listDocumentTemplates, listProfessionals } from "@/lib/api";
-import type { Clinic, DocumentTemplate, Professional } from "@/lib/types";
+import { getClinic, listClinicStaff, listDocumentTemplates, listProfessionals } from "@/lib/api";
+import type { Clinic, ClinicStaff, DocumentTemplate, Professional } from "@/lib/types";
 
 type SettingsPageProps = { params: Promise<{ id: string }> };
 
@@ -15,16 +15,22 @@ export function SettingsPage({ params }: SettingsPageProps) {
   const { loading, user } = useAuthenticatedData();
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [staff, setStaff] = useState<ClinicStaff[]>([]);
   const [templates, setTemplates] = useState<DocumentTemplate[]>([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (!user) return;
 
-    Promise.all([getClinic(id), listProfessionals(id), listDocumentTemplates(id)])
-      .then(([clinicData, professionalData, templateData]) => {
+    const staffRequest = user.global_role === "CLINIC_ADMIN"
+      ? listClinicStaff(id)
+      : Promise.resolve([] as ClinicStaff[]);
+
+    Promise.all([getClinic(id), listProfessionals(id), staffRequest, listDocumentTemplates(id)])
+      .then(([clinicData, professionalData, staffData, templateData]) => {
         setClinic(clinicData);
         setProfessionals(professionalData);
+        setStaff(staffData);
         setTemplates(templateData);
       })
       .catch(() => setError("Não foi possível carregar as configurações."));
@@ -77,11 +83,15 @@ export function SettingsPage({ params }: SettingsPageProps) {
           <h3>Equipe administrativa e operacional</h3>
           <p className="muted">Área separada para secretaria, recepção, financeiro, limpeza, contador e outros colaboradores sem perfil clínico.</p>
           <ul className="settings-checklist">
+            <li>{staff.filter((member) => member.is_active).length} funcionário(s) ativo(s)</li>
             <li>Cadastro de funcionário sem CRP obrigatório</li>
             <li>Permissões por função: recepção, financeiro, administrativo e operacional</li>
             <li>Convite, bloqueio e desligamento de acesso</li>
           </ul>
-          <span className="panel-pill">Próxima etapa</span>
+          <div className="form-actions">
+            <Link className="button-primary button-compact" href={`/clinics/${id}/settings/staff/new`}>Cadastrar funcionário</Link>
+            <Link className="button-secondary button-compact" href={`/clinics/${id}/settings/staff`}>Gerenciar acessos</Link>
+          </div>
         </article>
 
         <article className="panel-card settings-card">

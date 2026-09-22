@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 
 from apps.accounts.models import UserRole
-from apps.clinics.models import Clinic, ClinicMembership
+from apps.clinics.models import Clinic, ClinicMembership, ClinicStaff
 from apps.clinics.policies import is_clinic_admin
 
 
@@ -510,3 +510,87 @@ def test_platform_role_with_invalid_membership_fails_closed_for_clinic_list():
     response = client.get(reverse("clinic-list"))
 
     assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_clinic_admin_can_manage_staff_crud():
+    admin_user = get_user_model().objects.create_user(
+        username="staff-admin",
+        email="staff-admin@example.com",
+        password="safe-test-password",
+        full_name="Admin Clínica",
+        global_role=UserRole.CLINIC_ADMIN,
+    )
+    clinic = Clinic.objects.create(name="Clínica Funcionários")
+    ClinicMembership.objects.create(
+        clinic=clinic,
+        user=admin_user,
+        role=UserRole.CLINIC_ADMIN,
+    )
+    client = APIClient()
+    client.force_authenticate(user=admin_user)
+
+    create_response = client.post(
+        reverse("clinic-staff-list"),
+        {
+            "clinic": str(clinic.id),
+            "full_name": "Maria Secretaria",
+            "role": "RECEPTIONIST",
+            "email": "maria@example.com",
+            "phone": "(62)99999-0000",
+            "position": "Secretária",
+            "status": "ACTIVE",
+            "access_enabled": False,
+        },
+        format="json",
+    )
+    staff_id = create_response.json()["id"]
+    update_response = client.patch(
+        reverse("clinic-staff-detail", kwargs={"pk": staff_id}),
+        {"role": "FINANCE", "position": "Financeiro"},
+        format="json",
+    )
+    delete_response = client.delete(
+        reverse("clinic-staff-detail", kwargs={"pk": staff_id})
+    )
+
+    staff = ClinicStaff.objects.get(id=staff_id)
+    assert create_response.status_code == 201
+    assert update_response.status_code == 200
+    assert delete_response.status_code == 204
+    assert staff.role == "FINANCE"
+    assert staff.status == "INACTIVE"
+    assert staff.is_active is False
+
+
+@pytest.mark.django_db
+def test_non_admin_cannot_manage_staff():
+    receptionist = get_user_model().objects.create_user(
+        username="staff-receptionist",
+        email="staff-receptionist@example.com",
+        password="safe-test-password",
+        full_name="Recepção",
+        global_role=UserRole.RECEPTIONIST,
+    )
+    clinic = Clinic.objects.create(name="Clínica Bloqueio Funcionários")
+    ClinicMembership.objects.create(
+        clinic=clinic,
+        user=receptionist,
+        role=UserRole.RECEPTIONIST,
+    )
+    client = APIClient()
+    client.force_authenticate(user=receptionist)
+
+    response = client.post(
+        reverse("clinic-staff-list"),
+        {
+            "clinic": str(clinic.id),
+            "full_name": "Funcionário indevido",
+            "role": "OPERATIONAL",
+            "status": "ACTIVE",
+        },
+        format="json",
+    )
+
+    assert response.status_code == 403
+    assert not ClinicStaff.objects.exists()
