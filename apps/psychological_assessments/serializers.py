@@ -10,12 +10,29 @@ from apps.professionals.selectors import professionals_visible_to_user
 from apps.psychological_assessments.models import (
     Assessment,
     AssessmentDocument,
+    AssessmentInstrument,
     AssessmentResult,
     AssessmentResultStatus,
     AssessmentSession,
     InstrumentApplication,
 )
 from apps.psychological_assessments.selectors import assessments_visible_to_user
+
+
+class AssessmentInstrumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AssessmentInstrument
+        fields = [
+            "id",
+            "code",
+            "name",
+            "category",
+            "version",
+            "is_active",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = fields
 
 
 class AssessmentSessionSerializer(serializers.ModelSerializer):
@@ -53,20 +70,41 @@ class AssessmentSessionSerializer(serializers.ModelSerializer):
 
 
 class InstrumentApplicationSerializer(serializers.ModelSerializer):
+    instrument_code = serializers.CharField(source="instrument.code", read_only=True)
+    instrument_catalog_name = serializers.CharField(source="instrument.name", read_only=True)
+
     class Meta:
         model = InstrumentApplication
         fields = [
             "id",
             "assessment",
             "session",
+            "instrument",
+            "instrument_code",
+            "instrument_catalog_name",
             "instrument_name",
             "application_date",
             "status",
             "notes",
+            "raw_payload",
+            "computed_payload",
+            "classified_payload",
+            "reviewed_payload",
+            "interpretation_text",
+            "is_validated",
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["id", "created_at", "updated_at"]
+        read_only_fields = [
+            "id",
+            "instrument_code",
+            "instrument_catalog_name",
+            "computed_payload",
+            "classified_payload",
+            "created_at",
+            "updated_at",
+        ]
+        extra_kwargs = {"instrument_name": {"required": False, "allow_blank": True}}
 
     def validate_assessment(self, assessment):
         request = self.context["request"]
@@ -83,6 +121,16 @@ class InstrumentApplicationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Operadores da plataforma não acessam avaliações."
             )
+
+        instrument = attrs.get("instrument") or getattr(
+            self.instance,
+            "instrument",
+            None,
+        )
+        if instrument and not instrument.is_active:
+            raise serializers.ValidationError("Instrumento inativo.")
+        if instrument and not attrs.get("instrument_name"):
+            attrs["instrument_name"] = instrument.name
 
         data = {}
         for field in InstrumentApplication._meta.fields:

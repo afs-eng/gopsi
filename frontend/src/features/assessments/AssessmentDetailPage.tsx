@@ -13,9 +13,11 @@ import {
   createInstrumentApplication,
   getClinic,
   getPsychologicalAssessment,
+  listAssessmentInstruments,
   listGeneratedDocuments,
 } from "@/lib/api";
 import type {
+  AssessmentInstrument,
   Clinic,
   GeneratedDocument,
   PsychologicalAssessment,
@@ -46,12 +48,23 @@ function formatTime(time: string) {
   return time.slice(0, 5);
 }
 
+function parseOptionalJsonObject(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) return {};
+  const parsed = JSON.parse(trimmed) as unknown;
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    throw new Error("JSON inválido");
+  }
+  return parsed as Record<string, unknown>;
+}
+
 export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
   const { id, assessmentId } = use(params);
   const { loading, user } = useAuthenticatedData();
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [assessment, setAssessment] = useState<PsychologicalAssessment | null>(null);
   const [documents, setDocuments] = useState<GeneratedDocument[]>([]);
+  const [instruments, setInstruments] = useState<AssessmentInstrument[]>([]);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -70,8 +83,11 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
   useEffect(() => {
     if (!user) return;
 
-    loadAssessment()
-      .then((assessmentData) => listGeneratedDocuments(id, assessmentData.patient))
+    Promise.all([loadAssessment(), listAssessmentInstruments()])
+      .then(([assessmentData, instrumentData]) => {
+        setInstruments(instrumentData);
+        return listGeneratedDocuments(id, assessmentData.patient);
+      })
       .then(setDocuments)
       .catch(() => setError("Não foi possível carregar a avaliação."));
   }, [id, loadAssessment, user]);
@@ -117,21 +133,29 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
     const form = event.currentTarget;
     const session = String(data.get("session") ?? "");
     const applicationDate = String(data.get("application_date") ?? "");
+    const instrument = String(data.get("instrument") ?? "");
+    const otherInstrumentName = String(data.get("other_instrument_name") ?? "");
+    const selectedInstrument = instruments.find((item) => item.id === instrument);
 
     startTransition(async () => {
       try {
         await createInstrumentApplication({
           assessment: assessment.id,
           session: session || null,
-          instrument_name: String(data.get("instrument_name") ?? ""),
+          instrument: instrument || null,
+          instrument_name: selectedInstrument?.name || otherInstrumentName,
           application_date: applicationDate || null,
           status: String(data.get("status") ?? "PLANNED") as "PLANNED" | "APPLIED" | "CANCELLED",
           notes: String(data.get("notes") ?? ""),
+          raw_payload: parseOptionalJsonObject(String(data.get("raw_payload") ?? "")),
+          reviewed_payload: parseOptionalJsonObject(String(data.get("reviewed_payload") ?? "")),
+          interpretation_text: String(data.get("interpretation_text") ?? ""),
+          is_validated: data.get("is_validated") === "on",
         });
         form.reset();
         await refresh("Instrumento registrado.");
       } catch {
-        setError("Não foi possível registrar o instrumento.");
+        setError("Não foi possível registrar o instrumento. Confira o instrumento selecionado e o JSON informado.");
       }
     });
   }
@@ -280,19 +304,24 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
             </div>
           </div>
           <form className="form-stack" onSubmit={handleInstrumentSubmit}>
-            <label className="field-group" htmlFor="instrument_name">Instrumento<input id="instrument_name" name="instrument_name" required placeholder="Nome do instrumento aplicado" /></label>
+            <label className="field-group" htmlFor="instrument">Instrumento<select id="instrument" name="instrument" defaultValue=""><option value="">Outro / não catalogado</option>{instruments.map((instrument) => <option key={instrument.id} value={instrument.id}>{instrument.name}</option>)}</select></label>
+            <label className="field-group" htmlFor="other_instrument_name">Nome livre, se não estiver no catálogo<input id="other_instrument_name" name="other_instrument_name" placeholder="Nome do instrumento aplicado" /></label>
             <div className="field-grid">
               <label className="field-group" htmlFor="instrument_session">Sessão<select id="instrument_session" name="session" defaultValue=""><option value="">Sem vínculo</option>{assessment.sessions.map((session) => <option key={session.id} value={session.id}>{formatDate(session.session_date)}</option>)}</select></label>
               <label className="field-group" htmlFor="application_date">Data<input id="application_date" name="application_date" type="date" /></label>
             </div>
             <label className="field-group" htmlFor="instrument_status">Status<select id="instrument_status" name="status" defaultValue="PLANNED"><option value="PLANNED">Planejada</option><option value="APPLIED">Aplicada</option><option value="CANCELLED">Cancelada</option></select></label>
             <label className="field-group" htmlFor="instrument_notes">Observações<textarea id="instrument_notes" name="notes" rows={3} /></label>
+            <label className="field-group" htmlFor="raw_payload">Dados/escores autorizados em JSON<textarea id="raw_payload" name="raw_payload" rows={4} placeholder={'{"escore_total": 12, "classificacao": "..."}'} /></label>
+            <label className="field-group" htmlFor="reviewed_payload">Dados revisados em JSON<textarea id="reviewed_payload" name="reviewed_payload" rows={3} /></label>
+            <label className="field-group" htmlFor="interpretation_text">Interpretação autorizada<textarea id="interpretation_text" name="interpretation_text" rows={4} /></label>
+            <label className="checkbox-card" htmlFor="is_validated"><input id="is_validated" name="is_validated" type="checkbox" /> Marcar como validado/revisado</label>
             <button className="button-primary button-compact" disabled={isPending} type="submit">Registrar instrumento</button>
           </form>
           <div className="assessments-list">
             {assessment.instrument_applications.map((instrument) => (
               <div className="clinic-row" key={instrument.id}>
-                <div><strong>{instrument.instrument_name}</strong><p>{formatDate(instrument.application_date)} · {instrument.notes || "Sem observações."}</p></div>
+                <div><strong>{instrument.instrument_name}</strong><p>{formatDate(instrument.application_date)} · {instrument.notes || instrument.interpretation_text || "Sem observações."}</p></div>
                 <span className="status-badge">{instrument.status}</span>
               </div>
             ))}

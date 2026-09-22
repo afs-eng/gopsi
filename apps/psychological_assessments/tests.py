@@ -11,6 +11,7 @@ from apps.professionals.models import Professional
 from apps.psychological_assessments.models import (
     Assessment,
     AssessmentDocument,
+    AssessmentInstrument,
     AssessmentResult,
     AssessmentResultStatus,
     AssessmentSession,
@@ -351,6 +352,50 @@ def test_professional_can_register_assessment_session_instrument_result_and_docu
     result = AssessmentResult.objects.get(assessment=assessment)
     assert result.status == AssessmentResultStatus.FINAL
     assert result.finalized_at is not None
+
+
+@pytest.mark.django_db
+def test_professional_can_list_catalog_and_register_catalog_instrument_payload():
+    user, clinic, professional, patient = make_assessment_context()
+    assessment = Assessment.objects.create(
+        clinic=clinic,
+        patient=patient,
+        professional=professional,
+        title="Avaliação com instrumento catalogado",
+        created_by=user,
+    )
+    instrument = AssessmentInstrument.objects.create(
+        code="bai-test",
+        name="BAI Teste",
+        category="Ansiedade",
+    )
+    client = APIClient()
+    client.force_authenticate(user=user)
+
+    catalog_response = client.get(reverse("assessment-instrument-list"))
+    application_response = client.post(
+        reverse("instrument-application-list"),
+        {
+            "assessment": str(assessment.id),
+            "instrument": str(instrument.id),
+            "application_date": "2026-10-02",
+            "status": "APPLIED",
+            "raw_payload": {"escore_total": 12},
+            "reviewed_payload": {"observacao": "resultado revisado"},
+            "interpretation_text": "Interpretação autorizada.",
+            "is_validated": True,
+        },
+        format="json",
+    )
+
+    application = InstrumentApplication.objects.get(assessment=assessment)
+    assert catalog_response.status_code == 200
+    assert any(item["code"] == "bai-test" for item in catalog_response.json())
+    assert application_response.status_code == 201
+    assert application.instrument == instrument
+    assert application.instrument_name == "BAI Teste"
+    assert application.raw_payload == {"escore_total": 12}
+    assert application.is_validated is True
 
 
 @pytest.mark.django_db

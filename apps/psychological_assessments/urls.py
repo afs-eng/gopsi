@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from apps.psychological_assessments.views import (
     AssessmentDocumentViewSet,
+    AssessmentInstrumentViewSet,
     AssessmentResultViewSet,
     AssessmentSessionViewSet,
     AssessmentViewSet,
@@ -10,6 +11,11 @@ from apps.psychological_assessments.views import (
 )
 
 router = DefaultRouter()
+router.register(
+    "instrument-catalog",
+    AssessmentInstrumentViewSet,
+    basename="assessment-instrument",
+)
 router.register("sessions", AssessmentSessionViewSet, basename="assessment-session")
 router.register(
     "instruments",

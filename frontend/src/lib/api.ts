@@ -2,6 +2,7 @@ import { clearToken, getToken } from "@/lib/auth";
 import type {
   AssessmentDocument,
   AssessmentDocumentPayload,
+  AssessmentInstrument,
   AssessmentResult,
   AssessmentResultPayload,
   AssessmentSession,
@@ -267,6 +268,10 @@ export async function listPsychologicalAssessments(clinicId: string, patientId?:
 
 export async function getPsychologicalAssessment(id: string) {
   return apiFetch<PsychologicalAssessment>(`/api/v1/psychological-assessments/${id}/`);
+}
+
+export async function listAssessmentInstruments() {
+  return apiFetch<AssessmentInstrument[]>("/api/v1/psychological-assessments/instrument-catalog/");
 }
 
 export async function createPsychologicalAssessment(

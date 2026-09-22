@@ -1,9 +1,10 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from apps.psychological_assessments.models import (
     AssessmentDocument,
+    AssessmentInstrument,
     AssessmentResult,
     AssessmentSession,
     InstrumentApplication,
@@ -12,11 +13,23 @@ from apps.psychological_assessments.permissions import CanAccessPsychologicalAss
 from apps.psychological_assessments.selectors import assessments_visible_to_user
 from apps.psychological_assessments.serializers import (
     AssessmentDocumentSerializer,
+    AssessmentInstrumentSerializer,
     AssessmentResultSerializer,
     AssessmentSerializer,
     AssessmentSessionSerializer,
     InstrumentApplicationSerializer,
 )
+
+
+class AssessmentInstrumentViewSet(ReadOnlyModelViewSet):
+    serializer_class = AssessmentInstrumentSerializer
+    permission_classes = [CanAccessPsychologicalAssessments]
+
+    def get_queryset(self):
+        return AssessmentInstrument.objects.filter(is_active=True).order_by(
+            "category",
+            "name",
+        )
 
 
 class AssessmentViewSet(ModelViewSet):

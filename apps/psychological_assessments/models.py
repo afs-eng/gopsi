@@ -42,6 +42,23 @@ class AssessmentDocumentType(models.TextChoices):
     OTHER = "OTHER", "Outro"
 
 
+class AssessmentInstrument(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    code = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=255)
+    category = models.CharField(max_length=100, blank=True)
+    version = models.CharField(max_length=50, blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.code})"
+
+
 class Assessment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     clinic = models.ForeignKey(
@@ -162,6 +179,13 @@ class InstrumentApplication(models.Model):
         blank=True,
         null=True,
     )
+    instrument = models.ForeignKey(
+        AssessmentInstrument,
+        on_delete=models.PROTECT,
+        related_name="applications",
+        blank=True,
+        null=True,
+    )
     instrument_name = models.CharField(max_length=180)
     application_date = models.DateField(blank=True, null=True)
     status = models.CharField(
@@ -170,6 +194,12 @@ class InstrumentApplication(models.Model):
         default=InstrumentApplicationStatus.PLANNED,
     )
     notes = models.TextField(blank=True)
+    raw_payload = models.JSONField(default=dict, blank=True)
+    computed_payload = models.JSONField(default=dict, blank=True)
+    classified_payload = models.JSONField(default=dict, blank=True)
+    reviewed_payload = models.JSONField(default=dict, blank=True)
+    interpretation_text = models.TextField(blank=True)
+    is_validated = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -183,6 +213,8 @@ class InstrumentApplication(models.Model):
     def clean(self):
         if self.session_id and self.session.assessment_id != self.assessment_id:
             raise ValidationError("Sessão não pertence à avaliação informada.")
+        if self.instrument_id and not self.instrument_name:
+            self.instrument_name = self.instrument.name
 
     def save(self, *args, **kwargs):
         self.full_clean()

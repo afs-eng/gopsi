@@ -519,10 +519,30 @@ export type InstrumentApplication = {
   id: string;
   assessment: string;
   session: string | null;
+  instrument: string | null;
+  instrument_code: string;
+  instrument_catalog_name: string;
   instrument_name: string;
   application_date: string | null;
   status: "PLANNED" | "APPLIED" | "CANCELLED";
   notes: string;
+  raw_payload: Record<string, unknown>;
+  computed_payload: Record<string, unknown>;
+  classified_payload: Record<string, unknown>;
+  reviewed_payload: Record<string, unknown>;
+  interpretation_text: string;
+  is_validated: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AssessmentInstrument = {
+  id: string;
+  code: string;
+  name: string;
+  category: string;
+  version: string;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -595,10 +615,15 @@ export type AssessmentSessionPayload = {
 export type InstrumentApplicationPayload = {
   assessment: string;
   session?: string | null;
+  instrument?: string | null;
   instrument_name: string;
   application_date?: string | null;
   status: InstrumentApplication["status"];
   notes: string;
+  raw_payload?: Record<string, unknown>;
+  reviewed_payload?: Record<string, unknown>;
+  interpretation_text?: string;
+  is_validated?: boolean;
 };
 
 export type AssessmentResultPayload = {
