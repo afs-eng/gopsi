@@ -47,6 +47,10 @@ export function AssessmentCreatePage({ params }: AssessmentCreatePageProps) {
       .catch(() => setError("Não foi possível carregar pacientes e profissionais."));
   }, [id, user]);
 
+  const authorizedProfessionals = user
+    ? professionals.filter((professional) => professional.user === user.id)
+    : [];
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
@@ -65,9 +69,11 @@ export function AssessmentCreatePage({ params }: AssessmentCreatePageProps) {
           completed_at: String(formData.get("completed_at") ?? "") || null,
         });
         router.replace(`/clinics/${id}/assessments`);
-      } catch {
+      } catch (error) {
         setError(
-          "Não foi possível iniciar a avaliação. Verifique paciente, profissional autorizado e datas informadas.",
+          error instanceof Error
+            ? error.message
+            : "Não foi possível iniciar a avaliação. Verifique paciente, profissional autorizado e datas informadas.",
         );
       }
     });
@@ -116,7 +122,13 @@ export function AssessmentCreatePage({ params }: AssessmentCreatePageProps) {
 
         {error ? <div className="alert" id="assessment-form-error" role="alert" aria-live="assertive">{error}</div> : null}
 
-        <form className="form-stack" onSubmit={handleSubmit} aria-describedby={error ? "assessment-form-error" : undefined}>
+          {authorizedProfessionals.length ? null : (
+            <div className="alert" role="alert">
+              Seu usuário precisa estar vinculado a um perfil profissional ativo da clínica para iniciar avaliações psicológicas.
+            </div>
+          )}
+
+          <form className="form-stack" onSubmit={handleSubmit} aria-describedby={error ? "assessment-form-error" : undefined}>
           <fieldset className="form-section">
             <legend className="eyebrow">Vínculos</legend>
             <div className="field-grid">
@@ -133,7 +145,7 @@ export function AssessmentCreatePage({ params }: AssessmentCreatePageProps) {
                 Profissional responsável
                 <select id="professional" name="professional" required defaultValue="">
                   <option value="">Selecione</option>
-                  {professionals.map((professional) => (
+                  {authorizedProfessionals.map((professional) => (
                     <option key={professional.id} value={professional.id}>{professional.full_name}</option>
                   ))}
                 </select>
@@ -175,7 +187,7 @@ export function AssessmentCreatePage({ params }: AssessmentCreatePageProps) {
             <p>Depois de iniciar a avaliação, registre sessões, instrumentos aplicados, resultados e síntese integrativa no acompanhamento do processo.</p>
           </div>
 
-          <button className="button-primary" disabled={isPending} type="submit">
+          <button className="button-primary" disabled={isPending || !authorizedProfessionals.length} type="submit">
             {isPending ? "Salvando..." : "Iniciar avaliação"}
           </button>
         </form>
