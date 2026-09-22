@@ -40,6 +40,16 @@ export function LoginPage() {
     setCopiedSecret(true);
   }
 
+  function extractMfaSetupValue(message: string, key: "provisioning_uri" | "secret") {
+    const jsonMatch = message.match(new RegExp(`"${key}"\\s*:\\s*"([^"]+)"`));
+    if (jsonMatch?.[1]) {
+      return jsonMatch[1];
+    }
+
+    const textMatch = message.match(new RegExp(`${key}:\\s*(.+?)(?=\\s+(?:secret|provisioning_uri|detail|mfa_setup_required):|$)`));
+    return textMatch?.[1]?.trim() ?? "";
+  }
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
@@ -66,10 +76,8 @@ export function LoginPage() {
           return;
         }
         if (message.includes("mfa_setup_required")) {
-          const secretMatch = message.match(/"secret"\s*:\s*"([^"]+)"/);
-          const uriMatch = message.match(/"provisioning_uri"\s*:\s*"([^"]+)"/);
-          setMfaSecret(secretMatch?.[1] ?? "");
-          setMfaUri(uriMatch?.[1] ?? "");
+          setMfaSecret(extractMfaSetupValue(message, "secret"));
+          setMfaUri(extractMfaSetupValue(message, "provisioning_uri"));
           setShowQr(true);
           setShowOtp(true);
           setError(
