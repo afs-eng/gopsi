@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from apps.psychological_assessments.views import (
     AssessmentDocumentViewSet,
     AssessmentInstrumentViewSet,
+    AssessmentPlanViewSet,
     AssessmentResultViewSet,
     AssessmentSessionViewSet,
     AssessmentViewSet,
@@ -17,6 +18,7 @@ router.register(
     basename="assessment-instrument",
 )
 router.register("sessions", AssessmentSessionViewSet, basename="assessment-session")
+router.register("plans", AssessmentPlanViewSet, basename="assessment-plan")
 router.register(
     "instruments",
     InstrumentApplicationViewSet,

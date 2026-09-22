@@ -21,8 +21,11 @@ function statusLabel(status: PsychologicalAssessmentStatus) {
   return {
     CANCELLED: "Cancelada",
     COMPLETED: "Concluída",
-    DRAFT: "Rascunho",
     IN_PROGRESS: "Em andamento",
+    PLANNING: "Planejamento",
+    WAITING_FEEDBACK: "Aguardando devolutiva",
+    WAITING_INFORMATION: "Aguardando informação",
+    WRITING: "Em elaboração",
   }[status];
 }
 
@@ -75,6 +78,7 @@ export function AssessmentsPage({ params }: AssessmentsPageProps) {
     const matchesStatus = statusFilter === "ALL" || assessment.status === statusFilter;
     const matchesSearch = !normalizedSearch || [
       assessment.title,
+      assessment.code || "",
       assessment.patient_name,
       assessment.professional_name,
       assessment.reason,
@@ -154,8 +158,11 @@ export function AssessmentsPage({ params }: AssessmentsPageProps) {
               onChange={(event) => setStatusFilter(event.target.value as "ALL" | PsychologicalAssessmentStatus)}
             >
               <option value="ALL">Todos</option>
-              <option value="DRAFT">Rascunho</option>
+              <option value="PLANNING">Planejamento</option>
               <option value="IN_PROGRESS">Em andamento</option>
+              <option value="WAITING_INFORMATION">Aguardando informação</option>
+              <option value="WRITING">Em elaboração</option>
+              <option value="WAITING_FEEDBACK">Aguardando devolutiva</option>
               <option value="COMPLETED">Concluídas</option>
               <option value="CANCELLED">Canceladas</option>
             </select>
@@ -168,13 +175,14 @@ export function AssessmentsPage({ params }: AssessmentsPageProps) {
               <article className="assessment-row" key={assessment.id}>
                 <div>
                   <div className="assessment-row-heading">
-                    <h3>{assessment.title}</h3>
+                    <h3>{assessment.code ? `${assessment.code} · ${assessment.title}` : assessment.title}</h3>
                     <span className="status-badge">{statusLabel(assessment.status)}</span>
                   </div>
                   <p className="muted">{assessment.reason || "Motivo não informado."}</p>
                   <div className="assessment-row-meta">
                     <span>{assessment.patient_name}</span>
                     <span>{assessment.professional_name}</span>
+                    <span>{assessment.assessment_type_label}</span>
                     <span>Início: {formatDate(assessment.started_at)}</span>
                   </div>
                 </div>

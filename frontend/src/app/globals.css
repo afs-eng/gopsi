@@ -5610,6 +5610,54 @@ fieldset.form-section > legend + * {
   text-align: center;
 }
 
+.assessment-tabs {
+  display: flex;
+  gap: 0.55rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+  padding: 0.2rem 0 0.45rem;
+  scrollbar-width: thin;
+}
+
+.assessment-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid rgb(23 107 86 / 16%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 82%);
+  color: var(--muted);
+  cursor: pointer;
+  flex: 0 0 auto;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 850;
+  min-height: 2.65rem;
+  padding: 0.62rem 0.9rem;
+}
+
+.assessment-tab[aria-current="page"] {
+  border-color: rgb(23 107 86 / 34%);
+  background: rgb(220 238 229 / 80%);
+  color: var(--accent-dark);
+}
+
+.assessment-tab:focus-visible {
+  outline: 3px solid rgb(23 107 86 / 24%);
+  outline-offset: 2px;
+}
+
+.assessment-tab strong {
+  display: inline-grid;
+  min-width: 1.45rem;
+  min-height: 1.45rem;
+  place-items: center;
+  border-radius: 999px;
+  background: rgb(23 107 86 / 10%);
+  color: var(--accent-dark);
+  font-size: 0.78rem;
+}
+
 .assessments-panel {
   margin-top: 1rem;
 }

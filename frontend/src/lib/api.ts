@@ -3,6 +3,8 @@ import type {
   AssessmentDocument,
   AssessmentDocumentPayload,
   AssessmentInstrument,
+  AssessmentPlan,
+  AssessmentPlanPayload,
   AssessmentResult,
   AssessmentResultPayload,
   AssessmentSession,
@@ -300,6 +302,13 @@ export async function getPsychologicalAssessment(id: string) {
   return apiFetch<PsychologicalAssessment>(`/api/v1/psychological-assessments/${id}/`);
 }
 
+export async function cancelPsychologicalAssessment(id: string, reason: string) {
+  return apiFetch<PsychologicalAssessment>(`/api/v1/psychological-assessments/${id}/cancel/`, {
+    method: "POST",
+    body: JSON.stringify({ reason }),
+  });
+}
+
 export async function listAssessmentInstruments() {
   return apiFetch<AssessmentInstrument[]>("/api/v1/psychological-assessments/instrument-catalog/");
 }
@@ -320,6 +329,20 @@ export async function createAssessmentSession(payload: AssessmentSessionPayload)
   });
 }
 
+export async function createAssessmentPlan(payload: AssessmentPlanPayload) {
+  return apiFetch<AssessmentPlan>("/api/v1/psychological-assessments/plans/", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateAssessmentPlan(id: string, payload: Partial<AssessmentPlanPayload>) {
+  return apiFetch<AssessmentPlan>(`/api/v1/psychological-assessments/plans/${id}/`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function createInstrumentApplication(payload: InstrumentApplicationPayload) {
   return apiFetch<InstrumentApplication>("/api/v1/psychological-assessments/instruments/", {
     method: "POST",
@@ -331,6 +354,19 @@ export async function createAssessmentResult(payload: AssessmentResultPayload) {
   return apiFetch<AssessmentResult>("/api/v1/psychological-assessments/results/", {
     method: "POST",
     body: JSON.stringify(payload),
+  });
+}
+
+export async function finalizeAssessmentResult(id: string) {
+  return apiFetch<AssessmentResult>(`/api/v1/psychological-assessments/results/${id}/finalize/`, {
+    method: "POST",
+  });
+}
+
+export async function voidAssessmentResult(id: string, reason: string) {
+  return apiFetch<AssessmentResult>(`/api/v1/psychological-assessments/results/${id}/void/`, {
+    method: "POST",
+    body: JSON.stringify({ reason }),
   });
 }
 

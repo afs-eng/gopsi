@@ -16,6 +16,7 @@ import type {
   Patient,
   Professional,
   PsychologicalAssessmentStatus,
+  PsychologicalAssessmentType,
 } from "@/lib/types";
 import { useAuthenticatedData } from "@/features/clinics/useAuthenticatedData";
 
@@ -60,17 +61,23 @@ export function AssessmentCreatePage({ params }: AssessmentCreatePageProps) {
 
     startTransition(async () => {
       try {
-        await createPsychologicalAssessment({
+        const assessment = await createPsychologicalAssessment({
           clinic: id,
           patient: String(formData.get("patient") ?? ""),
           professional: String(formData.get("professional") ?? ""),
           title: String(formData.get("title") ?? ""),
+          assessment_type: String(formData.get("assessment_type") ?? "PSYCHOLOGICAL") as PsychologicalAssessmentType,
+          purpose: String(formData.get("purpose") ?? ""),
+          demand_origin: String(formData.get("demand_origin") ?? ""),
+          requester: String(formData.get("requester") ?? ""),
           reason: String(formData.get("reason") ?? ""),
+          objective: String(formData.get("objective") ?? ""),
           status: String(formData.get("status") ?? "IN_PROGRESS") as PsychologicalAssessmentStatus,
           started_at: String(formData.get("started_at") ?? "") || null,
+          expected_at: String(formData.get("expected_at") ?? "") || null,
           completed_at: String(formData.get("completed_at") ?? "") || null,
         });
-        router.replace(`/clinics/${id}/assessments`);
+        router.replace(`/clinics/${id}/assessments/${assessment.id}`);
       } catch (error) {
         setError(
           error instanceof Error
@@ -161,27 +168,63 @@ export function AssessmentCreatePage({ params }: AssessmentCreatePageProps) {
               Título
               <input id="title" name="title" required placeholder="Avaliação neuropsicológica inicial" />
             </label>
+            <div className="field-grid">
+              <label className="field-group" htmlFor="assessment_type">
+                Tipo
+                <select id="assessment_type" name="assessment_type" defaultValue="PSYCHOLOGICAL">
+                  <option value="PSYCHOLOGICAL">Psicológica</option>
+                  <option value="NEUROPSYCHOLOGICAL">Neuropsicológica</option>
+                  <option value="PSYCHODIAGNOSTIC">Psicodiagnóstica</option>
+                  <option value="BEHAVIORAL">Comportamental</option>
+                  <option value="DEVELOPMENT">Desenvolvimento</option>
+                  <option value="OTHER">Outra</option>
+                </select>
+              </label>
+              <label className="field-group" htmlFor="demand_origin">
+                Origem da demanda
+                <input id="demand_origin" name="demand_origin" placeholder="Família, escola, médico, demanda própria..." />
+              </label>
+            </div>
+            <label className="field-group" htmlFor="purpose">
+              Finalidade
+              <textarea id="purpose" name="purpose" rows={3} placeholder="Finalidade clínica, escolar, ocupacional, judicial ou outra." />
+            </label>
+            <label className="field-group" htmlFor="requester">
+              Solicitante, quando aplicável
+              <input id="requester" name="requester" placeholder="Nome, instituição ou responsável pela solicitação" />
+            </label>
             <label className="field-group" htmlFor="reason">
               Motivo da avaliação
-              <textarea id="reason" name="reason" rows={5} placeholder="Descreva a demanda, objetivo ou encaminhamento informado." />
+              <textarea id="reason" name="reason" required rows={5} placeholder="Descreva a demanda, objetivo ou encaminhamento informado." />
+            </label>
+            <label className="field-group" htmlFor="objective">
+              Objetivo
+              <textarea id="objective" name="objective" rows={4} placeholder="Pergunta clínica ou objetivo principal da avaliação." />
             </label>
             <div className="field-grid">
               <label className="field-group" htmlFor="status">
                 Status inicial
                 <select id="status" name="status" defaultValue="IN_PROGRESS">
-                  <option value="DRAFT">Rascunho</option>
+                  <option value="PLANNING">Planejamento</option>
                   <option value="IN_PROGRESS">Em andamento</option>
+                  <option value="WAITING_INFORMATION">Aguardando informação</option>
                 </select>
               </label>
               <label className="field-group" htmlFor="started_at">
                 Data de início
-                <input id="started_at" name="started_at" type="date" />
+                <input id="started_at" name="started_at" required type="date" />
               </label>
             </div>
-            <label className="field-group" htmlFor="completed_at">
-              Data de conclusão, se já existir
-              <input id="completed_at" name="completed_at" type="date" />
-            </label>
+            <div className="field-grid">
+              <label className="field-group" htmlFor="expected_at">
+                Data prevista
+                <input id="expected_at" name="expected_at" type="date" />
+              </label>
+              <label className="field-group" htmlFor="completed_at">
+                Data de conclusão, se já existir
+                <input id="completed_at" name="completed_at" type="date" />
+              </label>
+            </div>
           </fieldset>
 
           <div className="assessment-form-note">

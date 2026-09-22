@@ -4,6 +4,7 @@ from apps.psychological_assessments.models import (
     Assessment,
     AssessmentDocument,
     AssessmentInstrument,
+    AssessmentPlan,
     AssessmentResult,
     AssessmentSession,
     InstrumentApplication,
@@ -12,9 +13,14 @@ from apps.psychological_assessments.models import (
 
 @admin.register(Assessment)
 class AssessmentAdmin(admin.ModelAdmin):
-    list_display = ["title", "clinic", "patient", "professional", "status"]
-    list_filter = ["status", "clinic"]
-    search_fields = ["title", "patient__full_name", "professional__full_name"]
+    list_display = ["code", "title", "clinic", "patient", "professional", "status"]
+    list_filter = ["status", "assessment_type", "clinic"]
+    search_fields = [
+        "code",
+        "title",
+        "patient__full_name",
+        "professional__full_name",
+    ]
 
 
 @admin.register(AssessmentSession)
@@ -30,9 +36,25 @@ class AssessmentInstrumentAdmin(admin.ModelAdmin):
     search_fields = ["name", "code"]
 
 
+@admin.register(AssessmentPlan)
+class AssessmentPlanAdmin(admin.ModelAdmin):
+    list_display = ["assessment", "created_by", "updated_at"]
+    search_fields = [
+        "assessment__code",
+        "assessment__title",
+        "assessment__patient__full_name",
+    ]
+
+
 @admin.register(InstrumentApplication)
 class InstrumentApplicationAdmin(admin.ModelAdmin):
-    list_display = ["instrument_name", "instrument", "assessment", "status", "application_date"]
+    list_display = [
+        "instrument_name",
+        "instrument",
+        "assessment",
+        "status",
+        "application_date",
+    ]
     list_filter = ["status", "instrument"]
 
 

@@ -545,21 +545,69 @@ export type MedicalRecordPayload = {
 };
 
 export type PsychologicalAssessmentStatus =
-  | "DRAFT"
+  | "PLANNING"
   | "IN_PROGRESS"
+  | "WAITING_INFORMATION"
+  | "WRITING"
+  | "WAITING_FEEDBACK"
   | "COMPLETED"
   | "CANCELLED";
+
+export type PsychologicalAssessmentType =
+  | "PSYCHOLOGICAL"
+  | "NEUROPSYCHOLOGICAL"
+  | "PSYCHODIAGNOSTIC"
+  | "BEHAVIORAL"
+  | "DEVELOPMENT"
+  | "OTHER";
 
 export type AssessmentSession = {
   id: string;
   assessment: string;
+  professional: string | null;
+  professional_name: string;
   session_date: string;
   start_time: string;
   end_time: string;
+  modality: "IN_PERSON" | "ONLINE" | "OTHER";
   status: "SCHEDULED" | "COMPLETED" | "CANCELLED";
+  objective: string;
+  procedures: string;
   administrative_notes: string;
+  permitted_observations: string;
+  created_by: string | null;
+  updated_by: string | null;
   created_at: string;
   updated_at: string;
+};
+
+export type AssessmentPlan = {
+  id: string;
+  assessment: string;
+  question: string;
+  hypotheses: string;
+  domains: string[];
+  procedures: string[];
+  planned_instruments: string[];
+  planned_instrument_names: string[];
+  notes: string;
+  created_by: string;
+  updated_by: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AssessmentTimelineEvent = {
+  id: string;
+  assessment: string;
+  event_type: string;
+  event_type_label: string;
+  title: string;
+  description: string;
+  metadata: Record<string, unknown>;
+  created_by: string | null;
+  created_by_name: string;
+  created_at: string;
 };
 
 export type InstrumentApplication = {
@@ -570,7 +618,12 @@ export type InstrumentApplication = {
   instrument_code: string;
   instrument_catalog_name: string;
   instrument_name: string;
+  applied_by: string | null;
+  applied_by_name: string;
+  reviewed_by: string | null;
+  reviewed_by_name: string;
   application_date: string | null;
+  reviewed_at: string | null;
   status: "PLANNED" | "APPLIED" | "CANCELLED";
   notes: string;
   raw_payload: Record<string, unknown>;
@@ -601,6 +654,9 @@ export type AssessmentResult = {
   summary: string;
   recommendations: string;
   finalized_at: string | null;
+  void_reason: string;
+  voided_at: string | null;
+  voided_by: string | null;
   created_by: string;
   updated_by: string | null;
   created_at: string;
@@ -618,20 +674,34 @@ export type AssessmentDocument = {
 
 export type PsychologicalAssessment = {
   id: string;
+  code: string | null;
   clinic: string;
   patient: string;
   patient_name: string;
   professional: string;
   professional_name: string;
   title: string;
+  assessment_type: PsychologicalAssessmentType;
+  assessment_type_label: string;
+  purpose: string;
+  demand_origin: string;
+  requester: string;
   reason: string;
+  objective: string;
   status: PsychologicalAssessmentStatus;
+  status_label: string;
   started_at: string | null;
+  expected_at: string | null;
   completed_at: string | null;
+  cancellation_reason: string;
+  cancelled_at: string | null;
+  cancelled_by: string | null;
+  plan: AssessmentPlan | null;
   sessions: AssessmentSession[];
   instrument_applications: InstrumentApplication[];
   result: AssessmentResult | null;
   assessment_documents: AssessmentDocument[];
+  timeline_events: AssessmentTimelineEvent[];
   created_by: string;
   updated_by: string | null;
   is_active: boolean;
@@ -644,19 +714,40 @@ export type PsychologicalAssessmentPayload = {
   patient: string;
   professional: string;
   title: string;
+  assessment_type: PsychologicalAssessmentType;
+  purpose: string;
+  demand_origin: string;
+  requester: string;
   reason: string;
+  objective: string;
   status: PsychologicalAssessmentStatus;
   started_at?: string | null;
+  expected_at?: string | null;
   completed_at?: string | null;
 };
 
 export type AssessmentSessionPayload = {
   assessment: string;
+  professional?: string | null;
   session_date: string;
   start_time: string;
   end_time: string;
+  modality: AssessmentSession["modality"];
   status: AssessmentSession["status"];
+  objective: string;
+  procedures: string;
   administrative_notes: string;
+  permitted_observations: string;
+};
+
+export type AssessmentPlanPayload = {
+  assessment: string;
+  question: string;
+  hypotheses: string;
+  domains: string[];
+  procedures: string[];
+  planned_instruments: string[];
+  notes: string;
 };
 
 export type InstrumentApplicationPayload = {
@@ -664,6 +755,8 @@ export type InstrumentApplicationPayload = {
   session?: string | null;
   instrument?: string | null;
   instrument_name: string;
+  applied_by?: string | null;
+  reviewed_by?: string | null;
   application_date?: string | null;
   status: InstrumentApplication["status"];
   notes: string;

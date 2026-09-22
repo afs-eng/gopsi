@@ -2,6 +2,9 @@ from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 from apps.accounts.models import has_explicit_platform_role
 from apps.clinics.policies import is_clinic_admin
+from apps.psychological_assessments.selectors import (
+    can_access_clinical_assessment_content,
+)
 
 
 class CanAccessPsychologicalAssessments(BasePermission):
@@ -38,6 +41,9 @@ class CanAccessPsychologicalAssessments(BasePermission):
             return False
 
         clinic = getattr(obj, "clinic", None) or getattr(obj.assessment, "clinic", None)
+        if view.basename != "psychological-assessment":
+            assessment = getattr(obj, "assessment", None) or obj
+            return can_access_clinical_assessment_content(user, assessment)
         return is_clinic_admin(user, clinic.id) or user.professional_profiles.filter(
             clinic=clinic,
             is_active=True,
