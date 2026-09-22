@@ -2,12 +2,14 @@
 
 import { useMemo, useState } from "react";
 
-import type { AssessmentInstrument } from "@/lib/types";
+import type { AssessmentInstrument, InstrumentApplication } from "@/lib/types";
 
 type AddInstrumentModalProps = {
   instruments: AssessmentInstrument[];
+  existingApplications: InstrumentApplication[];
+  isSubmitting: boolean;
   patientBirthDate: string | null;
-  onSelect: (instrument: AssessmentInstrument) => void;
+  onAdd: (instruments: AssessmentInstrument[]) => void;
   onClose: () => void;
 };
 
@@ -46,13 +48,29 @@ function categoryColor(category: string): string {
   return "category-default";
 }
 
-export function AddInstrumentModal({ instruments, patientBirthDate, onSelect, onClose }: AddInstrumentModalProps) {
+export function AddInstrumentModal({
+  instruments,
+  existingApplications,
+  isSubmitting,
+  patientBirthDate,
+  onAdd,
+  onClose,
+}: AddInstrumentModalProps) {
   const [search, setSearch] = useState("");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const patientAgeMonths = useMemo(() => {
     if (!patientBirthDate) return null;
     return calculateAgeInMonths(patientBirthDate);
   }, [patientBirthDate]);
+
+  const existingInstrumentIds = useMemo(() => {
+    return new Set(
+      existingApplications
+        .map((application) => application.instrument)
+        .filter((value): value is string => Boolean(value)),
+    );
+  }, [existingApplications]);
 
   const filteredInstruments = useMemo(() => {
     const term = search.toLowerCase();
@@ -66,33 +84,15 @@ export function AddInstrumentModal({ instruments, patientBirthDate, onSelect, on
 
       if (!inst.is_active) return false;
       if (!matchesSearch) return false;
-
-      if (patientAgeMonths !== null) {
-        if (inst.min_age_months !== null && patientAgeMonths < inst.min_age_months) return false;
-        if (inst.max_age_months !== null && patientAgeMonths > inst.max_age_months) return false;
-      }
-
       return true;
     });
-  }, [instruments, search, patientAgeMonths]);
+  }, [instruments, search]);
 
-  const excludedInstruments = useMemo(() => {
-    if (patientAgeMonths === null) return [];
-    const term = search.toLowerCase();
-    return instruments.filter((inst) => {
-      if (!inst.is_active) return false;
-      const matchesSearch =
-        !term ||
-        inst.name.toLowerCase().includes(term) ||
-        inst.code.toLowerCase().includes(term) ||
-        inst.description.toLowerCase().includes(term) ||
-        inst.category.toLowerCase().includes(term);
-      if (!matchesSearch) return false;
-      if (inst.min_age_months !== null && patientAgeMonths < inst.min_age_months) return true;
-      if (inst.max_age_months !== null && patientAgeMonths > inst.max_age_months) return true;
-      return false;
-    });
-  }, [instruments, search, patientAgeMonths]);
+  const selectedInstruments = useMemo(() => {
+    return selectedIds
+      .map((id) => instruments.find((instrument) => instrument.id === id))
+      .filter((instrument): instrument is AssessmentInstrument => Boolean(instrument));
+  }, [instruments, selectedIds]);
 
   function formatPatientAge(): string {
     if (patientAgeMonths === null) return "";
@@ -101,6 +101,36 @@ export function AddInstrumentModal({ instruments, patientBirthDate, onSelect, on
     const months = patientAgeMonths % 12;
     if (months === 0) return `${years} ${years === 1 ? "ano" : "anos"}`;
     return `${years} ${years === 1 ? "ano" : "anos"} e ${months} mese${months === 1 ? "s" : ""}`;
+  }
+
+  function getUnavailableReason(instrument: AssessmentInstrument): string | null {
+    if (existingInstrumentIds.has(instrument.id)) return "Já adicionado";
+    if (patientAgeMonths === null && (instrument.min_age_months !== null || instrument.max_age_months !== null)) {
+      return "Sem idade do paciente";
+    }
+    if (patientAgeMonths !== null) {
+      if (instrument.min_age_months !== null && patientAgeMonths < instrument.min_age_months) return "Idade incompatível";
+      if (instrument.max_age_months !== null && patientAgeMonths > instrument.max_age_months) return "Idade incompatível";
+    }
+    return null;
+  }
+
+  function toggleInstrument(instrument: AssessmentInstrument) {
+    if (getUnavailableReason(instrument)) return;
+    setSelectedIds((current) => (
+      current.includes(instrument.id)
+        ? current.filter((id) => id !== instrument.id)
+        : [...current, instrument.id]
+    ));
+  }
+
+  function removeSelectedInstrument(instrumentId: string) {
+    setSelectedIds((current) => current.filter((id) => id !== instrumentId));
+  }
+
+  function handleAddSelected() {
+    if (!selectedInstruments.length || isSubmitting) return;
+    onAdd(selectedInstruments);
   }
 
   return (
@@ -116,7 +146,7 @@ export function AddInstrumentModal({ instruments, patientBirthDate, onSelect, on
           </div>
           <div>
             <h2 id="add-instrument-title">Adicionar instrumento</h2>
-            <p className="muted">Selecione um instrumento para adicionar nesta avaliação.</p>
+            <p className="muted">Selecione os testes que serão planejados nesta avaliação.</p>
           </div>
           <button className="modal-close-btn" onClick={onClose} type="button" aria-label="Fechar">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -147,49 +177,23 @@ export function AddInstrumentModal({ instruments, patientBirthDate, onSelect, on
           </div>
         )}
 
-        <div className="modal-instrument-list">
-          {filteredInstruments.map((instrument) => (
-            <div className="modal-instrument-row" key={instrument.id}>
-              <div className="modal-instrument-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <line x1="9" y1="3" x2="9" y2="21" />
-                  <line x1="3" y1="9" x2="21" y2="9" />
-                </svg>
-              </div>
-              <div className="modal-instrument-info">
-                <div className="modal-instrument-name">{instrument.name}</div>
-                <div className="modal-instrument-desc">
-                  {instrument.description || instrument.code}
-                </div>
-              </div>
-              <div className="modal-instrument-meta">
-                <span className="modal-instrument-age">{formatAgeRange(instrument.min_age_months, instrument.max_age_months)}</span>
-                {instrument.category ? (
-                  <span className={`modal-instrument-category ${categoryColor(instrument.category)}`}>
-                    {instrument.category}
-                  </span>
-                ) : null}
-              </div>
-              <button
-                className="modal-instrument-add-btn"
-                onClick={() => onSelect(instrument)}
-                type="button"
-                aria-label={`Adicionar ${instrument.name}`}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-              </button>
-            </div>
-          ))}
-
-          {excludedInstruments.length > 0 && (
-            <div className="modal-excluded-section">
-              <p className="modal-excluded-label">Fora da faixa etária</p>
-              {excludedInstruments.map((instrument) => (
-                <div className="modal-instrument-row modal-instrument-excluded" key={instrument.id}>
+        <div className="modal-instrument-workspace">
+          <div className="modal-instrument-list">
+            {filteredInstruments.map((instrument) => {
+              const unavailableReason = getUnavailableReason(instrument);
+              const isSelected = selectedIds.includes(instrument.id);
+              return (
+                <label
+                  className={`modal-instrument-row ${unavailableReason ? "modal-instrument-excluded" : ""}`}
+                  key={instrument.id}
+                >
+                  <input
+                    checked={isSelected}
+                    className="modal-instrument-checkbox"
+                    disabled={Boolean(unavailableReason) || isSubmitting}
+                    onChange={() => toggleInstrument(instrument)}
+                    type="checkbox"
+                  />
                   <div className="modal-instrument-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -211,17 +215,55 @@ export function AddInstrumentModal({ instruments, patientBirthDate, onSelect, on
                       </span>
                     ) : null}
                   </div>
-                  <span className="modal-instrument-excluded-badge">Fora da faixa</span>
-                </div>
-              ))}
-            </div>
-          )}
+                  {unavailableReason ? <span className="modal-instrument-excluded-badge">{unavailableReason}</span> : null}
+                </label>
+              );
+            })}
 
-          {filteredInstruments.length === 0 && excludedInstruments.length === 0 && (
-            <div className="modal-empty">
-              <p>Nenhum instrumento encontrado para os critérios informados.</p>
+            {filteredInstruments.length === 0 && (
+              <div className="modal-empty">
+                <p>Nenhum instrumento encontrado para os critérios informados.</p>
+              </div>
+            )}
+          </div>
+
+          <aside className="modal-selected-panel" aria-label="Testes selecionados">
+            <div>
+              <p className="eyebrow">Selecionados</p>
+              <h3>{selectedInstruments.length} teste{selectedInstruments.length === 1 ? "" : "s"}</h3>
             </div>
-          )}
+            {selectedInstruments.length ? (
+              <div className="modal-selected-list">
+                {selectedInstruments.map((instrument) => (
+                  <button
+                    className="modal-selected-item"
+                    key={instrument.id}
+                    onClick={() => removeSelectedInstrument(instrument.id)}
+                    type="button"
+                  >
+                    <span>{instrument.name}</span>
+                    <strong>Remover</strong>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className="muted">Escolha um ou mais testes elegíveis na lista.</p>
+            )}
+          </aside>
+        </div>
+
+        <div className="modal-footer">
+          <button className="button-secondary button-compact" disabled={isSubmitting} onClick={onClose} type="button">
+            Cancelar
+          </button>
+          <button
+            className="button-primary button-compact"
+            disabled={!selectedInstruments.length || isSubmitting}
+            onClick={handleAddSelected}
+            type="button"
+          >
+            {isSubmitting ? "Adicionando..." : `Adicionar ${selectedInstruments.length} teste${selectedInstruments.length === 1 ? "" : "s"}`}
+          </button>
         </div>
       </div>
     </div>

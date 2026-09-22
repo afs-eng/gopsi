@@ -5919,7 +5919,7 @@ fieldset.form-section > legend + * {
   border-radius: 1.25rem;
   box-shadow: 0 25px 60px rgb(0 0 0 / 25%);
   width: 100%;
-  max-width: 42rem;
+  max-width: 58rem;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
@@ -6025,12 +6025,28 @@ fieldset.form-section > legend + * {
   padding: 0.5rem 0;
 }
 
+.modal-instrument-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, 18rem);
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
 .modal-instrument-row {
   display: flex;
   align-items: center;
   gap: 0.85rem;
   padding: 0.85rem 1.5rem;
   transition: background 0.12s;
+  cursor: pointer;
+}
+
+.modal-instrument-checkbox {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--accent);
+  flex-shrink: 0;
 }
 
 .modal-instrument-row:hover {
@@ -6165,6 +6181,7 @@ fieldset.form-section > legend + * {
 
 .modal-instrument-excluded {
   opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .modal-instrument-excluded .modal-instrument-icon {
@@ -6185,6 +6202,62 @@ fieldset.form-section > legend + * {
   padding: 2.5rem 1.5rem;
   text-align: center;
   color: var(--muted);
+}
+
+.modal-selected-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  border-left: 1px solid var(--line);
+  background: rgb(251 250 245 / 70%);
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.modal-selected-panel h3 {
+  color: var(--text);
+  font-size: 1rem;
+  margin: 0.15rem 0 0;
+}
+
+.modal-selected-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.modal-selected-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: #fff;
+  color: var(--text);
+  padding: 0.65rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.modal-selected-item span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modal-selected-item strong {
+  color: #b91c1c;
+  font-size: 0.72rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  border-top: 1px solid var(--line);
+  padding: 1rem 1.5rem;
+  background: var(--surface);
 }
 
 .empty-instruments-cta {
@@ -6228,4 +6301,35 @@ fieldset.form-section > legend + * {
 
 .button-tertiary:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 780px) {
+  .add-instrument-modal {
+    max-height: 92vh;
+  }
+
+  .modal-instrument-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-selected-panel {
+    max-height: 12rem;
+    border-top: 1px solid var(--line);
+    border-left: none;
+  }
+
+  .modal-instrument-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding-inline: 1rem;
+  }
+
+  .modal-instrument-meta {
+    width: 100%;
+    padding-left: 4rem;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+  }
 }

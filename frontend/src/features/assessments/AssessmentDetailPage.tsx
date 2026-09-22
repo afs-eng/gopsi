@@ -66,16 +66,6 @@ function formatDateTime(date: string) {
   }).format(new Date(date));
 }
 
-function parseOptionalJsonObject(value: string) {
-  const trimmed = value.trim();
-  if (!trimmed) return {};
-  const parsed = JSON.parse(trimmed) as unknown;
-  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-    throw new Error("JSON inválido");
-  }
-  return parsed as Record<string, unknown>;
-}
-
 function parseListField(value: string) {
   return value
     .split("\n")
@@ -95,7 +85,7 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
   const [activeTab, setActiveTab] = useState<AssessmentTab>("overview");
   const [isPending, startTransition] = useTransition();
   const [showAddInstrumentModal, setShowAddInstrumentModal] = useState(false);
-  const [selectedInstrument, setSelectedInstrument] = useState<AssessmentInstrument | null>(null);
+  const [isAddingInstruments, setIsAddingInstruments] = useState(false);
 
   const loadAssessment = useCallback(function loadAssessment() {
     return Promise.all([
@@ -209,38 +199,37 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
     });
   }
 
-  function handleInstrumentSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!assessment || !selectedInstrument) return;
+  function handleAddInstruments(selectedInstruments: AssessmentInstrument[]) {
+    if (!assessment || !selectedInstruments.length) return;
     setError("");
     setMessage("");
-    const data = new FormData(event.currentTarget);
-    const form = event.currentTarget;
-    const session = String(data.get("session") ?? "");
-    const applicationDate = String(data.get("application_date") ?? "");
+    setIsAddingInstruments(true);
 
     startTransition(async () => {
       try {
-        await createInstrumentApplication({
-          assessment: assessment.id,
-          session: session || null,
-          instrument: selectedInstrument.id,
-          instrument_name: selectedInstrument.name,
-          applied_by: String(data.get("applied_by") ?? "") || null,
-          reviewed_by: String(data.get("reviewed_by") ?? "") || null,
-          application_date: applicationDate || null,
-          status: String(data.get("status") ?? "PLANNED") as "PLANNED" | "APPLIED" | "CANCELLED",
-          notes: String(data.get("notes") ?? ""),
-          raw_payload: parseOptionalJsonObject(String(data.get("raw_payload") ?? "")),
-          reviewed_payload: parseOptionalJsonObject(String(data.get("reviewed_payload") ?? "")),
-          interpretation_text: String(data.get("interpretation_text") ?? ""),
-          is_validated: data.get("is_validated") === "on",
-        });
-        form.reset();
-        setSelectedInstrument(null);
-        await refresh("Instrumento registrado.");
+        await Promise.all(
+          selectedInstruments.map((instrument) => createInstrumentApplication({
+            assessment: assessment.id,
+            session: null,
+            instrument: instrument.id,
+            instrument_name: instrument.name,
+            applied_by: assessment.professional,
+            reviewed_by: null,
+            application_date: null,
+            status: "PLANNED",
+            notes: "",
+            raw_payload: {},
+            reviewed_payload: {},
+            interpretation_text: "",
+            is_validated: false,
+          })),
+        );
+        setShowAddInstrumentModal(false);
+        await refresh(`${selectedInstruments.length} teste${selectedInstruments.length === 1 ? "" : "s"} adicionado${selectedInstruments.length === 1 ? "" : "s"}.`);
       } catch {
-        setError("Não foi possível registrar o instrumento. Confira o instrumento selecionado e o JSON informado.");
+        setError("Não foi possível adicionar os testes selecionados.");
+      } finally {
+        setIsAddingInstruments(false);
       }
     });
   }
@@ -523,49 +512,31 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
               <p className="muted">Gerenciamento de instrumentos e baterias de testagem.</p>
             </div>
             <button className="button-primary button-compact" type="button" onClick={() => setShowAddInstrumentModal(true)}>
-              + Adicionar Instrumento
+              + Adicionar testes
             </button>
           </div>
-          {selectedInstrument ? (
-            <form className="form-stack" onSubmit={handleInstrumentSubmit}>
-              <div className="selected-instrument-header">
-                <strong>{selectedInstrument.name}</strong>
-                <button className="button-tertiary button-compact" type="button" onClick={() => setSelectedInstrument(null)}>Trocar</button>
-              </div>
-              <div className="field-grid">
-                <label className="field-group" htmlFor="instrument_session">Sessão<select id="instrument_session" name="session" defaultValue=""><option value="">Sem vínculo</option>{assessment.sessions.map((session) => <option key={session.id} value={session.id}>{formatDate(session.session_date)}</option>)}</select></label>
-                <label className="field-group" htmlFor="application_date">Data<input id="application_date" name="application_date" type="date" /></label>
-              </div>
-              <div className="field-grid">
-                <label className="field-group" htmlFor="applied_by">Aplicador<select id="applied_by" name="applied_by" defaultValue={assessment.professional}><option value={assessment.professional}>{assessment.professional_name}</option></select></label>
-                <label className="field-group" htmlFor="reviewed_by">Revisor<select id="reviewed_by" name="reviewed_by" defaultValue=""><option value="">Não revisado</option><option value={assessment.professional}>{assessment.professional_name}</option></select></label>
-              </div>
-              <label className="field-group" htmlFor="instrument_status">Status<select id="instrument_status" name="status" defaultValue="PLANNED"><option value="PLANNED">Planejada</option><option value="APPLIED">Aplicada</option><option value="CANCELLED">Cancelada</option></select></label>
-              <label className="field-group" htmlFor="instrument_notes">Observações<textarea id="instrument_notes" name="notes" rows={3} /></label>
-              <label className="field-group" htmlFor="raw_payload">Dados/escores autorizados em JSON<textarea id="raw_payload" name="raw_payload" rows={4} placeholder={'{"escore_total": 12, "classificacao": "..."}'} /></label>
-              <label className="field-group" htmlFor="reviewed_payload">Dados revisados em JSON<textarea id="reviewed_payload" name="reviewed_payload" rows={3} /></label>
-              <label className="field-group" htmlFor="interpretation_text">Interpretação autorizada<textarea id="interpretation_text" name="interpretation_text" rows={4} /></label>
-              <label className="checkbox-card" htmlFor="is_validated"><input id="is_validated" name="is_validated" type="checkbox" /> Marcar como validado/revisado</label>
-              <button className="button-primary button-compact" disabled={isPending} type="submit">Registrar instrumento</button>
-            </form>
-          ) : (
+          {!assessment.instrument_applications.length ? (
             <div className="empty-instruments-cta">
               <p className="muted">Nenhum teste aplicado</p>
               <p className="muted">Adicione instrumentos psicométricos para iniciar a coleta de dados.</p>
               <button className="button-primary button-compact" type="button" onClick={() => setShowAddInstrumentModal(true)}>
-                + Adicionar Instrumento
+                + Adicionar testes
               </button>
             </div>
-          )}
-          <div className="assessments-list">
-            {assessment.instrument_applications.map((instrument) => (
-              <div className="clinic-row" key={instrument.id}>
-                <div><strong>{instrument.instrument_name}</strong><p>{formatDate(instrument.application_date)} · Aplicador: {instrument.applied_by_name || "não informado"} · Revisor: {instrument.reviewed_by_name || "não revisado"} · {instrument.notes || instrument.interpretation_text || "Sem observações."}</p></div>
-                <span className="status-badge">{instrument.is_validated ? "Validado" : instrument.status}</span>
-              </div>
-            ))}
-            {!assessment.instrument_applications.length && !selectedInstrument ? null : null}
-          </div>
+          ) : null}
+          {assessment.instrument_applications.length ? (
+            <div className="assessments-list instruments-table-list">
+              {assessment.instrument_applications.map((instrument) => (
+                <div className="clinic-row" key={instrument.id}>
+                  <div>
+                    <strong>{instrument.instrument_name}</strong>
+                    <p>{formatDate(instrument.application_date)} · Aplicador: {instrument.applied_by_name || "não informado"} · Revisor: {instrument.reviewed_by_name || "não revisado"} · {instrument.notes || instrument.interpretation_text || "Sem observações."}</p>
+                  </div>
+                  <span className="status-badge">{instrument.is_validated ? "Validado" : instrument.status}</span>
+                </div>
+              ))}
+            </div>
+          ) : null}
         </article> : null}
 
         {activeTab === "result" ? <article className="panel-card">
@@ -653,12 +624,11 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
 
       {showAddInstrumentModal ? (
         <AddInstrumentModal
+          existingApplications={assessment.instrument_applications}
           instruments={instruments}
+          isSubmitting={isAddingInstruments || isPending}
           patientBirthDate={assessment.patient_birth_date}
-          onSelect={(instrument) => {
-            setSelectedInstrument(instrument);
-            setShowAddInstrumentModal(false);
-          }}
+          onAdd={handleAddInstruments}
           onClose={() => setShowAddInstrumentModal(false)}
         />
       ) : null}
