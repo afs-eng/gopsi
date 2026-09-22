@@ -107,6 +107,37 @@ def test_receptionist_cannot_create_psychological_assessment():
 
 
 @pytest.mark.django_db
+def test_clinic_admin_can_create_assessment_for_clinic_professional():
+    admin_user = make_user("assessment-clinic-admin", UserRole.CLINIC_ADMIN)
+    _user, clinic, professional, patient = make_assessment_context()
+    ClinicMembership.objects.create(
+        clinic=clinic,
+        user=admin_user,
+        role=UserRole.CLINIC_ADMIN,
+    )
+    client = APIClient()
+    client.force_authenticate(user=admin_user)
+
+    response = client.post(
+        reverse("psychological-assessment-list"),
+        {
+            "clinic": str(clinic.id),
+            "patient": str(patient.id),
+            "professional": str(professional.id),
+            "title": "Avaliação criada pela administração clínica",
+            "reason": "Organização do processo avaliativo.",
+            "status": "IN_PROGRESS",
+            "started_at": "2026-10-01",
+        },
+        format="json",
+    )
+
+    assert response.status_code == 201
+    assessment = Assessment.objects.get(created_by=admin_user)
+    assert assessment.professional == professional
+
+
+@pytest.mark.django_db
 def test_user_cannot_list_assessments_from_other_tenant():
     user, clinic, professional, patient = make_assessment_context()
     other_clinic = Clinic.objects.create(name="Outra Clínica")

@@ -47,9 +47,11 @@ export function AssessmentCreatePage({ params }: AssessmentCreatePageProps) {
       .catch(() => setError("Não foi possível carregar pacientes e profissionais."));
   }, [id, user]);
 
-  const authorizedProfessionals = user
-    ? professionals.filter((professional) => professional.user === user.id)
-    : [];
+  const authorizedProfessionals = user?.global_role === "CLINIC_ADMIN"
+    ? professionals
+    : user
+      ? professionals.filter((professional) => professional.user === user.id)
+      : [];
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -124,7 +126,7 @@ export function AssessmentCreatePage({ params }: AssessmentCreatePageProps) {
 
           {authorizedProfessionals.length ? null : (
             <div className="alert" role="alert">
-              Seu usuário precisa estar vinculado a um perfil profissional ativo da clínica para iniciar avaliações psicológicas.
+              Seu usuário precisa ser administrador da clínica ou estar vinculado a um perfil profissional ativo para iniciar avaliações psicológicas.
             </div>
           )}
 

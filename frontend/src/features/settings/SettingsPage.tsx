@@ -39,7 +39,7 @@ export function SettingsPage({ params }: SettingsPageProps) {
         <div>
           <p className="eyebrow">Preparação comercial</p>
           <h2 id="settings-title">Identidade, equipe e segurança de {clinic.name}</h2>
-          <p className="muted">Centralize os pontos que deixam a clínica pronta para uso comercial: dados cadastrais, documentos, equipe e LGPD.</p>
+          <p className="muted">Centralize os pontos administrativos da clínica: dados cadastrais, equipe, acessos, documentos e segurança.</p>
         </div>
         <span className="panel-pill">{professionals.filter((professional) => professional.is_active).length} profissional(is)</span>
       </section>
@@ -58,15 +58,30 @@ export function SettingsPage({ params }: SettingsPageProps) {
         </article>
 
         <article className="panel-card settings-card">
-          <p className="eyebrow">Equipe e acessos</p>
-          <h3>Profissionais vinculados</h3>
-          <p className="muted">Base para perfis, permissões, assinatura profissional e responsabilidade técnica.</p>
+          <p className="eyebrow">Equipe clínica</p>
+          <h3>Profissionais de atendimento</h3>
+          <p className="muted">Cadastre psicólogos e outros profissionais responsáveis por agenda, prontuário, documentos e avaliações.</p>
           <dl>
             <div><dt>Ativos</dt><dd>{professionals.filter((professional) => professional.status === "ACTIVE").length}</dd></div>
             <div><dt>Bloqueados</dt><dd>{professionals.filter((professional) => professional.status === "BLOCKED").length}</dd></div>
             <div><dt>Duração padrão</dt><dd>{professionals[0]?.default_appointment_duration ? `${professionals[0].default_appointment_duration} min` : "Não definida"}</dd></div>
           </dl>
-          <Link className="button-secondary button-compact" href={`/clinics/${id}/professionals`}>Gerenciar profissionais</Link>
+          <div className="form-actions">
+            <Link className="button-primary button-compact" href={`/clinics/${id}/professionals/new`}>Cadastrar profissional</Link>
+            <Link className="button-secondary button-compact" href={`/clinics/${id}/professionals`}>Gerenciar equipe</Link>
+          </div>
+        </article>
+
+        <article className="panel-card settings-card">
+          <p className="eyebrow">Funcionários e acessos</p>
+          <h3>Equipe administrativa e operacional</h3>
+          <p className="muted">Área separada para secretaria, recepção, financeiro, limpeza, contador e outros colaboradores sem perfil clínico.</p>
+          <ul className="settings-checklist">
+            <li>Cadastro de funcionário sem CRP obrigatório</li>
+            <li>Permissões por função: recepção, financeiro, administrativo e operacional</li>
+            <li>Convite, bloqueio e desligamento de acesso</li>
+          </ul>
+          <span className="panel-pill">Próxima etapa</span>
         </article>
 
         <article className="panel-card settings-card">

@@ -3,6 +3,7 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from apps.accounts.models import has_explicit_platform_role
+from apps.clinics.policies import is_clinic_admin
 from apps.clinics.selectors import clinics_visible_to_user
 from apps.documents.selectors import generated_documents_visible_to_user
 from apps.patients.selectors import patients_visible_to_user
@@ -343,6 +344,8 @@ class AssessmentSerializer(serializers.ModelSerializer):
             .exists()
         ):
             raise serializers.ValidationError("Profissional não encontrado.")
+        if is_clinic_admin(request.user, professional.clinic_id):
+            return professional
         if not request.user.professional_profiles.filter(
             id=professional.id
         ).exists():
