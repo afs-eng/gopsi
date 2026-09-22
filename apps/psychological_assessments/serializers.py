@@ -33,8 +33,11 @@ class AssessmentInstrumentSerializer(serializers.ModelSerializer):
             "id",
             "code",
             "name",
+            "description",
             "category",
             "version",
+            "min_age_months",
+            "max_age_months",
             "is_active",
             "created_at",
             "updated_at",
@@ -521,6 +524,7 @@ class AssessmentSerializer(serializers.ModelSerializer):
     }
 
     patient_name = serializers.CharField(source="patient.full_name", read_only=True)
+    patient_birth_date = serializers.DateField(source="patient.birth_date", read_only=True)
     professional_name = serializers.CharField(
         source="professional.full_name",
         read_only=True,
@@ -545,6 +549,7 @@ class AssessmentSerializer(serializers.ModelSerializer):
             "clinic",
             "patient",
             "patient_name",
+            "patient_birth_date",
             "professional",
             "professional_name",
             "title",
@@ -579,6 +584,7 @@ class AssessmentSerializer(serializers.ModelSerializer):
             "id",
             "code",
             "patient_name",
+            "patient_birth_date",
             "professional_name",
             "assessment_type_label",
             "status_label",

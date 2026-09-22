@@ -640,8 +640,11 @@ export type AssessmentInstrument = {
   id: string;
   code: string;
   name: string;
+  description: string;
   category: string;
   version: string;
+  min_age_months: number | null;
+  max_age_months: number | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -678,6 +681,7 @@ export type PsychologicalAssessment = {
   clinic: string;
   patient: string;
   patient_name: string;
+  patient_birth_date: string | null;
   professional: string;
   professional_name: string;
   title: string;
