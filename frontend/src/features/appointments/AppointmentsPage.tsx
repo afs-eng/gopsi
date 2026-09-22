@@ -442,7 +442,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
             </div>
             <div className="week-body" style={{ gridTemplateColumns: `4.6rem repeat(7, minmax(8.4rem, 1fr))` }}>
               <div className="time-gutter">
-                {hours.map((hour) => <span key={hour}>{hour}:00</span>)}
+                {hours.map((hour) => <span key={hour}>{String(hour).padStart(2, "0")}:00</span>)}
               </div>
               {days.map((day) => {
                 const key = dateKey(day);

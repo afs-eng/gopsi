@@ -2093,7 +2093,8 @@ h2 {
 }
 
 .week-calendar {
-  overflow-x: auto;
+  max-height: min(72vh, calc(var(--hour-height) * 9));
+  overflow: auto;
   background: #ffffff;
 }
 
@@ -2274,12 +2275,12 @@ h2 {
 }
 
 .week-body {
-  min-height: calc(var(--hour-height) * 12);
+  min-height: calc(var(--hour-height) * 24);
 }
 
 .time-gutter {
   display: grid;
-  grid-template-rows: repeat(12, var(--hour-height));
+  grid-template-rows: repeat(24, var(--hour-height));
   border-right: 1px solid #dadce0;
   background: #ffffff;
 }
@@ -2294,7 +2295,7 @@ h2 {
 
 .calendar-day-column {
   position: relative;
-  min-height: calc(var(--hour-height) * 12);
+  min-height: calc(var(--hour-height) * 24);
   border-left: 1px solid #e8eaed;
   background: repeating-linear-gradient(to bottom, #ffffff 0, #ffffff calc(var(--hour-height) - 1px), #f1f3f4 calc(var(--hour-height) - 1px), #f1f3f4 var(--hour-height));
 }
