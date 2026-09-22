@@ -183,6 +183,9 @@ export function AssessmentsPage({ params }: AssessmentsPageProps) {
                   <span><strong>{assessment.instrument_applications.length}</strong> instrumentos</span>
                   <span><strong>{assessment.result ? 1 : 0}</strong> resultado</span>
                   <span><strong>{assessment.assessment_documents.length}</strong> documentos</span>
+                  <Link className="button-secondary button-compact" href={`/clinics/${id}/assessments/${assessment.id}`}>
+                    Acompanhar
+                  </Link>
                 </div>
               </article>
             ))}

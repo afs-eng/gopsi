@@ -582,3 +582,34 @@ export type PsychologicalAssessmentPayload = {
   started_at?: string | null;
   completed_at?: string | null;
 };
+
+export type AssessmentSessionPayload = {
+  assessment: string;
+  session_date: string;
+  start_time: string;
+  end_time: string;
+  status: AssessmentSession["status"];
+  administrative_notes: string;
+};
+
+export type InstrumentApplicationPayload = {
+  assessment: string;
+  session?: string | null;
+  instrument_name: string;
+  application_date?: string | null;
+  status: InstrumentApplication["status"];
+  notes: string;
+};
+
+export type AssessmentResultPayload = {
+  assessment: string;
+  status: AssessmentResult["status"];
+  summary: string;
+  recommendations: string;
+};
+
+export type AssessmentDocumentPayload = {
+  assessment: string;
+  document: string;
+  document_type: AssessmentDocument["document_type"];
+};

@@ -1,5 +1,11 @@
 import { clearToken, getToken } from "@/lib/auth";
 import type {
+  AssessmentDocument,
+  AssessmentDocumentPayload,
+  AssessmentResult,
+  AssessmentResultPayload,
+  AssessmentSession,
+  AssessmentSessionPayload,
   Appointment,
   AppointmentPayload,
   Clinic,
@@ -22,6 +28,8 @@ import type {
   ProfessionalPayload,
   PsychologicalAssessment,
   PsychologicalAssessmentPayload,
+  InstrumentApplication,
+  InstrumentApplicationPayload,
   PublicTelehealthAccess,
   ScheduleBlock,
   ScheduleBlockPayload,
@@ -257,10 +265,42 @@ export async function listPsychologicalAssessments(clinicId: string, patientId?:
   );
 }
 
+export async function getPsychologicalAssessment(id: string) {
+  return apiFetch<PsychologicalAssessment>(`/api/v1/psychological-assessments/${id}/`);
+}
+
 export async function createPsychologicalAssessment(
   payload: PsychologicalAssessmentPayload,
 ) {
   return apiFetch<PsychologicalAssessment>("/api/v1/psychological-assessments/", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function createAssessmentSession(payload: AssessmentSessionPayload) {
+  return apiFetch<AssessmentSession>("/api/v1/psychological-assessments/sessions/", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function createInstrumentApplication(payload: InstrumentApplicationPayload) {
+  return apiFetch<InstrumentApplication>("/api/v1/psychological-assessments/instruments/", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function createAssessmentResult(payload: AssessmentResultPayload) {
+  return apiFetch<AssessmentResult>("/api/v1/psychological-assessments/results/", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function createAssessmentDocument(payload: AssessmentDocumentPayload) {
+  return apiFetch<AssessmentDocument>("/api/v1/psychological-assessments/documents/", {
     method: "POST",
     body: JSON.stringify(payload),
   });
