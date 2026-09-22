@@ -13,6 +13,7 @@ import {
   minutesToTime,
 } from "@/features/appointments/calendarLayout";
 import {
+  cancelAppointment,
   createAppointment,
   getClinic,
   listPatients,
@@ -47,6 +48,14 @@ type AppointmentDraft = {
   end_time: string;
   professional: string;
   start_time: string;
+};
+
+type EventPopover = {
+  contactOpen: boolean;
+  item: CalendarItem;
+  menuOpen: boolean;
+  x: number;
+  y: number;
 };
 
 const weekDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
@@ -101,6 +110,14 @@ function statusLabel(status: Appointment["status"]) {
   }[status];
 }
 
+function modalityLabel(modality: Appointment["modality"]) {
+  return {
+    HYBRID: "Híbrida",
+    IN_PERSON: "Presencial",
+    ONLINE: "Online",
+  }[modality];
+}
+
 function itemSearchValues(item: CalendarItem) {
   return [
     item.title,
@@ -127,7 +144,9 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
   const [professionalFilter, setProfessionalFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [modalityFilter, setModalityFilter] = useState("all");
+  const [eventPopover, setEventPopover] = useState<EventPopover | null>(null);
   const [isSavingAppointment, startSavingAppointment] = useTransition();
+  const [isCancellingAppointment, startCancellingAppointment] = useTransition();
 
   useEffect(() => {
     if (!user) {
@@ -222,6 +241,15 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
     .filter((item) => `${item.date}T${item.start_time}` >= `${today}T00:00`)
     .sort((a, b) => `${a.date}T${a.start_time}`.localeCompare(`${b.date}T${b.start_time}`))
     .slice(0, 5);
+  const selectedAppointment = eventPopover?.item.type === "appointment"
+    ? eventPopover.item.source as Appointment
+    : null;
+  const selectedPatient = selectedAppointment
+    ? patients.find((patient) => patient.id === selectedAppointment.patient) ?? null
+    : null;
+  const selectedProfessional = eventPopover
+    ? professionals.find((professional) => professional.id === eventPopover.item.source.professional) ?? null
+    : null;
   const visibleMonth = startOfMonth(calendarView === "month" ? addDays(weekStart, 6) : weekStart);
   const miniMonthDays = Array.from({ length: 35 }, (_, index) => {
     const gridStart = startOfWeek(visibleMonth);
@@ -263,11 +291,74 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
     const startMinutes = GRID_START_HOUR * 60 + minutesFromStart;
     const endMinutes = Math.min(GRID_END_HOUR * 60, startMinutes + 50);
     setModalError("");
+    setEventPopover(null);
     setAppointmentDraft({
       date: dateKey(day),
       end_time: minutesToTime(endMinutes),
       professional: professionalFilter === "all" ? "" : professionalFilter,
       start_time: minutesToTime(startMinutes),
+    });
+  }
+
+  function openEventPopover(item: CalendarItem, event: MouseEvent<HTMLElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    const popoverWidth = 360;
+    const popoverHeight = 500;
+    setAppointmentDraft(null);
+    setEventPopover({
+      contactOpen: false,
+      item,
+      menuOpen: false,
+      x: Math.max(16, Math.min(event.clientX + 12, window.innerWidth - popoverWidth)),
+      y: Math.max(16, Math.min(event.clientY - 24, window.innerHeight - popoverHeight)),
+    });
+  }
+
+  function closeEventPopover() {
+    setEventPopover(null);
+  }
+
+  function toggleEventMenu() {
+    setEventPopover((current) => current ? { ...current, menuOpen: !current.menuOpen } : current);
+  }
+
+  function toggleEventContact() {
+    setEventPopover((current) => current ? { ...current, contactOpen: !current.contactOpen } : current);
+  }
+
+  function copyEventSummary() {
+    if (!eventPopover) return;
+    const item = eventPopover.item;
+    const summary = `${item.title}\n${formatDate(item.date)} · ${item.start_time.slice(0, 5)} às ${item.end_time.slice(0, 5)}\n${item.subtitle}`;
+    void navigator.clipboard?.writeText(summary);
+    setEventPopover((current) => current ? { ...current, menuOpen: false } : current);
+  }
+
+  function duplicateEventDraft() {
+    if (!eventPopover) return;
+    setAppointmentDraft({
+      date: eventPopover.item.date,
+      end_time: eventPopover.item.end_time.slice(0, 5),
+      professional: eventPopover.item.source.professional,
+      start_time: eventPopover.item.start_time.slice(0, 5),
+    });
+    setEventPopover(null);
+  }
+
+  function handleCancelSelectedAppointment() {
+    if (!selectedAppointment) return;
+    const confirmed = window.confirm(`Cancelar a consulta de ${selectedAppointment.patient_name} em ${formatDate(selectedAppointment.date)}, das ${selectedAppointment.start_time.slice(0, 5)} às ${selectedAppointment.end_time.slice(0, 5)}?`);
+    if (!confirmed) return;
+
+    startCancellingAppointment(async () => {
+      try {
+        await cancelAppointment(selectedAppointment.id);
+        setAppointments((current) => current.filter((appointment) => appointment.id !== selectedAppointment.id));
+        setEventPopover(null);
+      } catch {
+        setError("Não foi possível cancelar a consulta.");
+      }
     });
   }
 
@@ -465,19 +556,19 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
                           }}
                         >
                           {item.type === "appointment" ? (
-                            <Link className="calendar-event-link" href={`/clinics/${id}/appointments/${item.id}`} aria-label={`Abrir consulta de ${item.title}`}>
+                            <button className="calendar-event-link" type="button" onClick={(event) => openEventPopover(item, event)} aria-label={`Abrir consulta de ${item.title}`}>
                               <time>{item.start_time.slice(0, 5)}–{item.end_time.slice(0, 5)}</time>
                               <strong>{item.title}</strong>
                               <span>{item.subtitle}</span>
                               <small>{statusLabel(item.status ?? "SCHEDULED")}</small>
-                            </Link>
+                            </button>
                           ) : (
-                            <div className="calendar-event-link">
+                            <button className="calendar-event-link" type="button" onClick={(event) => openEventPopover(item, event)} aria-label={`Abrir bloqueio ${item.title}`}>
                               <time>{item.start_time.slice(0, 5)}–{item.end_time.slice(0, 5)}</time>
                               <strong>{item.title}</strong>
                               <span>{item.subtitle}</span>
                               <small>Bloqueio</small>
-                            </div>
+                            </button>
                           )}
                         </article>
                       );
@@ -526,6 +617,97 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
           )}
         </div>
       </section>
+
+      {eventPopover ? (
+        <div className="event-popover-layer" role="presentation" onMouseDown={closeEventPopover}>
+          <article
+            className="event-popover"
+            role="dialog"
+            aria-label={eventPopover.item.type === "appointment" ? "Detalhes da consulta" : "Detalhes do bloqueio"}
+            style={{ left: `${eventPopover.x}px`, top: `${eventPopover.y}px` }}
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="event-popover-actions" aria-label="Ações do evento">
+              {eventPopover.item.type === "appointment" ? (
+                <Link href={`/clinics/${id}/appointments/${eventPopover.item.id}`} aria-label="Editar consulta">Editar</Link>
+              ) : null}
+              {eventPopover.item.type === "appointment" ? (
+                <button type="button" onClick={handleCancelSelectedAppointment} disabled={isCancellingAppointment} aria-label="Excluir consulta">Excluir</button>
+              ) : null}
+              {selectedPatient?.email ? <a href={`mailto:${selectedPatient.email}`} aria-label="Enviar e-mail">E-mail</a> : <button type="button" disabled aria-label="Enviar e-mail">E-mail</button>}
+              <div className="event-popover-menu-wrap">
+                <button type="button" onClick={toggleEventMenu} aria-expanded={eventPopover.menuOpen} aria-label="Mais opções">Mais</button>
+                {eventPopover.menuOpen ? (
+                  <div className="event-popover-menu" role="menu">
+                    <button type="button" role="menuitem" onClick={() => window.print()}>Imprimir</button>
+                    {eventPopover.item.type === "appointment" ? <button type="button" role="menuitem" onClick={duplicateEventDraft}>Duplicar</button> : null}
+                    <button type="button" role="menuitem" onClick={copyEventSummary}>Copiar resumo</button>
+                    {eventPopover.item.type === "appointment" ? <Link role="menuitem" href={`/clinics/${id}/appointments/${eventPopover.item.id}`}>Publicar evento</Link> : null}
+                    {selectedProfessional ? <Link role="menuitem" href={`/clinics/${id}/professionals/${selectedProfessional.id}`}>Alterar responsável</Link> : null}
+                  </div>
+                ) : null}
+              </div>
+              <button type="button" onClick={closeEventPopover} aria-label="Fechar">x</button>
+            </div>
+
+            <div className="event-popover-body">
+              <span className={`event-popover-color ${eventPopover.item.type === "block" ? "is-block" : ""}`} aria-hidden="true" />
+              <div>
+                <h3>{eventPopover.item.title}</h3>
+                <p>{formatDate(eventPopover.item.date)} · {eventPopover.item.start_time.slice(0, 5)} às {eventPopover.item.end_time.slice(0, 5)}</p>
+                {selectedAppointment ? <p>{modalityLabel(selectedAppointment.modality)} · {statusLabel(selectedAppointment.status)}</p> : <p>Bloqueio de agenda</p>}
+              </div>
+            </div>
+
+            {eventPopover.item.type === "appointment" ? (
+              <div className="event-popover-info">
+                <span aria-hidden="true">Lembrete</span>
+                <p>30 minutos antes</p>
+              </div>
+            ) : null}
+
+            {eventPopover.item.type === "appointment" ? (
+              <div className="event-popover-info event-popover-person">
+                <span aria-hidden="true">Paciente</span>
+                <button type="button" onClick={toggleEventContact} aria-expanded={eventPopover.contactOpen}>
+                  {selectedPatient?.full_name ?? eventPopover.item.title}
+                </button>
+              </div>
+            ) : (
+              <div className="event-popover-info">
+                <span aria-hidden="true">Prof.</span>
+                <p>{eventPopover.item.subtitle}</p>
+              </div>
+            )}
+
+            {selectedAppointment?.administrative_notes ? (
+              <div className="event-popover-notes">
+                {selectedAppointment.administrative_notes}
+              </div>
+            ) : null}
+
+            {eventPopover.contactOpen && selectedPatient ? (
+              <aside className="event-contact-card" aria-label="Contato do paciente">
+                <div className="event-contact-card-header">
+                  <div className="event-contact-avatar">{selectedPatient.full_name.slice(0, 1).toUpperCase()}</div>
+                  <div>
+                    <strong>{selectedPatient.full_name}</strong>
+                    <span>{selectedPatient.email || "E-mail não informado"}</span>
+                  </div>
+                  <Link href={`/clinics/${id}/patients/${selectedPatient.id}`} aria-label="Editar paciente">Editar</Link>
+                </div>
+                <div className="event-contact-actions">
+                  {selectedPatient.email ? <a href={`mailto:${selectedPatient.email}`}>Enviar e-mail</a> : <button type="button" disabled>Enviar e-mail</button>}
+                  {selectedPatient.phone ? <a href={`tel:${selectedPatient.phone}`}>Ligar</a> : <button type="button" disabled>Ligar</button>}
+                </div>
+                <p>{selectedPatient.profession || selectedPatient.occupation || "Paciente"}</p>
+                <p>{selectedPatient.phone || "Telefone não informado"}</p>
+                <Link href={`/clinics/${id}/patients/${selectedPatient.id}`}>Abrir visualização detalhada</Link>
+              </aside>
+            ) : null}
+          </article>
+        </div>
+      ) : null}
 
       {appointmentDraft ? (
         <div className="quick-appointment-backdrop" role="presentation" onMouseDown={closeAppointmentModal}>
