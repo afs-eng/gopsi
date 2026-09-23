@@ -366,46 +366,44 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
       {error ? <div className="alert" role="alert" aria-live="assertive">{error}</div> : null}
       {message ? <div className="success-banner" role="status" aria-live="polite">{message}</div> : null}
 
-      <section className="assessment-hero panel-card" aria-labelledby="assessment-detail-title">
-        <div>
-          <p className="eyebrow">Processo avaliativo</p>
-          <h2 id="assessment-detail-title">{assessment.title}</h2>
-          <p className="muted">{assessment.reason || "Motivo não informado."}</p>
-          <div className="assessment-row-meta">
-            {assessment.code ? <span>{assessment.code}</span> : null}
-            <span>{assessment.assessment_type_label}</span>
-            <span>{assessment.patient_name}</span>
-            <span>{assessment.professional_name}</span>
-            <span>Início: {formatDate(assessment.started_at)}</span>
-            <span>Previsão: {formatDate(assessment.expected_at)}</span>
-            <span>Conclusão: {formatDate(assessment.completed_at)}</span>
+      <section className="assessment-detail-hero panel-card" aria-labelledby="assessment-detail-title">
+        <div className="assessment-title-block">
+          <div className="assessment-breadcrumb">
+            <Link href={`/clinics/${id}/assessments`}>Avaliações</Link>
+            <span>/</span>
+            <span>{assessment.code || "Processo avaliativo"}</span>
+          </div>
+          <div className="assessment-title-row">
+            <div>
+              <p className="eyebrow">Processo avaliativo</p>
+              <h2 id="assessment-detail-title">{assessment.title}</h2>
+              <p className="muted">{assessment.reason || "Motivo não informado."}</p>
+            </div>
+            <span className="status-badge">{statusLabel(assessment.status)}</span>
+          </div>
+          <div className="assessment-identity-grid" aria-label="Identificação da avaliação">
+            <div><span>Paciente</span><strong>{assessment.patient_name}</strong></div>
+            <div><span>Tipo</span><strong>{assessment.assessment_type_label}</strong></div>
+            <div><span>Profissional</span><strong>{assessment.professional_name}</strong></div>
           </div>
         </div>
-        <span className="status-badge">{statusLabel(assessment.status)}</span>
+        <aside className="assessment-date-card" aria-label="Datas da avaliação">
+          <div><span>Início</span><strong>{formatDate(assessment.started_at)}</strong></div>
+          <div><span>Previsão</span><strong>{formatDate(assessment.expected_at)}</strong></div>
+          <div><span>Conclusão</span><strong>{formatDate(assessment.completed_at)}</strong></div>
+          {assessment.status === "CANCELLED" ? (
+            <p className="assessment-cancelled-note">Cancelada em {assessment.cancelled_at ? formatDateTime(assessment.cancelled_at) : "data não informada"}. {assessment.cancellation_reason}</p>
+          ) : (
+            <details className="assessment-cancel-menu">
+              <summary>Cancelar avaliação</summary>
+              <form className="form-stack" onSubmit={handleCancelSubmit}>
+                <label className="field-group" htmlFor="cancel_reason">Motivo do cancelamento<textarea id="cancel_reason" name="reason" rows={3} /></label>
+                <button className="button-secondary button-compact" disabled={isPending} type="submit">Confirmar cancelamento</button>
+              </form>
+            </details>
+          )}
+        </aside>
       </section>
-
-      {assessment.status === "CANCELLED" ? (
-        <section className="panel-card" aria-labelledby="assessment-cancelled-title">
-          <p className="eyebrow">Cancelamento</p>
-          <h2 id="assessment-cancelled-title">Avaliação cancelada</h2>
-          <p>{assessment.cancellation_reason}</p>
-          <p className="muted">Cancelada em {assessment.cancelled_at ? formatDateTime(assessment.cancelled_at) : "data não informada"}.</p>
-        </section>
-      ) : (
-        <section className="panel-card" aria-labelledby="assessment-cancel-title">
-          <div className="panel-heading">
-            <div>
-              <p className="eyebrow">Rastreabilidade</p>
-              <h2 id="assessment-cancel-title">Cancelar avaliação</h2>
-              <p className="muted">O cancelamento exige motivo e fica registrado na timeline clínica.</p>
-            </div>
-          </div>
-          <form className="form-stack" onSubmit={handleCancelSubmit}>
-            <label className="field-group" htmlFor="cancel_reason">Motivo do cancelamento<textarea id="cancel_reason" name="reason" rows={3} /></label>
-            <button className="button-secondary button-compact" disabled={isPending} type="submit">Cancelar avaliação</button>
-          </form>
-        </section>
-      )}
 
       <section className="metrics-grid" aria-label="Resumo da avaliação">
         <MetricCard label="Sessões" value={assessment.sessions.length} description="Encontros do processo avaliativo." />
@@ -436,7 +434,11 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
             <p className="muted">Dados que orientam o planejamento e a condução da avaliação.</p>
           </div>
         </div>
-        <dl className="patient-profile-list">
+        <dl className="patient-profile-list assessment-overview-list">
+          <div><dt>Código</dt><dd>{assessment.code || "Não informado"}</dd></div>
+          <div><dt>Paciente</dt><dd>{assessment.patient_name}</dd></div>
+          <div><dt>Profissional</dt><dd>{assessment.professional_name}</dd></div>
+          <div><dt>Tipo</dt><dd>{assessment.assessment_type_label}</dd></div>
           <div><dt>Finalidade</dt><dd>{assessment.purpose || "Não informada"}</dd></div>
           <div><dt>Origem da demanda</dt><dd>{assessment.demand_origin || "Não informada"}</dd></div>
           <div><dt>Solicitante</dt><dd>{assessment.requester || "Não informado"}</dd></div>
@@ -525,13 +527,23 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
             </div>
           ) : null}
           {assessment.instrument_applications.length ? (
-            <div className="assessments-list instruments-table-list">
+            <div className="assessment-instruments-table" role="table" aria-label="Testes aplicados">
+              <div className="assessment-instruments-header" role="row">
+                <span>Teste</span>
+                <span>Data</span>
+                <span>Aplicador</span>
+                <span>Revisor</span>
+                <span>Status</span>
+              </div>
               {assessment.instrument_applications.map((instrument) => (
-                <div className="clinic-row" key={instrument.id}>
+                <div className="assessment-instrument-row" key={instrument.id} role="row">
                   <div>
                     <strong>{instrument.instrument_name}</strong>
-                    <p>{formatDate(instrument.application_date)} · Aplicador: {instrument.applied_by_name || "não informado"} · Revisor: {instrument.reviewed_by_name || "não revisado"} · {instrument.notes || instrument.interpretation_text || "Sem observações."}</p>
+                    <p>{instrument.notes || instrument.interpretation_text || "Sem observações."}</p>
                   </div>
+                  <span>{formatDate(instrument.application_date)}</span>
+                  <span>{instrument.applied_by_name || "Não informado"}</span>
+                  <span>{instrument.reviewed_by_name || "Não revisado"}</span>
                   <span className="status-badge">{instrument.is_validated ? "Validado" : instrument.status}</span>
                 </div>
               ))}
