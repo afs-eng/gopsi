@@ -9,6 +9,20 @@ from apps.clinics.models import Clinic
 from apps.documents.models import GeneratedDocument
 from apps.patients.models import Patient
 from apps.professionals.models import Professional
+from apps.psychological_assessments.test_modules.age_rules import (
+    get_instrument_age_rule,
+)
+
+
+def calculate_age_in_months(birth_date, reference_date):
+    months = (
+        (reference_date.year - birth_date.year) * 12
+        + reference_date.month
+        - birth_date.month
+    )
+    if reference_date.day < birth_date.day:
+        months -= 1
+    return months
 
 
 class AssessmentStatus(models.TextChoices):
@@ -105,8 +119,16 @@ class AssessmentInstrument(models.Model):
     description = models.CharField(max_length=500, blank=True, default="")
     category = models.CharField(max_length=100, blank=True)
     version = models.CharField(max_length=50, blank=True)
-    min_age_months = models.PositiveIntegerField(null=True, blank=True, help_text="Idade mínima em meses")
-    max_age_months = models.PositiveIntegerField(null=True, blank=True, help_text="Idade máxima em meses")
+    min_age_months = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text="Idade mínima em meses",
+    )
+    max_age_months = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text="Idade máxima em meses",
+    )
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -409,6 +431,46 @@ class InstrumentApplication(models.Model):
             raise ValidationError("Informe o profissional revisor para validar.")
         if self.reviewed_at and not self.reviewed_by_id:
             raise ValidationError("Informe o profissional revisor da aplicação.")
+        if self.instrument_id and self.assessment_id:
+            rule = get_instrument_age_rule(self.instrument.code)
+            min_age_months = self.instrument.min_age_months
+            max_age_months = self.instrument.max_age_months
+            if min_age_months is None and rule and rule.get("min_age") is not None:
+                min_age_months = rule["min_age"] * 12
+            if max_age_months is None and rule and rule.get("max_age") is not None:
+                max_age_months = rule["max_age"] * 12 + 11
+            if min_age_months is None and max_age_months is None:
+                raise ValidationError(
+                    "Instrumento sem faixa etária cadastrada para verificar "
+                    "elegibilidade."
+                )
+            if not self.assessment.patient.birth_date:
+                raise ValidationError(
+                    "Paciente sem data de nascimento para verificar elegibilidade "
+                    "do instrumento."
+                )
+            if min_age_months is not None or max_age_months is not None:
+                reference_date = (
+                    self.application_date
+                    or self.assessment.started_at
+                    or timezone.localdate()
+                )
+                age_months = calculate_age_in_months(
+                    self.assessment.patient.birth_date,
+                    reference_date,
+                )
+                if min_age_months is not None and age_months < min_age_months:
+                    raise ValidationError(
+                        rule["message"]
+                        if rule
+                        else "Idade incompatível com o instrumento."
+                    )
+                if max_age_months is not None and age_months > max_age_months:
+                    raise ValidationError(
+                        rule["message"]
+                        if rule
+                        else "Idade incompatível com o instrumento."
+                    )
 
     def save(self, *args, **kwargs):
         self.full_clean()

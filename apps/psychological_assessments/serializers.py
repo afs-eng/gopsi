@@ -24,9 +24,29 @@ from apps.psychological_assessments.selectors import (
     can_access_clinical_assessment_content,
     clinical_assessments_visible_to_user,
 )
+from apps.psychological_assessments.test_modules.age_rules import (
+    get_instrument_age_rule,
+)
 
 
 class AssessmentInstrumentSerializer(serializers.ModelSerializer):
+    min_age_months = serializers.SerializerMethodField()
+    max_age_months = serializers.SerializerMethodField()
+
+    def get_min_age_months(self, obj):
+        if obj.min_age_months is not None:
+            return obj.min_age_months
+        rule = get_instrument_age_rule(obj.code)
+        return None if not rule or rule.get("min_age") is None else rule["min_age"] * 12
+
+    def get_max_age_months(self, obj):
+        if obj.max_age_months is not None:
+            return obj.max_age_months
+        rule = get_instrument_age_rule(obj.code)
+        if not rule or rule.get("max_age") is None:
+            return None
+        return rule["max_age"] * 12 + 11
+
     class Meta:
         model = AssessmentInstrument
         fields = [
@@ -524,7 +544,10 @@ class AssessmentSerializer(serializers.ModelSerializer):
     }
 
     patient_name = serializers.CharField(source="patient.full_name", read_only=True)
-    patient_birth_date = serializers.DateField(source="patient.birth_date", read_only=True)
+    patient_birth_date = serializers.DateField(
+        source="patient.birth_date",
+        read_only=True,
+    )
     professional_name = serializers.CharField(
         source="professional.full_name",
         read_only=True,

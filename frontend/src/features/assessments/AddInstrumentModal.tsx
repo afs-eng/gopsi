@@ -84,6 +84,8 @@ export function AddInstrumentModal({
   const filteredInstruments = useMemo(() => {
     const term = search.toLowerCase();
     return instruments.filter((inst) => {
+      const minAgeMonths = normalizeMonths(inst.min_age_months);
+      const maxAgeMonths = normalizeMonths(inst.max_age_months);
       const matchesSearch =
         !term ||
         inst.name.toLowerCase().includes(term) ||
@@ -93,9 +95,12 @@ export function AddInstrumentModal({
 
       if (!inst.is_active) return false;
       if (!matchesSearch) return false;
+      if (patientAgeMonths !== null && minAgeMonths === null && maxAgeMonths === null) return false;
+      if (patientAgeMonths !== null && minAgeMonths !== null && patientAgeMonths < minAgeMonths) return false;
+      if (patientAgeMonths !== null && maxAgeMonths !== null && patientAgeMonths > maxAgeMonths) return false;
       return true;
     });
-  }, [instruments, search]);
+  }, [instruments, patientAgeMonths, search]);
 
   const selectedInstruments = useMemo(() => {
     return selectedIds
@@ -116,6 +121,7 @@ export function AddInstrumentModal({
     const minAgeMonths = normalizeMonths(instrument.min_age_months);
     const maxAgeMonths = normalizeMonths(instrument.max_age_months);
     if (existingInstrumentIds.has(instrument.id)) return "Já adicionado";
+    if (patientAgeMonths !== null && minAgeMonths === null && maxAgeMonths === null) return "Sem faixa etária";
     if (patientAgeMonths !== null) {
       if (minAgeMonths !== null && patientAgeMonths < minAgeMonths) return "Idade incompatível";
       if (maxAgeMonths !== null && patientAgeMonths > maxAgeMonths) return "Idade incompatível";
@@ -179,11 +185,13 @@ export function AddInstrumentModal({
           />
         </div>
 
-        {patientAgeMonths !== null && (
-          <div className="modal-age-info">
-            Idade do paciente: <strong>{formatPatientAge()}</strong>
-          </div>
-        )}
+        <div className="modal-age-info">
+          {patientAgeMonths !== null ? (
+            <>Idade do paciente: <strong>{formatPatientAge()}</strong>. A lista mostra apenas testes compatíveis com a faixa etária.</>
+          ) : (
+            <>Sem data de nascimento válida. Informe a data do paciente para filtrar os testes por idade.</>
+          )}
+        </div>
 
         <div className="modal-instrument-workspace">
           <div className="modal-instrument-list">
@@ -230,7 +238,7 @@ export function AddInstrumentModal({
 
             {filteredInstruments.length === 0 && (
               <div className="modal-empty">
-                <p>Nenhum instrumento encontrado para os critérios informados.</p>
+                <p>Nenhum instrumento compatível encontrado para a idade do paciente e busca informada.</p>
               </div>
             )}
           </div>
