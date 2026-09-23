@@ -13,7 +13,13 @@ type AddInstrumentModalProps = {
   onClose: () => void;
 };
 
-function formatAgeRange(minMonths: number | null, maxMonths: number | null): string {
+function normalizeMonths(value: number | null | undefined): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function formatAgeRange(minMonthsValue: number | null | undefined, maxMonthsValue: number | null | undefined): string {
+  const minMonths = normalizeMonths(minMonthsValue);
+  const maxMonths = normalizeMonths(maxMonthsValue);
   const formatMonths = (months: number) => {
     if (months < 12) return `${months} mese${months === 1 ? "s" : ""}`;
     const years = Math.floor(months / 12);
@@ -30,10 +36,12 @@ function formatAgeRange(minMonths: number | null, maxMonths: number | null): str
 
 function calculateAgeInMonths(birthDate: string): number {
   const birth = new Date(birthDate);
+  if (Number.isNaN(birth.getTime())) return Number.NaN;
   const now = new Date();
   const years = now.getFullYear() - birth.getFullYear();
   const months = now.getMonth() - birth.getMonth();
-  return years * 12 + months;
+  const age = years * 12 + months - (now.getDate() < birth.getDate() ? 1 : 0);
+  return age >= 0 ? age : Number.NaN;
 }
 
 function categoryColor(category: string): string {
@@ -61,7 +69,8 @@ export function AddInstrumentModal({
 
   const patientAgeMonths = useMemo(() => {
     if (!patientBirthDate) return null;
-    return calculateAgeInMonths(patientBirthDate);
+    const age = calculateAgeInMonths(patientBirthDate);
+    return Number.isFinite(age) ? age : null;
   }, [patientBirthDate]);
 
   const existingInstrumentIds = useMemo(() => {
@@ -104,13 +113,12 @@ export function AddInstrumentModal({
   }
 
   function getUnavailableReason(instrument: AssessmentInstrument): string | null {
+    const minAgeMonths = normalizeMonths(instrument.min_age_months);
+    const maxAgeMonths = normalizeMonths(instrument.max_age_months);
     if (existingInstrumentIds.has(instrument.id)) return "Já adicionado";
-    if (patientAgeMonths === null && (instrument.min_age_months !== null || instrument.max_age_months !== null)) {
-      return "Sem idade do paciente";
-    }
     if (patientAgeMonths !== null) {
-      if (instrument.min_age_months !== null && patientAgeMonths < instrument.min_age_months) return "Idade incompatível";
-      if (instrument.max_age_months !== null && patientAgeMonths > instrument.max_age_months) return "Idade incompatível";
+      if (minAgeMonths !== null && patientAgeMonths < minAgeMonths) return "Idade incompatível";
+      if (maxAgeMonths !== null && patientAgeMonths > maxAgeMonths) return "Idade incompatível";
     }
     return null;
   }
