@@ -366,67 +366,70 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
       {error ? <div className="alert" role="alert" aria-live="assertive">{error}</div> : null}
       {message ? <div className="success-banner" role="status" aria-live="polite">{message}</div> : null}
 
-      <section className="assessment-detail-hero panel-card" aria-labelledby="assessment-detail-title">
-        <div className="assessment-title-block">
-          <div className="assessment-breadcrumb">
-            <Link href={`/clinics/${id}/assessments`}>Avaliações</Link>
-            <span>/</span>
-            <span>{assessment.code || "Processo avaliativo"}</span>
-          </div>
-          <div className="assessment-title-row">
-            <div>
-              <p className="eyebrow">Processo avaliativo</p>
-              <h2 id="assessment-detail-title">{assessment.title}</h2>
-              <p className="muted">{assessment.reason || "Motivo não informado."}</p>
+      <div className="assessment-workbench">
+        <section className="assessment-detail-hero panel-card" aria-labelledby="assessment-detail-title">
+          <div className="assessment-title-block">
+            <div className="assessment-breadcrumb">
+              <Link href={`/clinics/${id}/assessments`}>Avaliações</Link>
+              <span>/</span>
+              <span>{assessment.code || "Processo avaliativo"}</span>
             </div>
-            <span className="status-badge">{statusLabel(assessment.status)}</span>
+            <div className="assessment-title-row">
+              <div>
+                <p className="eyebrow">Processo avaliativo</p>
+                <h2 id="assessment-detail-title">{assessment.title}</h2>
+                <p className="muted">{assessment.reason || "Motivo não informado."}</p>
+              </div>
+              <span className="status-badge">{statusLabel(assessment.status)}</span>
+            </div>
+            <div className="assessment-identity-grid" aria-label="Identificação da avaliação">
+              <div><span>Paciente</span><strong>{assessment.patient_name}</strong></div>
+              <div><span>Tipo</span><strong>{assessment.assessment_type_label}</strong></div>
+              <div><span>Profissional</span><strong>{assessment.professional_name}</strong></div>
+            </div>
           </div>
-          <div className="assessment-identity-grid" aria-label="Identificação da avaliação">
-            <div><span>Paciente</span><strong>{assessment.patient_name}</strong></div>
-            <div><span>Tipo</span><strong>{assessment.assessment_type_label}</strong></div>
-            <div><span>Profissional</span><strong>{assessment.professional_name}</strong></div>
-          </div>
-        </div>
-        <aside className="assessment-date-card" aria-label="Datas da avaliação">
-          <div><span>Início</span><strong>{formatDate(assessment.started_at)}</strong></div>
-          <div><span>Previsão</span><strong>{formatDate(assessment.expected_at)}</strong></div>
-          <div><span>Conclusão</span><strong>{formatDate(assessment.completed_at)}</strong></div>
-          {assessment.status === "CANCELLED" ? (
-            <p className="assessment-cancelled-note">Cancelada em {assessment.cancelled_at ? formatDateTime(assessment.cancelled_at) : "data não informada"}. {assessment.cancellation_reason}</p>
-          ) : (
-            <details className="assessment-cancel-menu">
-              <summary>Cancelar avaliação</summary>
-              <form className="form-stack" onSubmit={handleCancelSubmit}>
-                <label className="field-group" htmlFor="cancel_reason">Motivo do cancelamento<textarea id="cancel_reason" name="reason" rows={3} /></label>
-                <button className="button-secondary button-compact" disabled={isPending} type="submit">Confirmar cancelamento</button>
-              </form>
-            </details>
-          )}
-        </aside>
-      </section>
+          <aside className="assessment-date-card" aria-label="Datas da avaliação">
+            <div><span>Início</span><strong>{formatDate(assessment.started_at)}</strong></div>
+            <div><span>Previsão</span><strong>{formatDate(assessment.expected_at)}</strong></div>
+            <div><span>Conclusão</span><strong>{formatDate(assessment.completed_at)}</strong></div>
+            {assessment.status === "CANCELLED" ? (
+              <p className="assessment-cancelled-note">Cancelada em {assessment.cancelled_at ? formatDateTime(assessment.cancelled_at) : "data não informada"}. {assessment.cancellation_reason}</p>
+            ) : (
+              <details className="assessment-cancel-menu">
+                <summary>Cancelar avaliação</summary>
+                <form className="form-stack" onSubmit={handleCancelSubmit}>
+                  <label className="field-group" htmlFor="cancel_reason">Motivo do cancelamento<textarea id="cancel_reason" name="reason" rows={3} /></label>
+                  <button className="button-secondary button-compact" disabled={isPending} type="submit">Confirmar cancelamento</button>
+                </form>
+              </details>
+            )}
+          </aside>
+        </section>
 
-      <section className="metrics-grid" aria-label="Resumo da avaliação">
-        <MetricCard label="Sessões" value={assessment.sessions.length} description="Encontros do processo avaliativo." />
-        <MetricCard label="Instrumentos" value={assessment.instrument_applications.length} description="Aplicações registradas." />
-        <MetricCard label="Documentos" value={assessment.assessment_documents.length} description="Documentos vinculados ao processo." />
-      </section>
+        <section className="assessment-summary-strip" aria-label="Resumo da avaliação">
+          <MetricCard label="Sessões" value={assessment.sessions.length} description="Encontros do processo avaliativo." />
+          <MetricCard label="Instrumentos" value={assessment.instrument_applications.length} description="Aplicações registradas." />
+          <MetricCard label="Documentos" value={assessment.assessment_documents.length} description="Documentos vinculados ao processo." />
+        </section>
 
-      <nav className="assessment-tabs" aria-label="Seções da avaliação">
-        {assessmentTabs.map((tab) => (
-          <button
-            aria-current={activeTab === tab.id ? "page" : undefined}
-            className="assessment-tab"
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            type="button"
-          >
-            <span>{tab.label}</span>
-            {typeof tab.count === "number" ? <strong>{tab.count}</strong> : null}
-          </button>
-        ))}
-      </nav>
+        <section className="assessment-navigation-card panel-card" aria-label="Navegação da avaliação">
+          <nav className="assessment-tabs" aria-label="Seções da avaliação">
+            {assessmentTabs.map((tab) => (
+              <button
+                aria-current={activeTab === tab.id ? "page" : undefined}
+                className="assessment-tab"
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                type="button"
+              >
+                <span>{tab.label}</span>
+                {typeof tab.count === "number" ? <strong>{tab.count}</strong> : null}
+              </button>
+            ))}
+          </nav>
+        </section>
 
-      {activeTab === "overview" ? <section className="panel-card" aria-labelledby="assessment-context-title">
+        {activeTab === "overview" ? <section className="assessment-section-card panel-card" aria-labelledby="assessment-context-title">
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Visão geral</p>
@@ -444,9 +447,9 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
           <div><dt>Solicitante</dt><dd>{assessment.requester || "Não informado"}</dd></div>
           <div><dt>Objetivo</dt><dd>{assessment.objective || "Não informado"}</dd></div>
         </dl>
-      </section> : null}
+        </section> : null}
 
-      {activeTab === "plan" ? <section className="panel-card" aria-labelledby="assessment-plan-title">
+        {activeTab === "plan" ? <section className="assessment-section-card panel-card" aria-labelledby="assessment-plan-title">
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Planejamento</p>
@@ -465,10 +468,10 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
           <label className="field-group" htmlFor="plan_notes">Notas do planejamento<textarea id="plan_notes" name="notes" rows={3} defaultValue={assessment.plan?.notes ?? ""} /></label>
           <button className="button-primary button-compact" disabled={isPending} type="submit">Salvar planejamento</button>
         </form>
-      </section> : null}
+        </section> : null}
 
-      {activeTab === "sessions" || activeTab === "instruments" || activeTab === "result" || activeTab === "documents" ? <section className="appointment-detail-grid">
-        {activeTab === "sessions" ? <article className="panel-card">
+        {activeTab === "sessions" || activeTab === "instruments" || activeTab === "result" || activeTab === "documents" ? <section className="assessment-tab-panel">
+        {activeTab === "sessions" ? <article className="assessment-section-card panel-card">
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Sessões</p>
@@ -506,7 +509,7 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
           </div>
         </article> : null}
 
-        {activeTab === "instruments" ? <article className="panel-card">
+        {activeTab === "instruments" ? <article className="assessment-section-card panel-card">
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Instrumentos</p>
@@ -551,7 +554,7 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
           ) : null}
         </article> : null}
 
-        {activeTab === "result" ? <article className="panel-card">
+        {activeTab === "result" ? <article className="assessment-section-card panel-card">
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Resultado</p>
@@ -586,7 +589,7 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
           )}
         </article> : null}
 
-        {activeTab === "documents" ? <article className="panel-card">
+        {activeTab === "documents" ? <article className="assessment-section-card panel-card">
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Documento final</p>
@@ -610,9 +613,9 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
             {!assessment.assessment_documents.length ? <p className="muted">Nenhum documento vinculado ainda.</p> : null}
           </div>
         </article> : null}
-      </section> : null}
+        </section> : null}
 
-      {activeTab === "timeline" ? <section className="panel-card" aria-labelledby="assessment-timeline-title">
+        {activeTab === "timeline" ? <section className="assessment-section-card panel-card" aria-labelledby="assessment-timeline-title">
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Timeline clínica</p>
@@ -632,7 +635,8 @@ export function AssessmentDetailPage({ params }: AssessmentDetailPageProps) {
           ))}
           {!assessment.timeline_events.length ? <p className="muted">Nenhum evento registrado ainda.</p> : null}
         </div>
-      </section> : null}
+        </section> : null}
+      </div>
 
       {showAddInstrumentModal ? (
         <AddInstrumentModal

@@ -107,31 +107,32 @@ export function AssessmentsPage({ params }: AssessmentsPageProps) {
         </Link>
       }
     >
-      <section className="assessment-hero panel-card" aria-labelledby="assessment-hero-title">
-        <div>
-          <p className="eyebrow">Fluxo especializado</p>
-          <h2 id="assessment-hero-title">Do instrumento ao documento final</h2>
-          <p className="muted">
-            Acompanhe avaliações, instrumentos aplicados, resultados, síntese integrativa e documentos vinculados sem misturar com a rotina administrativa.
-          </p>
-        </div>
-        <div className="assessment-flow-track" aria-label="Fluxo de avaliação psicológica">
-          <span>Paciente</span>
-          <span>Avaliação</span>
-          <span>Instrumentos</span>
-          <span>Resultados</span>
-          <span>Síntese</span>
-          <span>Documento</span>
-        </div>
-      </section>
+      <div className="assessment-workbench">
+        <section className="assessment-list-hero panel-card" aria-labelledby="assessment-hero-title">
+          <div>
+            <p className="eyebrow">Processos avaliativos</p>
+            <h2 id="assessment-hero-title">Avaliações psicológicas em acompanhamento</h2>
+            <p className="muted">
+              Controle sessões, instrumentos, síntese e documentos finais em um fluxo clínico separado da rotina administrativa.
+            </p>
+          </div>
+          <div className="assessment-flow-track" aria-label="Fluxo de avaliação psicológica">
+            <span>Paciente</span>
+            <span>Avaliação</span>
+            <span>Instrumentos</span>
+            <span>Resultados</span>
+            <span>Síntese</span>
+            <span>Documento</span>
+          </div>
+        </section>
 
-      <section className="metrics-grid" aria-label="Resumo de avaliações">
-        <MetricCard label="Em andamento" value={inProgressCount} description="Avaliações abertas que precisam de acompanhamento." />
-        <MetricCard label="Concluídas" value={completedCount} description="Processos já finalizados ou documentados." />
-        <MetricCard label="Instrumentos" value={instrumentsCount} description="Aplicações registradas nas avaliações visíveis." />
-      </section>
+        <section className="assessment-summary-strip" aria-label="Resumo de avaliações">
+          <MetricCard label="Em andamento" value={inProgressCount} description="Avaliações abertas que precisam de acompanhamento." />
+          <MetricCard label="Concluídas" value={completedCount} description="Processos já finalizados ou documentados." />
+          <MetricCard label="Instrumentos" value={instrumentsCount} description="Aplicações registradas nas avaliações visíveis." />
+        </section>
 
-      <section className="panel-card assessments-panel">
+      <section className="assessment-section-card panel-card assessments-panel">
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Avaliações</p>
@@ -212,7 +213,8 @@ export function AssessmentsPage({ params }: AssessmentsPageProps) {
             </Link>
           </div>
         )}
-      </section>
+        </section>
+      </div>
     </AppShell>
   );
 }

@@ -251,15 +251,23 @@ export function AddInstrumentModal({
             {selectedInstruments.length ? (
               <div className="modal-selected-list">
                 {selectedInstruments.map((instrument) => (
-                  <button
+                  <div
                     className="modal-selected-item"
                     key={instrument.id}
-                    onClick={() => removeSelectedInstrument(instrument.id)}
-                    type="button"
                   >
-                    <span>{instrument.name}</span>
-                    <strong>Remover</strong>
-                  </button>
+                    <div>
+                      <strong>{instrument.name}</strong>
+                      <span>{formatAgeRange(instrument.min_age_months, instrument.max_age_months)}</span>
+                    </div>
+                    <button
+                      aria-label={`Remover ${instrument.name}`}
+                      className="modal-selected-remove"
+                      onClick={() => removeSelectedInstrument(instrument.id)}
+                      type="button"
+                    >
+                      Remover
+                    </button>
+                  </div>
                 ))}
               </div>
             ) : (
