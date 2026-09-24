@@ -143,22 +143,37 @@ export function LoginPage() {
 
   return (
     <main className="auth-page login-visual-page">
-      <div className="login-top-note">
-        <span>Plataforma para<br />psicólogos e clínicas</span>
-      </div>
-
       <section className="login-visual-shell" aria-labelledby="login-title">
-        <div className="login-logo-area" aria-label="GoPsi">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo-marca-sem-fundo.png" alt="GoPsi" />
-        </div>
-
-        <aside className="login-hero-copy" aria-label="Mensagem da plataforma">
-          <p>
-            Cuidar<br />
-            de pessoas<br />
-            <span>é acreditar<br />em novos<br />começos.</span>
-          </p>
+        <aside className="login-showcase" aria-label="Plataforma GoPsi">
+          <div className="login-logo-area" aria-label="GoPsi">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-marca-sem-fundo.png" alt="GoPsi" />
+          </div>
+          <div className="login-showcase-copy">
+            <p className="eyebrow">Plataforma PSI</p>
+            <h2>Gestão clínica clara, segura e acolhedora.</h2>
+            <p>
+              Organize agenda, pacientes, documentos e teleatendimento em um ambiente pensado para dados sensíveis de saúde mental.
+            </p>
+          </div>
+          <div className="login-product-preview" aria-hidden="true">
+            <div className="login-preview-window">
+              <div className="login-preview-sidebar" />
+              <div className="login-preview-content">
+                <span />
+                <div className="login-preview-cards"><i /><i /><i /></div>
+                <div className="login-preview-chart" />
+                <div className="login-preview-row" />
+                <div className="login-preview-row" />
+              </div>
+            </div>
+            <div className="login-preview-phone">
+              <span />
+              <i />
+              <i />
+              <i />
+            </div>
+          </div>
         </aside>
 
         <section className="auth-card login-card" aria-label="Formulário de login">
@@ -208,7 +223,6 @@ export function LoginPage() {
               </div>
               <button className="button-primary login-submit-button" disabled={isPending} type="submit">
                 <span>{isPending ? "Enviando..." : "Enviar instruções"}</span>
-                <span aria-hidden="true">→</span>
               </button>
               <button className="login-link-button" type="button" onClick={backToLogin}>
                 Voltar para o login
@@ -275,7 +289,6 @@ export function LoginPage() {
               </p>
               <button className="button-primary login-submit-button" disabled={isPending} type="submit">
                 <span>{isPending ? "Salvando..." : "Redefinir senha"}</span>
-                <span aria-hidden="true">→</span>
               </button>
               <button className="login-link-button" type="button" onClick={backToLogin}>
                 Voltar para o login
@@ -379,10 +392,7 @@ export function LoginPage() {
             ) : null}
             <button className="button-primary login-submit-button" disabled={isPending} type="submit">
               <span>{isPending ? "Entrando..." : "Entrar"}</span>
-              <span aria-hidden="true">→</span>
             </button>
-
-            <div className="login-divider"><span>ou</span></div>
 
             <button
               className="login-mfa-button"
@@ -442,12 +452,6 @@ export function LoginPage() {
             </div>
           </div>
         </section>
-
-        <aside className="login-right-art" aria-hidden="true">
-          <div className="login-petal login-petal-one" />
-          <div className="login-petal login-petal-two" />
-          <p>Aqui a psicologia<br />ganha movimento.</p>
-        </aside>
 
         <footer className="login-footer">
           <span>© 2026 GoPsi. Todos os direitos reservados.</span>
