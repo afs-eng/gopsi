@@ -122,7 +122,7 @@ export function AppShell({
         </div>
         <nav className="nav-list" aria-label="Menu principal">
           <Link aria-current={activeNav === "dashboard" ? "page" : undefined} className={activeNav === "dashboard" ? "active" : ""} data-icon="grid" href="/" onClick={() => setMenuOpen(false)}>
-            <span>Inicio</span>
+            <span>Painel</span>
           </Link>
           {currentClinic ? (
             <>
@@ -226,6 +226,12 @@ export function AppShell({
             </>
           )}
         </nav>
+        <div className="sidebar-footer">
+          <span className="muted">{userName}</span>
+          <button className="button-secondary button-compact" type="button" onClick={handleLogout}>
+            Sair
+          </button>
+        </div>
       </aside>
 
       {menuOpen ? (
@@ -275,9 +281,6 @@ export function AppShell({
               {userName.slice(0, 1).toUpperCase()}
             </span>
             {actions}
-            <button className="button-secondary" type="button" onClick={handleLogout}>
-              Sair
-            </button>
           </div>
         </header>
         {children}
