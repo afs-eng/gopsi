@@ -1,9 +1,6 @@
-# Deploy Render + Vercel
+# Deploy no Render
 
-Este guia configura:
-
-- Backend Django + PostgreSQL no Render
-- Frontend Next.js no Vercel
+Este guia configura o backend Django + PostgreSQL no Render.
 
 ## 1. Backend No Render
 
@@ -52,7 +49,7 @@ EMAIL_TIMEOUT=10
 
 O `DEFAULT_FROM_EMAIL` precisa ser um remetente/domínio validado no Brevo.
 
-Se o Render ou Vercel gerar outro domínio, substitua os valores acima.
+Se o Render gerar outro domínio, substitua os valores acima.
 
 Health check esperado:
 
@@ -111,37 +108,13 @@ ADMIN_PASSWORD=
 
 Faça outro deploy para não manter senha em variável de ambiente.
 
-## 3. Frontend No Vercel
-
-No Vercel:
-
-1. Acesse **Add New > Project**.
-2. Importe o repositório `afs-eng/gopsi`.
-3. Configure **Root Directory** como `frontend`.
-4. Framework: Next.js.
-5. Build command: `npm run build`.
-6. Install command: `npm ci`.
-
-Adicione a variável de ambiente:
-
-```text
-NEXT_PUBLIC_API_BASE_URL=https://gopsi.onrender.com
-```
-
-Depois do deploy, copie o domínio final da Vercel e confira se ele está em:
-
-- `CORS_ALLOWED_ORIGINS` no Render
-- `CSRF_TRUSTED_ORIGINS` no Render
-
-## 4. Ordem Correta
+## 3. Ordem Correta
 
 1. Subir backend no Render.
 2. Confirmar `/health/`.
 3. Criar/resetar admin no Shell do Render.
-4. Subir frontend no Vercel com `NEXT_PUBLIC_API_BASE_URL` apontando para o Render.
-5. Entrar no frontend usando `admin` e a senha definida.
 
-## 5. Observações
+## 4. Observações
 
 - `RUN_MIGRATIONS=true` roda migrations em cada start do serviço. Para produção madura, troque para `false` e rode migrations manualmente antes do deploy.
 - Celery/Redis ainda não estão configurados no Render por este blueprint. O backend sobe, mas filas assíncronas externas devem ser configuradas depois.

@@ -1614,10 +1614,10 @@
     "semantic_hash": "3992ab8c0added01af0590fa2df133ff"
   },
   "frontend/src/components/AppShell.tsx": {
-    "mtime": 1790002008.6707487,
-    "seen": 1790251623.8773656,
-    "ast_hash": "5f56e7fd70a3b7cf638a20d49eb9fc40",
-    "semantic_hash": "5f56e7fd70a3b7cf638a20d49eb9fc40"
+    "mtime": 1790257531.9443898,
+    "seen": 1790257621.5172212,
+    "ast_hash": "11938b87bf4078f53d741e7e69a58248",
+    "semantic_hash": ""
   },
   "frontend/src/components/MetricCard.tsx": {
     "mtime": 1789443337.326049,
@@ -1692,10 +1692,10 @@
     "semantic_hash": "05f2e8d6367fb4d2bda2a60a57682d12"
   },
   "frontend/src/features/auth/LoginPage.tsx": {
-    "mtime": 1790047665.615877,
-    "seen": 1790251623.8773699,
-    "ast_hash": "393d72e9d5ca0acfa78c26dc2deb3dbc",
-    "semantic_hash": "393d72e9d5ca0acfa78c26dc2deb3dbc"
+    "mtime": 1790255428.4007466,
+    "seen": 1790255620.026821,
+    "ast_hash": "4a74158baa4d889c6b9d11bbedb8799d",
+    "semantic_hash": ""
   },
   "frontend/src/features/billing/BillingPage.tsx": {
     "mtime": 1789817175.2513716,
@@ -2157,6 +2157,12 @@
     "mtime": 1789772465.9281387,
     "seen": 1790251655.8597748,
     "ast_hash": "0ddbc1135ff5b8b1e849c49d4c7f4003",
+    "semantic_hash": ""
+  },
+  "DESIGN.md": {
+    "mtime": 1790252729.4875274,
+    "seen": 1790255620.0268483,
+    "ast_hash": "8bcaac95d14fa9a64d7c936d7024f729",
     "semantic_hash": ""
   }
 }

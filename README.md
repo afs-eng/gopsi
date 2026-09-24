@@ -11,9 +11,8 @@ Fases implementadas até aqui: fundação, profissionais, pacientes, agenda, pro
 3. Suba dependências: `docker compose up postgres redis`
 4. Rode migrations: `uv run python manage.py migrate`
 5. Inicie o backend: `uv run python manage.py runserver`
-6. Inicie o frontend: `npm --prefix frontend run dev`
 
-Com Docker, use `docker compose up` e acesse o frontend em `http://localhost:3001`.
+Com Docker, use `docker compose up` e acesse a API em `http://localhost:8000`.
 
 ## Endpoints iniciais
 
@@ -67,25 +66,8 @@ Com Docker, use `docker compose up` e acesse o frontend em `http://localhost:300
 - `GET /api/v1/psychological-assessments/results/`
 - `GET /api/v1/psychological-assessments/documents/`
 
-## Frontend
-
-O único frontend da aplicação fica em `frontend/` e usa Next.js com App Router.
-
-- Login: `http://localhost:3001/login`
-- Dashboard: `http://localhost:3001/`
-- Nova clínica: `http://localhost:3001/clinics/new`
-- Detalhe da clínica: `http://localhost:3001/clinics/{uuid}`
-- Profissionais: `http://localhost:3001/clinics/{uuid}/professionals`
-- Pacientes: `http://localhost:3001/clinics/{uuid}/patients`
-- Agenda: `http://localhost:3001/clinics/{uuid}/appointments`
-- Bloquear horário: `http://localhost:3001/clinics/{uuid}/appointments/blocks/new`
-- Documentos: `http://localhost:3001/clinics/{uuid}/documents`
-- Novo documento/modelo: `http://localhost:3001/clinics/{uuid}/documents/new`
-
 ## Qualidade
 
 - Testes: `uv run pytest`
 - Lint: `uv run ruff check .`
 - Format: `uv run black .`
-- Frontend lint: `npm --prefix frontend run lint`
-- Frontend build: `npm --prefix frontend run build`

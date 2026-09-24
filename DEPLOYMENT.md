@@ -3,9 +3,6 @@
 Este projeto possui uma base de produção com Docker Compose, Nginx, Gunicorn,
 PostgreSQL, Redis, Celery e Celery Beat.
 
-Para deploy gerenciado com backend no Render e frontend no Vercel, use
-`docs/deploy-render-vercel.md`.
-
 ## Pré-requisitos
 
 - Domínio apontando para o servidor.
@@ -18,8 +15,7 @@ Para deploy gerenciado com backend no Render e frontend no Vercel, use
 
 - `docker-compose.prod.yml`: stack de produção.
 - `.env.production.example`: modelo de variáveis obrigatórias.
-- `deploy/nginx/default.conf`: proxy HTTPS para backend e frontend.
-- `frontend/Dockerfile.prod`: build otimizado do Next.js.
+- `deploy/nginx/default.conf`: proxy HTTPS para a API.
 - `scripts/entrypoint.prod.sh`: collectstatic e migrations opcionais.
 
 ## Configuração Inicial
@@ -38,7 +34,6 @@ cp .env.production.example .env.production
 - `CORS_ALLOWED_ORIGINS`
 - `DATABASE_URL`
 - `POSTGRES_PASSWORD`
-- `NEXT_PUBLIC_API_BASE_URL`
 
 3. Instale certificados em:
 
@@ -110,7 +105,6 @@ curl https://gopsi.onrender.com/health/
 ## Serviços
 
 - `nginx`: proxy HTTPS.
-- `frontend`: Next.js em modo production.
 - `web`: Django via Gunicorn.
 - `celery`: processamento assíncrono.
 - `celery-beat`: agendamentos.
@@ -148,8 +142,6 @@ O workflow `.github/workflows/ci.yml` executa:
 - `ruff`
 - `pytest`
 - `manage.py check`
-- lint do frontend
-- build do frontend
 
 Antes de automatizar deploy, use staging com uma cópia segura da configuração de produção.
 

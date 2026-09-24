@@ -401,12 +401,6 @@ Entregáveis esperados: design system básico, tokens de cor, tipografia, compon
 
 ## Notas Para Implementação Frontend
 
-O frontend fica em `frontend/` e usa Next.js com App Router.
+O repositório não contém frontend: o app web foi removido e o projeto expõe apenas a API Django (`/api/v1/`) e o admin. Trabalhos de UI devem ser produzidos em Figma/especificação, sem comandos de build local.
 
-Comandos úteis:
-
-- `npm --prefix frontend run dev`
-- `npm --prefix frontend run lint`
-- `npm --prefix frontend run build`
-
-Ao implementar o design, preservar as regras de privacidade por papel e evitar expor dados clínicos em telas de resumo.
+Ao especificar o design, preservar as regras de privacidade por papel e evitar expor dados clínicos em telas de resumo.

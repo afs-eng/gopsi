@@ -1,6 +1,6 @@
 # Arquitetura
 
-O projeto usa Django, Django REST Framework, PostgreSQL, Redis, Celery e Next.js.
+O projeto usa Django, Django REST Framework, PostgreSQL, Redis e Celery.
 
 A estrutura inicial é modular:
 
@@ -18,7 +18,6 @@ A estrutura inicial é modular:
 - `apps.notifications`: modelos, fila e envio assíncrono de notificações por Celery, preparado para canais externos.
 - `apps.documents`: modelos de documentos, documentos gerados e exportação em PDF.
 - `apps.psychological_assessments`: avaliações psicológicas separadas do prontuário terapêutico, com sessões, instrumentos, resultados autorizados e documentos vinculados.
-- `frontend/`: frontend único em Next.js consumindo `/api/v1/`.
 
 Cada clínica é um tenant lógico. Consultas da API devem filtrar dados pelo usuário autenticado e seus vínculos ativos de clínica.
 

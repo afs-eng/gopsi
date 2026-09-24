@@ -1,12 +1,12 @@
 # Graph Report - plataforma-psi  (2026-09-24)
 
 ## Corpus Check
-- 341 files · ~425,712 words
+- 342 files · ~2,460,412 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 20 file(s) not represented in the graph (top: (none) 13, .example 2, .conf 1)
 
 ## Summary
-- 2140 nodes · 5731 edges · 133 communities (82 shown, 51 thin omitted)
+- 2179 nodes · 5769 edges · 142 communities (93 shown, 49 thin omitted)
 - Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 791 edges (avg confidence: 0.95)
 - Token cost: 0 input · 0 output
 
@@ -18,76 +18,76 @@
 ## Community Hubs (Navigation)
 - billing/tests.py
 - api.ts
-- uuid
-- notifications/tests.py
-- clinics/models.py
-- DashboardPage.tsx
-- AppointmentsPage.tsx
+- django_conf
+- Notification
+- clinics/serializers.py
+- TelehealthPage
+- AppointmentsPage
 - useAuthenticatedData
 - types.py
-- AssessmentCreatePage.tsx
+- AppointmentsPage.tsx
 - django_apps
 - telehealth/services.py
 - UserRole
 - psychological_assessments/views.py
-- GeneratedDocument
+- documents/views.py
 - apiFetch
 - accounts/views.py
 - medical_records/tests.py
 - consents/views.py
-- clinical_assessments_visible_to_user
+- AssessmentResultSerializer
 - Skill Mestre — Plataforma para Psicólogos.md
 - package.json
-- react
+- ProfessionalCreatePage.tsx
 - telehealth/tests.py
-- notifications/views.py
+- notifications/serializers.py
 - Patient
 - BillingPage.tsx
 - psychological_assessments/tests.py
 - accounts/tests.py
 - consents/tests.py
 - django_db
-- clinics_visible_to_user
+- clinics/models.py
 - Appointment
-- appointments/selectors.py
-- patients/views.py
-- PatientEditPage.tsx
-- next
+- telehealth/views.py
+- DESIGN.md
+- PatientDetailPage.tsx
+- LoginPage
 - What You Must Do When Invoked
-- professionals/models.py
-- MedicalRecordEntrySerializer
+- professionals/views.py
+- medical_records/views.py
 - DataSubjectRequestSerializer
 - has_explicit_platform_role
-- AuditAction
-- TelehealthSessionViewSet
+- AuditEvent
+- listProfessionals
 - compilerOptions
-- LoginPage
+- django_contrib
 - psychological_assessments/models.py
 - Plataforma PSI Design Brief
 - Professional
 - ClinicStaffFormPage.tsx
 - User
 - AppointmentDetailPage.tsx
-- rest_framework_viewsets
-- professionals_visible_to_user
-- Notification
+- rest_framework_routers
+- clinics_visible_to_user
+- DocumentsPage.tsx
 - psychological_assessments/admin.py
-- AssessmentSession
-- os
-- TelehealthRoomPage.tsx
+- AssessmentResult
+- UserMFADevice
+- TelehealthRoomPage
 - AddInstrumentModal.tsx
-- record_audit_event
+- AssessmentResultViewSet
 - AssessmentSerializer
 - Deploy de Produção
 - Roadmap Comercial GoPsi
 - TestModuleError
-- MedicalRecordsPage.tsx
-- AssessmentDocument
-- telehealth/admin.py
-- Command
+- MedicalRecordsPage
+- GeneratedDocument
+- telehealth/serializers.py
+- django_contrib_auth
 - vercel.json
 - clinics/admin.py
-- notifications/models.py
+- MedicalRecordEntrySerializer
 - layout.tsx
 - opencode.json
 - graphify.js
@@ -105,7 +105,7 @@
 - graphify reference: add a URL and watch a folder
 - graphify reference: commit hook and native CLAUDE.md integration
 - graphify reference: incremental update and cluster-only
-- 0003_assessmentcodecounter_assessment_assessment_type_and_more.py
+- mfa.py
 - graphify reference: GitHub clone and cross-repo merge
 - graphify reference: transcribe video and audio
 - AGENTS.md
@@ -113,6 +113,15 @@
 - frontend/AGENTS.md
 - extraction-spec.md
 - SECURITY.md
+- record_audit_event
+- VideoProviderError
+- accounts/serializers.py
+- InstrumentApplication
+- PatientCreatePage
+- accounts/admin.py
+- core/views.py
+- AssessmentCreatePage
+- medical_records/admin.py
 
 ## God Nodes (most connected - your core abstractions)
 1. `UserRole` - 152 edges
@@ -133,15 +142,15 @@
   apps/accounts/management/commands/platform_preflight.py → apps/clinics/models.py
 - `Command` --uses--> `ClinicMembership`  [INFERRED]
   apps/accounts/management/commands/platform_preflight.py → apps/clinics/models.py
+- `Command` --uses--> `UserMFADevice`  [INFERRED]
+  apps/accounts/management/commands/reset_admin_password.py → apps/accounts/models.py
 - `Command` --uses--> `UserRole`  [INFERRED]
   apps/accounts/management/commands/reset_admin_password.py → apps/accounts/models.py
-- `make_user()` --uses--> `UserRole`  [INFERRED]
-  apps/accounts/tests.py → apps/accounts/models.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (133 total, 51 thin omitted)
+## Communities (142 total, 49 thin omitted)
 
 ### Community 0 - "billing/tests.py"
 Cohesion: 0.05
@@ -149,79 +158,79 @@ Nodes (62): InvoiceAdmin, PaymentAdmin, PlanAdmin, register, SubscriptionAdmin, 
 
 ### Community 1 - "api.ts"
 Cohesion: 0.06
-Nodes (55): PublicTelehealthJoinPage(), handleEnterWaitingRoom(), PublicTelehealthJoinPageProps, statusLabels, enterPublicWaitingRoom(), getPublicTelehealthAccess(), RequestOptions, Appointment (+47 more)
+Nodes (59): PublicTelehealthJoinPage(), handleEnterWaitingRoom(), PublicTelehealthJoinPageProps, statusLabels, enterPublicWaitingRoom(), getPublicTelehealthAccess(), RequestOptions, AppointmentPayload (+51 more)
 
-### Community 2 - "uuid"
+### Community 2 - "django_conf"
+Cohesion: 0.07
+Nodes (19): Migration, Migration, Migration, Migration, Migration, Migration, Migration, Migration (+11 more)
+
+### Community 3 - "Notification"
 Cohesion: 0.08
-Nodes (22): Migration, Migration, Migration, Migration, Migration, Migration, Migration, Migration (+14 more)
+Nodes (36): NotificationAdmin, NotificationTemplateAdmin, register, Meta, Notification, NotificationStatus, NotificationTemplate, get_notification_provider() (+28 more)
 
-### Community 3 - "notifications/tests.py"
-Cohesion: 0.31
-Nodes (14): NotificationStatus, send_due_notifications(), send_notification(), make_context(), make_user(), django_db, test_clinic_admin_can_create_notification_template(), test_clinic_admin_can_queue_notification() (+6 more)
+### Community 4 - "clinics/serializers.py"
+Cohesion: 0.08
+Nodes (18): ClinicStaffStatus, IsClinicAdminForStaff, IsClinicWorkspaceUser, BasePermission, has_active_clinic_membership(), is_clinic_admin(), Check clinic authority from an active membership only., ClinicAdminUserSerializer (+10 more)
 
-### Community 4 - "clinics/models.py"
-Cohesion: 0.09
-Nodes (19): ClinicStaffRole, ClinicStaffStatus, IsClinicAdminForStaff, IsClinicWorkspaceUser, BasePermission, has_active_clinic_membership(), is_clinic_admin(), Check clinic authority from an active membership only. (+11 more)
+### Community 5 - "TelehealthPage"
+Cohesion: 0.33
+Nodes (4): TelehealthPage(), handleCreateSession(), createTelehealthSession(), listTelehealthSessions()
 
-### Community 5 - "DashboardPage.tsx"
+### Community 6 - "AppointmentsPage"
 Cohesion: 0.07
-Nodes (31): PageProps, MetricCard(), MetricCardProps, AssessmentsPage(), AssessmentsPageProps, formatDate(), statusLabel(), ClinicDetailPage() (+23 more)
-
-### Community 6 - "AppointmentsPage.tsx"
-Cohesion: 0.07
-Nodes (44): addDays(), addMonths(), AppointmentDraft, AppointmentsPage(), copyEventSummary(), goToNextPeriod(), goToPreviousPeriod(), goToToday() (+36 more)
+Nodes (38): addDays(), addMonths(), AppointmentsPage(), copyEventSummary(), goToNextPeriod(), goToPreviousPeriod(), goToToday(), handleCancelSelectedAppointment() (+30 more)
 
 ### Community 7 - "useAuthenticatedData"
-Cohesion: 0.07
-Nodes (38): ScheduleBlockCreatePage(), handleSubmit(), ScheduleBlockCreatePageProps, ClinicCreatePage(), useAuthenticatedData(), DocumentCreatePage(), handleSubmit(), DocumentCreatePageProps (+30 more)
+Cohesion: 0.06
+Nodes (51): nextConfig, PageProps, AppShell(), AppShellProps, MetricCard(), MetricCardProps, AssessmentCreatePageProps, AssessmentsPage() (+43 more)
 
 ### Community 8 - "types.py"
 Cohesion: 0.07
 Nodes (33): InstrumentApplicationStatus, create_instrument_application(), update_instrument_application(), InstrumentReportPayloadService, Any, InstrumentScoringService, Any, ICalculator (+25 more)
 
-### Community 9 - "AssessmentCreatePage.tsx"
-Cohesion: 0.08
-Nodes (24): PageProps, AppointmentCreatePage(), handleSubmit(), AppointmentCreatePageProps, AssessmentCreatePage(), handleSubmit(), AssessmentCreatePageProps, InvoiceCreatePage() (+16 more)
+### Community 9 - "AppointmentsPage.tsx"
+Cohesion: 0.09
+Nodes (31): AppointmentDraft, AppointmentsPageProps, CalendarItem, CalendarView, EventPopover, weekDays, InvoiceCreatePage(), handleSubmit() (+23 more)
 
 ### Community 10 - "django_apps"
 Cohesion: 0.04
 Nodes (31): AccountsConfig, AppConfig, AppointmentsConfig, AppConfig, AuditConfig, AppConfig, BillingConfig, AppConfig (+23 more)
 
 ### Community 11 - "telehealth/services.py"
-Cohesion: 0.07
-Nodes (19): atomic, DailyVideoProvider, get_video_provider(), GoogleMeetManualVideoProvider, InternalPlaceholderVideoProvider, ABC, Exception, Create a video room for an appointment. (+11 more)
+Cohesion: 0.10
+Nodes (13): GoogleMeetManualVideoProvider, InternalPlaceholderVideoProvider, ABC, Create a video room for an appointment., Return a participant join URL for an existing room., Close or expire an existing room., Return the provider-specific availability status for a room., VideoProvider (+5 more)
 
 ### Community 12 - "UserRole"
-Cohesion: 0.24
-Nodes (25): UserRole, Clinic, ClinicMembership, ClinicStaff, Meta, django_db, test_clinic_admin_authority_requires_active_membership(), test_clinic_admin_can_create_staff_with_system_access_and_disable_later() (+17 more)
+Cohesion: 0.17
+Nodes (29): UserRole, Clinic, ClinicMembership, ClinicStaff, Meta, Meta, PlatformClinicSerializer, atomic (+21 more)
 
 ### Community 13 - "psychological_assessments/views.py"
-Cohesion: 0.13
-Nodes (11): AssessmentInstrument, CanAccessPsychologicalAssessments, BasePermission, AssessmentDocumentViewSet, AssessmentInstrumentViewSet, AssessmentPlanViewSet, AssessmentSessionViewSet, InstrumentApplicationViewSet (+3 more)
+Cohesion: 0.09
+Nodes (17): AssessmentDocument, CanAccessPsychologicalAssessments, BasePermission, assessment_clinic_ids_for_user(), assessments_visible_to_user(), can_access_clinical_assessment_content(), clinical_assessments_visible_to_user(), QuerySet (+9 more)
 
-### Community 14 - "GeneratedDocument"
-Cohesion: 0.06
-Nodes (32): DocumentTemplateAdmin, GeneratedDocumentAdmin, register, DocumentTemplate, DocumentTemplateType, GeneratedDocument, GeneratedDocumentStatus, Meta (+24 more)
+### Community 14 - "documents/views.py"
+Cohesion: 0.07
+Nodes (19): DocumentTemplate, GeneratedDocumentStatus, Meta, build_simple_pdf(), CanManageClinicDocuments, BasePermission, _document_clinic_filter(), document_templates_visible_to_user() (+11 more)
 
 ### Community 15 - "apiFetch"
-Cohesion: 0.12
-Nodes (35): PageProps, AssessmentDetailPage(), handleAddInstruments(), handleCancelSubmit(), handleDocumentSubmit(), handleFinalizeResult(), handlePlanSubmit(), handleResultSubmit() (+27 more)
+Cohesion: 0.10
+Nodes (39): PageProps, AssessmentDetailPage(), handleAddInstruments(), handleCancelSubmit(), handleDocumentSubmit(), handleFinalizeResult(), handlePlanSubmit(), handleResultSubmit() (+31 more)
 
 ### Community 16 - "accounts/views.py"
-Cohesion: 0.05
-Nodes (45): Command, BaseCommand, Command, BaseCommand, generate_totp_secret(), _hotp(), provisioning_uri(), verify_totp() (+37 more)
+Cohesion: 0.15
+Nodes (14): PasswordResetConfirmSerializer, PasswordResetRequestSerializer, LoginView, MFAConfirmView, MFADisableView, PasswordResetConfirmView, PasswordResetRequestView, APIView (+6 more)
 
 ### Community 17 - "medical_records/tests.py"
-Cohesion: 0.19
-Nodes (20): MedicalRecordAuditEventAdmin, MedicalRecordEntryAdmin, MedicalRecordEntryVersionAdmin, register, MedicalRecordAuditAction, MedicalRecordAuditEvent, MedicalRecordEntry, MedicalRecordEntryStatus (+12 more)
+Cohesion: 0.26
+Nodes (14): MedicalRecordAuditAction, MedicalRecordEntry, MedicalRecordEntryStatus, MedicalRecordEntryVersion, Meta, make_clinic_context(), make_user(), django_db (+6 more)
 
 ### Community 18 - "consents/views.py"
 Cohesion: 0.09
 Nodes (14): CanManageConsents, BasePermission, _consent_clinic_filter(), consent_records_visible_to_user(), consent_templates_visible_to_user(), Q, QuerySet, ConsentRecordSerializer (+6 more)
 
-### Community 19 - "clinical_assessments_visible_to_user"
-Cohesion: 0.10
-Nodes (6): clinical_assessments_visible_to_user(), AssessmentPlanSerializer, AssessmentResultSerializer, AssessmentSessionSerializer, AssessmentTimelineEventSerializer, Meta
+### Community 19 - "AssessmentResultSerializer"
+Cohesion: 0.15
+Nodes (4): AssessmentResultSerializer, AssessmentSessionSerializer, AssessmentTimelineEventSerializer, Meta
 
 ### Community 20 - "Skill Mestre — Plataforma para Psicólogos.md"
 Cohesion: 0.04
@@ -231,105 +240,105 @@ Nodes (44): 10. AGENDA, 11. CONSULTA ONLINE, 12. SALA DE ESPERA, 13. DOCUMENTOS,
 Cohesion: 0.07
 Nodes (28): eslintConfig, dependencies, next, react, react-dom, devDependencies, eslint, eslint-config-next (+20 more)
 
-### Community 22 - "react"
-Cohesion: 0.10
-Nodes (25): calculateAge(), PatientCreatePage(), handleSubmit(), PatientCreatePageProps, PlatformClinicCreatePage(), submit(), crpRegionFromValue(), crpRegions (+17 more)
+### Community 22 - "ProfessionalCreatePage.tsx"
+Cohesion: 0.15
+Nodes (19): PlatformClinicCreatePage(), submit(), crpRegionFromValue(), crpRegions, ProfessionalCreatePage(), handleCrpInput(), handleSubmit(), ProfessionalCreatePageProps (+11 more)
 
 ### Community 23 - "telehealth/tests.py"
-Cohesion: 0.19
-Nodes (18): CareModality, TelehealthSession, make_online_context(), make_user(), django_db, override_settings, test_clinic_admin_can_create_manual_google_meet_session(), test_clinic_admin_can_create_telehealth_session_for_online_appointment() (+10 more)
+Cohesion: 0.07
+Nodes (37): CareModality, register, TelehealthParticipantEventAdmin, TelehealthSessionAdmin, Meta, TelehealthAccessToken, TelehealthParticipantEvent, TelehealthSession (+29 more)
 
-### Community 24 - "notifications/views.py"
-Cohesion: 0.08
-Nodes (17): CanManageNotifications, BasePermission, _notification_clinic_filter(), notification_templates_visible_to_user(), notifications_visible_to_user(), Q, QuerySet, Meta (+9 more)
+### Community 24 - "notifications/serializers.py"
+Cohesion: 0.10
+Nodes (14): CanManageNotifications, BasePermission, _notification_clinic_filter(), notification_templates_visible_to_user(), notifications_visible_to_user(), Q, QuerySet, Meta (+6 more)
 
 ### Community 25 - "Patient"
-Cohesion: 0.18
-Nodes (21): GuardianAdmin, GuardianInline, PatientAdmin, ProfessionalPatientAdmin, ProfessionalPatientInline, register, Guardian, Meta (+13 more)
+Cohesion: 0.19
+Nodes (20): GuardianAdmin, GuardianInline, PatientAdmin, ProfessionalPatientAdmin, ProfessionalPatientInline, register, Guardian, Meta (+12 more)
 
 ### Community 26 - "BillingPage.tsx"
 Cohesion: 0.14
 Nodes (24): amountInCents(), BillingPage(), handleCancelInvoice(), handlePayment(), loadBillingData(), BillingPageProps, currency, formatDate() (+16 more)
 
 ### Community 27 - "psychological_assessments/tests.py"
-Cohesion: 0.22
-Nodes (22): Assessment, AssessmentPlan, AssessmentResult, AssessmentResultStatus, AssessmentTimelineEvent, Meta, make_assessment_context(), make_user() (+14 more)
+Cohesion: 0.28
+Nodes (19): Assessment, AssessmentResultStatus, AssessmentTimelineEvent, make_assessment_context(), make_user(), django_db, test_assessment_rejects_patient_from_another_clinic(), test_assessment_status_transitions_require_final_result_before_completion() (+11 more)
 
 ### Community 28 - "accounts/tests.py"
 Cohesion: 0.20
 Nodes (21): totp_now(), is_platform_operator(), Allow platform authority only for a valid, separate platform identity., make_user(), django_db, override_settings, test_clinic_admin_can_confirm_initial_mfa_from_login(), test_clinic_admin_without_mfa_is_blocked_at_login() (+13 more)
 
 ### Community 29 - "consents/tests.py"
-Cohesion: 0.10
-Nodes (29): CustomUserAdmin, register, UserMFADeviceAdmin, ConsentRecordAdmin, ConsentTemplateAdmin, register, ConsentRecord, ConsentStatus (+21 more)
+Cohesion: 0.20
+Nodes (18): ConsentRecordAdmin, ConsentTemplateAdmin, register, ConsentRecord, ConsentStatus, ConsentTemplate, ConsentTemplateType, Meta (+10 more)
 
 ### Community 30 - "django_db"
-Cohesion: 0.08
-Nodes (26): AppointmentStatus, Migration, Migration, Migration, MedicalRecordEntryType, Migration, Migration, Migration (+18 more)
+Cohesion: 0.11
+Nodes (9): Migration, Migration, Migration, Migration, Migration, Migration, Migration, Migration (+1 more)
 
-### Community 31 - "clinics_visible_to_user"
-Cohesion: 0.19
-Nodes (12): clinics_visible_to_user(), QuerySet, patients_visible_to_user(), QuerySet, GuardianSerializer, Meta, ProfessionalPatientSerializer, DataSubjectRequestType (+4 more)
+### Community 31 - "clinics/models.py"
+Cohesion: 0.24
+Nodes (9): ClinicStaffRole, DocumentTemplateType, NotificationChannel, NotificationEventType, Sex, Migration, DataSubjectRequestType, django_core_exceptions (+1 more)
 
 ### Community 32 - "Appointment"
-Cohesion: 0.18
-Nodes (19): AppointmentAdmin, register, ScheduleBlockAdmin, Appointment, Meta, ScheduleBlock, make_clinic_context(), make_user() (+11 more)
+Cohesion: 0.21
+Nodes (17): Appointment, AppointmentStatus, Meta, ScheduleBlock, make_clinic_context(), make_user(), django_db, test_appointment_conflict_for_same_professional_is_rejected() (+9 more)
 
-### Community 33 - "appointments/selectors.py"
-Cohesion: 0.13
+### Community 33 - "telehealth/views.py"
+Cohesion: 0.15
 Nodes (12): CanManageClinicSchedule, BasePermission, appointment_clinic_ids_for_user(), appointments_visible_to_user(), blocks_visible_to_user(), QuerySet, AppointmentViewSet, ModelViewSet (+4 more)
 
-### Community 34 - "patients/views.py"
-Cohesion: 0.22
-Nodes (5): CanManageClinicPatients, BasePermission, PatientViewSet, ModelViewSet, rest_framework_parsers
+### Community 34 - "DESIGN.md"
+Cohesion: 0.05
+Nodes (38): Badges & Chips, Border Radius Scale, Brand & Accent, Breakpoints, Buttons, Cards & Containers, Collapsing Strategy, Colors (+30 more)
 
-### Community 35 - "PatientEditPage.tsx"
-Cohesion: 0.14
-Nodes (15): PageProps, calculateAge(), formatDate(), PatientDetailPage(), handleDeletePatient(), PatientDetailPageProps, patientStatus(), sexLabel() (+7 more)
+### Community 35 - "PatientDetailPage.tsx"
+Cohesion: 0.26
+Nodes (10): PageProps, calculateAge(), formatDate(), PatientDetailPage(), handleDeletePatient(), PatientDetailPageProps, patientStatus(), sexLabel() (+2 more)
 
-### Community 36 - "next"
-Cohesion: 0.13
-Nodes (14): nextConfig, AppShell(), handleLogout(), AppShellProps, PlatformShell(), PlatformClinicDetailPage(), deactivate(), PlatformClinicsPage() (+6 more)
+### Community 36 - "LoginPage"
+Cohesion: 0.10
+Nodes (20): handleLogout(), PlatformShell(), AuthMode, LoginPage(), extractMfaSetupValue(), handlePasswordResetConfirm(), handlePasswordResetRequest(), handleSubmit() (+12 more)
 
 ### Community 37 - "What You Must Do When Invoked"
 Cohesion: 0.08
 Nodes (24): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+16 more)
 
-### Community 38 - "professionals/models.py"
-Cohesion: 0.19
-Nodes (10): Meta, ProfessionalStatus, Specialty, Meta, ProfessionalSerializer, SpecialtySerializer, ProfessionalViewSet, ModelViewSet (+2 more)
+### Community 38 - "professionals/views.py"
+Cohesion: 0.15
+Nodes (12): Meta, ProfessionalStatus, Specialty, CanManageClinicProfessionals, BasePermission, Meta, ProfessionalSerializer, SpecialtySerializer (+4 more)
 
-### Community 39 - "MedicalRecordEntrySerializer"
-Cohesion: 0.11
-Nodes (13): medical_record_audit_visible_to_user(), medical_record_clinic_ids_for_user(), medical_records_visible_to_user(), QuerySet, MedicalRecordAuditEventSerializer, MedicalRecordEntrySerializer, Meta, atomic (+5 more)
+### Community 39 - "medical_records/views.py"
+Cohesion: 0.13
+Nodes (13): MedicalRecordAuditEvent, CanAccessMedicalRecords, BasePermission, medical_record_audit_visible_to_user(), medical_record_clinic_ids_for_user(), medical_records_visible_to_user(), QuerySet, MedicalRecordAuditEventSerializer (+5 more)
 
 ### Community 40 - "DataSubjectRequestSerializer"
-Cohesion: 0.13
-Nodes (9): CanManagePrivacyRequests, BasePermission, data_subject_requests_visible_to_user(), privacy_clinic_ids_for_user(), QuerySet, DataSubjectRequestSerializer, Meta, DataSubjectRequestViewSet (+1 more)
+Cohesion: 0.15
+Nodes (6): CanManagePrivacyRequests, BasePermission, DataSubjectRequestSerializer, Meta, DataSubjectRequestViewSet, ModelViewSet
 
 ### Community 41 - "has_explicit_platform_role"
 Cohesion: 0.13
-Nodes (9): has_explicit_platform_role(), Return whether the application role identifies a platform account., audit_events_visible_to_user(), QuerySet, CanAccessMedicalRecords, BasePermission, CanManageClinicProfessionals, BasePermission (+1 more)
+Nodes (12): has_explicit_platform_role(), Return whether the application role identifies a platform account., audit_events_visible_to_user(), QuerySet, CanManageClinicPatients, BasePermission, data_subject_requests_visible_to_user(), privacy_clinic_ids_for_user() (+4 more)
 
-### Community 42 - "AuditAction"
-Cohesion: 0.14
-Nodes (23): AuditEventAdmin, register, AuditAction, AuditEvent, Meta, make_user(), django_db, test_clinic_admin_lists_only_own_audit_events() (+15 more)
+### Community 42 - "AuditEvent"
+Cohesion: 0.17
+Nodes (20): AuditEvent, Meta, make_user(), django_db, test_clinic_admin_lists_only_own_audit_events(), test_platform_operator_cannot_list_clinical_audit_events(), test_platform_operator_cannot_retrieve_clinical_audit_event(), test_platform_operator_cannot_write_clinical_audit_events() (+12 more)
 
-### Community 43 - "TelehealthSessionViewSet"
-Cohesion: 0.19
-Nodes (5): CanManageTelehealth, BasePermission, action, ModelViewSet, TelehealthSessionViewSet
+### Community 43 - "listProfessionals"
+Cohesion: 0.12
+Nodes (15): AppointmentCreatePage(), handleSubmit(), AppointmentCreatePageProps, ScheduleBlockCreatePage(), handleSubmit(), ScheduleBlockCreatePageProps, calculateAge(), PatientEditPage() (+7 more)
 
 ### Community 44 - "compilerOptions"
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+10 more)
 
-### Community 45 - "LoginPage"
-Cohesion: 0.23
-Nodes (11): AuthMode, LoginPage(), extractMfaSetupValue(), handlePasswordResetConfirm(), handlePasswordResetRequest(), handleSubmit(), confirmPasswordReset(), getCurrentUser() (+3 more)
+### Community 45 - "django_contrib"
+Cohesion: 0.11
+Nodes (14): AppointmentAdmin, register, ScheduleBlockAdmin, AuditEventAdmin, register, DocumentTemplateAdmin, GeneratedDocumentAdmin, register (+6 more)
 
 ### Community 46 - "psychological_assessments/models.py"
 Cohesion: 0.12
-Nodes (12): AssessmentCodeCounter, AssessmentDocumentType, AssessmentSessionModality, AssessmentSessionStatus, AssessmentStatus, AssessmentTimelineEventType, AssessmentType, calculate_age_in_months() (+4 more)
+Nodes (12): AssessmentDocumentType, AssessmentInstrument, AssessmentPlan, AssessmentSessionModality, AssessmentSessionStatus, AssessmentStatus, AssessmentTimelineEventType, AssessmentType (+4 more)
 
 ### Community 47 - "Plataforma PSI Design Brief"
 Cohesion: 0.09
@@ -344,48 +353,48 @@ Cohesion: 0.22
 Nodes (9): ClinicStaffFormPage(), handleSubmit(), ClinicStaffFormPageProps, roleOptions, createClinicStaff(), getClinicStaff(), updateClinicStaff(), ClinicStaffRole (+1 more)
 
 ### Community 50 - "User"
-Cohesion: 0.09
-Nodes (13): AbstractUser, Backward-compatible name for the explicit platform role., User, IsPlatformOperator, BasePermission, Meta, PlatformClinicAdminProvisionSerializer, PlatformClinicSerializer (+5 more)
+Cohesion: 0.17
+Nodes (6): AbstractUser, Backward-compatible name for the explicit platform role., User, resolve_login_username(), user_requires_mfa(), PlatformClinicAdminProvisionSerializer
 
 ### Community 51 - "AppointmentDetailPage.tsx"
 Cohesion: 0.27
 Nodes (10): PageProps, AppointmentDetailPage(), handleCancel(), AppointmentDetailPageProps, formatCurrency(), formatDate(), modalityLabel(), statusLabel() (+2 more)
 
-### Community 52 - "rest_framework_viewsets"
-Cohesion: 0.23
-Nodes (7): CanViewClinicalAudit, BasePermission, AuditEventSerializer, Meta, AuditEventViewSet, ReadOnlyModelViewSet, rest_framework_viewsets
+### Community 52 - "rest_framework_routers"
+Cohesion: 0.10
+Nodes (15): CanViewClinicalAudit, BasePermission, AuditEventSerializer, Meta, AuditEventViewSet, ReadOnlyModelViewSet, IsPlatformOperator, BasePermission (+7 more)
 
-### Community 53 - "professionals_visible_to_user"
-Cohesion: 0.12
-Nodes (6): AppointmentSerializer, Meta, ScheduleBlockSerializer, PatientSerializer, professionals_visible_to_user(), QuerySet
+### Community 53 - "clinics_visible_to_user"
+Cohesion: 0.09
+Nodes (19): AppointmentSerializer, Meta, ScheduleBlockSerializer, clinics_visible_to_user(), QuerySet, patients_visible_to_user(), QuerySet, GuardianSerializer (+11 more)
 
-### Community 54 - "Notification"
-Cohesion: 0.24
-Nodes (8): Notification, get_notification_provider(), InternalNotificationProvider, NotificationDelivery, NotificationProvider, NotificationService, ABC, Send a notification through a concrete provider.
+### Community 54 - "DocumentsPage.tsx"
+Cohesion: 0.21
+Nodes (10): DocumentCreatePage(), handleSubmit(), DocumentsPage(), handleDownloadPdf(), DocumentsPageProps, createDocumentTemplate(), createGeneratedDocument(), getGeneratedDocumentPdfUrl() (+2 more)
 
 ### Community 55 - "psychological_assessments/admin.py"
 Cohesion: 0.39
 Nodes (8): AssessmentAdmin, AssessmentDocumentAdmin, AssessmentInstrumentAdmin, AssessmentPlanAdmin, AssessmentResultAdmin, AssessmentSessionAdmin, InstrumentApplicationAdmin, register
 
-### Community 57 - "os"
-Cohesion: 0.13
-Nodes (9): ASGI config for config project. It exposes the ASGI callable as a module-level…, WSGI config for config project. It exposes the WSGI callable as a module-level…, django_core_asgi, django_core_wsgi, main(), Django's command-line utility for administrative tasks., Run administrative tasks., os (+1 more)
+### Community 56 - "AssessmentResult"
+Cohesion: 0.15
+Nodes (5): AssessmentCodeCounter, AssessmentResult, AssessmentSession, generate_assessment_code(), Meta
 
-### Community 58 - "TelehealthRoomPage.tsx"
-Cohesion: 0.22
-Nodes (12): statusLabels, TelehealthRoomPage(), handleAction(), handleWaitingRoom(), refreshSession(), TelehealthRoomPageProps, cancelTelehealthSession(), enterWaitingRoom() (+4 more)
+### Community 57 - "UserMFADevice"
+Cohesion: 0.24
+Nodes (7): Command, BaseCommand, generate_totp_secret(), provisioning_uri(), UserMFADevice, MFASetupSerializer, MFASetupView
+
+### Community 58 - "TelehealthRoomPage"
+Cohesion: 0.43
+Nodes (5): TelehealthRoomPage(), handleWaitingRoom(), refreshSession(), enterWaitingRoom(), getTelehealthSession()
 
 ### Community 59 - "AddInstrumentModal.tsx"
-Cohesion: 0.22
-Nodes (10): AddInstrumentModal(), getUnavailableReason(), toggleInstrument(), AddInstrumentModalProps, calculateAgeInMonths(), categoryColor(), formatAgeRange(), normalizeMonths() (+2 more)
+Cohesion: 0.27
+Nodes (8): AddInstrumentModal(), getUnavailableReason(), toggleInstrument(), AddInstrumentModalProps, calculateAgeInMonths(), categoryColor(), formatAgeRange(), normalizeMonths()
 
-### Community 60 - "record_audit_event"
-Cohesion: 0.14
-Nodes (11): AdminAuditMiddleware, client_ip(), record_audit_event(), sanitize_metadata(), AssessmentCancelSerializer, AssessmentResultVoidSerializer, AssessmentResultViewSet, AssessmentViewSet (+3 more)
-
-### Community 61 - "AssessmentSerializer"
-Cohesion: 0.16
-Nodes (5): assessment_clinic_ids_for_user(), assessments_visible_to_user(), can_access_clinical_assessment_content(), QuerySet, AssessmentSerializer
+### Community 60 - "AssessmentResultViewSet"
+Cohesion: 0.23
+Nodes (6): AssessmentCancelSerializer, AssessmentResultVoidSerializer, AssessmentResultViewSet, AssessmentViewSet, action, record_timeline_event()
 
 ### Community 62 - "Deploy de Produção"
 Cohesion: 0.17
@@ -399,13 +408,21 @@ Nodes (11): Diferencial Principal, Fluxos Que Precisam Parecer Completos, MVP Co
 Cohesion: 0.32
 Nodes (7): Exception, Raised when scoring cannot be completed., Base exception for instrument module errors., Raised when raw input cannot be validated., TestModuleError, TestScoringError, TestValidationError
 
-### Community 65 - "MedicalRecordsPage.tsx"
-Cohesion: 0.27
-Nodes (9): entryTypeLabels, getMedicalRecordData(), MedicalRecordsPage(), handleVoid(), loadRecords(), MedicalRecordsPageProps, statusLabels, listMedicalRecords() (+1 more)
+### Community 65 - "MedicalRecordsPage"
+Cohesion: 0.36
+Nodes (6): getMedicalRecordData(), MedicalRecordsPage(), handleVoid(), loadRecords(), listMedicalRecords(), voidMedicalRecord()
 
-### Community 67 - "telehealth/admin.py"
-Cohesion: 0.67
-Nodes (3): register, TelehealthParticipantEventAdmin, TelehealthSessionAdmin
+### Community 66 - "GeneratedDocument"
+Cohesion: 0.35
+Nodes (9): GeneratedDocument, make_context(), make_user(), django_db, test_authenticated_user_can_download_document_pdf(), test_clinic_admin_can_create_document_template(), test_document_rejects_patient_from_another_clinic(), test_platform_operator_denied_documents_crud_download_and_finalize() (+1 more)
+
+### Community 67 - "telehealth/serializers.py"
+Cohesion: 0.24
+Nodes (6): MedicalRecordEntryType, TelehealthParticipantRole, atomic, TelehealthSessionSerializer, WaitingRoomStatusSerializer, get_video_provider()
+
+### Community 68 - "django_contrib_auth"
+Cohesion: 0.17
+Nodes (7): Command, BaseCommand, Command, BaseCommand, django_contrib_auth, django_core_management_base, django_utils_crypto
 
 ### Community 69 - "vercel.json"
 Cohesion: 0.33
@@ -415,9 +432,9 @@ Nodes (5): buildCommand, devCommand, framework, installCommand, outputDirectory
 Cohesion: 0.60
 Nodes (4): ClinicAdmin, ClinicMembershipAdmin, ClinicStaffAdmin, register
 
-### Community 71 - "notifications/models.py"
-Cohesion: 0.24
-Nodes (7): NotificationAdmin, NotificationTemplateAdmin, register, Meta, NotificationChannel, NotificationEventType, NotificationTemplate
+### Community 71 - "MedicalRecordEntrySerializer"
+Cohesion: 0.21
+Nodes (4): MedicalRecordEntrySerializer, MedicalRecordEntryVersionSerializer, Meta, atomic
 
 ### Community 72 - "layout.tsx"
 Cohesion: 0.40
@@ -471,20 +488,56 @@ Nodes (3): For git commit hook, For native CLAUDE.md integration, graphify refer
 Cohesion: 0.50
 Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphify reference: incremental update and cluster-only
 
+### Community 124 - "mfa.py"
+Cohesion: 0.20
+Nodes (9): _hotp(), verify_totp(), base64, hashlib, hmac, secrets, struct, time (+1 more)
+
+### Community 133 - "record_audit_event"
+Cohesion: 0.27
+Nodes (5): AdminAuditMiddleware, client_ip(), record_audit_event(), sanitize_metadata(), logging
+
+### Community 134 - "VideoProviderError"
+Cohesion: 0.29
+Nodes (4): DailyVideoProvider, Exception, Raised when a video provider cannot complete an operation., VideoProviderError
+
+### Community 135 - "accounts/serializers.py"
+Cohesion: 0.25
+Nodes (6): CurrentUserSerializer, Meta, CurrentUserView, django_contrib_auth_tokens, django_utils_encoding, django_utils_http
+
+### Community 137 - "PatientCreatePage"
+Cohesion: 0.29
+Nodes (4): calculateAge(), PatientCreatePage(), handleSubmit(), createPatientFormData()
+
+### Community 138 - "accounts/admin.py"
+Cohesion: 0.40
+Nodes (5): CustomUserAdmin, register, UserMFADeviceAdmin, django_contrib_auth_admin, UserAdmin
+
+### Community 139 - "core/views.py"
+Cohesion: 0.33
+Nodes (4): HealthCheckView, django_http, django_views, View
+
+### Community 140 - "AssessmentCreatePage"
+Cohesion: 0.40
+Nodes (4): PageProps, AssessmentCreatePage(), handleSubmit(), createPsychologicalAssessment()
+
+### Community 141 - "medical_records/admin.py"
+Cohesion: 0.60
+Nodes (4): MedicalRecordAuditEventAdmin, MedicalRecordEntryAdmin, MedicalRecordEntryVersionAdmin, register
+
 ## Knowledge Gaps
-- **325 isolated node(s):** `$schema`, `paths`, `plugin`, `Migration`, `Migration` (+320 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 697 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **51 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **355 isolated node(s):** `$schema`, `paths`, `plugin`, `Migration`, `Migration` (+350 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 727 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **49 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `UserRole` connect `UserRole` to `billing/tests.py`, `notifications/tests.py`, `clinics/models.py`, `GeneratedDocument`, `accounts/views.py`, `medical_records/tests.py`, `consents/views.py`, `telehealth/tests.py`, `notifications/views.py`, `Patient`, `psychological_assessments/tests.py`, `accounts/tests.py`, `consents/tests.py`, `clinics_visible_to_user`, `Appointment`, `appointments/selectors.py`, `patients/views.py`, `DataSubjectRequestSerializer`, `has_explicit_platform_role`, `AuditAction`, `TelehealthSessionViewSet`, `Professional`, `User`, `AssessmentSerializer`, `Command`?**
-  _High betweenness centrality (0.053) - this node is a cross-community bridge._
-- **Why does `Clinic` connect `UserRole` to `billing/tests.py`, `notifications/tests.py`, `clinics/models.py`, `GeneratedDocument`, `medical_records/tests.py`, `telehealth/tests.py`, `Patient`, `psychological_assessments/tests.py`, `accounts/tests.py`, `consents/tests.py`, `django_db`, `clinics_visible_to_user`, `Appointment`, `professionals/models.py`, `AuditAction`, `psychological_assessments/models.py`, `Professional`, `User`, `Notification`, `Command`, `clinics/admin.py`, `notifications/models.py`?**
-  _High betweenness centrality (0.052) - this node is a cross-community bridge._
-- **Why does `has_explicit_platform_role()` connect `has_explicit_platform_role` to `billing/tests.py`, `clinics/models.py`, `psychological_assessments/views.py`, `GeneratedDocument`, `medical_records/tests.py`, `consents/views.py`, `clinical_assessments_visible_to_user`, `telehealth/tests.py`, `notifications/views.py`, `accounts/tests.py`, `django_db`, `clinics_visible_to_user`, `appointments/selectors.py`, `patients/views.py`, `professionals/models.py`, `MedicalRecordEntrySerializer`, `DataSubjectRequestSerializer`, `TelehealthSessionViewSet`, `psychological_assessments/models.py`, `rest_framework_viewsets`, `professionals_visible_to_user`, `AssessmentSerializer`, `AssessmentDocument`?**
-  _High betweenness centrality (0.049) - this node is a cross-community bridge._
+- **Why does `UserRole` connect `UserRole` to `billing/tests.py`, `Notification`, `clinics/serializers.py`, `psychological_assessments/views.py`, `documents/views.py`, `medical_records/tests.py`, `consents/views.py`, `telehealth/tests.py`, `notifications/serializers.py`, `Patient`, `psychological_assessments/tests.py`, `accounts/tests.py`, `consents/tests.py`, `clinics/models.py`, `Appointment`, `telehealth/views.py`, `professionals/views.py`, `DataSubjectRequestSerializer`, `has_explicit_platform_role`, `AuditEvent`, `Professional`, `clinics_visible_to_user`, `GeneratedDocument`, `django_contrib_auth`?**
+  _High betweenness centrality (0.051) - this node is a cross-community bridge._
+- **Why does `Clinic` connect `UserRole` to `billing/tests.py`, `Notification`, `clinics/serializers.py`, `record_audit_event`, `documents/views.py`, `medical_records/tests.py`, `telehealth/tests.py`, `Patient`, `psychological_assessments/tests.py`, `accounts/tests.py`, `consents/tests.py`, `clinics/models.py`, `Appointment`, `medical_records/views.py`, `AuditEvent`, `psychological_assessments/models.py`, `Professional`, `rest_framework_routers`, `clinics_visible_to_user`, `GeneratedDocument`, `django_contrib_auth`, `clinics/admin.py`?**
+  _High betweenness centrality (0.051) - this node is a cross-community bridge._
+- **Why does `has_explicit_platform_role()` connect `has_explicit_platform_role` to `billing/tests.py`, `clinics/serializers.py`, `InstrumentApplication`, `UserRole`, `psychological_assessments/views.py`, `documents/views.py`, `medical_records/tests.py`, `consents/views.py`, `AssessmentResultSerializer`, `telehealth/tests.py`, `notifications/serializers.py`, `accounts/tests.py`, `clinics/models.py`, `telehealth/views.py`, `professionals/views.py`, `medical_records/views.py`, `DataSubjectRequestSerializer`, `psychological_assessments/models.py`, `rest_framework_routers`, `clinics_visible_to_user`, `AssessmentSerializer`, `telehealth/serializers.py`, `MedicalRecordEntrySerializer`?**
+  _High betweenness centrality (0.048) - this node is a cross-community bridge._
 - **Are the 112 inferred relationships involving `UserRole` (e.g. with `Command` and `Command`) actually correct?**
   _`UserRole` has 112 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 86 inferred relationships involving `Clinic` (e.g. with `Command` and `test_clinic_admin_can_confirm_initial_mfa_from_login()`) actually correct?**
@@ -492,4 +545,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **Are the 59 inferred relationships involving `ClinicMembership` (e.g. with `Command` and `test_clinic_admin_can_confirm_initial_mfa_from_login()`) actually correct?**
   _`ClinicMembership` has 59 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `$schema`, `paths`, `plugin` to the rest of the system?**
-  _325 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _355 weakly-connected nodes found - possible documentation gaps or missing edges._

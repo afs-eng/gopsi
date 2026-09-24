@@ -33,7 +33,7 @@ python_files = ["tests.py", "test_*.py", "*_tests.py"]
 [tool.ruff]
 line-length = 88
 target-version = "py313"
-exclude = [".venv", "migrations", "frontend/node_modules", "frontend/.next"]
+exclude = [".venv", "migrations"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
@@ -46,7 +46,7 @@ target-version = ["py313"]
 python_version = "3.13"
 plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
 ignore_missing_imports = true
-exclude = [".venv", "migrations", "frontend/node_modules", "frontend/.next"]
+exclude = [".venv", "migrations"]
 
 [tool.django-stubs]
 django_settings_module = "config.settings"
