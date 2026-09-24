@@ -1618,5 +1618,605 @@
     "seen": 1790271867.102149,
     "ast_hash": "5aee5692aeed42ab71dd9f0efa8b0907",
     "semantic_hash": ""
+  },
+  "frontend/eslint.config.mjs": {
+    "mtime": 1790274932.5247293,
+    "seen": 1790280533.5384626,
+    "ast_hash": "dfa1f5f6a7037bf39dc510f30b180002",
+    "semantic_hash": ""
+  },
+  "frontend/next.config.ts": {
+    "mtime": 1790274932.5247293,
+    "seen": 1790280533.5384638,
+    "ast_hash": "9b77af189a21a7a64e4bd7a426f64176",
+    "semantic_hash": ""
+  },
+  "frontend/package.json": {
+    "mtime": 1790274932.5253205,
+    "seen": 1790280533.5384643,
+    "ast_hash": "ab541423f95a340a2c57eeb43d042b2e",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/api/qr/route.ts": {
+    "mtime": 1790274932.543472,
+    "seen": 1790280533.5384648,
+    "ast_hash": "4e1ec16d03830a57b2bffe600b9bd6e5",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/appointments/[appointmentId]/page.tsx": {
+    "mtime": 1790274932.545289,
+    "seen": 1790280533.5384653,
+    "ast_hash": "ddd2f5634c0104cba01e57c7d6ffcd19",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/appointments/blocks/new/page.tsx": {
+    "mtime": 1790274932.5462656,
+    "seen": 1790280533.5384655,
+    "ast_hash": "4f3c60daf6b57124b6e3acaebf8fc3f1",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/appointments/new/page.tsx": {
+    "mtime": 1790274932.5469065,
+    "seen": 1790280533.538466,
+    "ast_hash": "614d7729bc59c7f4c27f5b261af98153",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/appointments/page.tsx": {
+    "mtime": 1790274932.5469065,
+    "seen": 1790280533.5384662,
+    "ast_hash": "a264ab454e660696ffe2f0a5504b53f5",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/assessments/[assessmentId]/page.tsx": {
+    "mtime": 1790274932.5478919,
+    "seen": 1790280533.538467,
+    "ast_hash": "f5dc5a8be1759b32db685886b7fcfee6",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/assessments/new/page.tsx": {
+    "mtime": 1790274932.5478919,
+    "seen": 1790280533.5384672,
+    "ast_hash": "1cb4604ae46505037aedc26cf100a3cd",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/assessments/page.tsx": {
+    "mtime": 1790274932.5478919,
+    "seen": 1790280533.5384676,
+    "ast_hash": "880f31ea1beeebd00d42e570586a01d3",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/billing/new/page.tsx": {
+    "mtime": 1790274932.5493333,
+    "seen": 1790280533.5384681,
+    "ast_hash": "85bb55b302b8cf1790fc7ce0dc61a074",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/billing/page.tsx": {
+    "mtime": 1790274932.5495064,
+    "seen": 1790280533.5384684,
+    "ast_hash": "b5420d2a1c137b587fd03b8ecd343983",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/documents/new/page.tsx": {
+    "mtime": 1790274932.5503519,
+    "seen": 1790280533.5384688,
+    "ast_hash": "8c49c4b4ef242dc16d6aefaa2b64d6f8",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/documents/page.tsx": {
+    "mtime": 1790274932.5503519,
+    "seen": 1790280533.538469,
+    "ast_hash": "211b516ade607fc42c157c58aa4bcb71",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/medical-records/new/page.tsx": {
+    "mtime": 1790274932.5512981,
+    "seen": 1790280533.5384693,
+    "ast_hash": "0a5b5211a9ed9cd00569f08f8ce2ce91",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/medical-records/page.tsx": {
+    "mtime": 1790274932.5512981,
+    "seen": 1790280533.5384698,
+    "ast_hash": "73b8989d1137a59afbf017e2459d2282",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/page.tsx": {
+    "mtime": 1790274932.5512981,
+    "seen": 1790280533.53847,
+    "ast_hash": "ad2aaa948ede3a9d9761be37b01333d1",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/patients/[patientId]/edit/page.tsx": {
+    "mtime": 1790274932.5523224,
+    "seen": 1790280533.5384707,
+    "ast_hash": "2dae436b75f2a30e1b9b9c0c972b4155",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/patients/[patientId]/page.tsx": {
+    "mtime": 1790274932.5523224,
+    "seen": 1790280533.5384715,
+    "ast_hash": "887ac2907caeb240ad6525eab79fab1d",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/patients/new/page.tsx": {
+    "mtime": 1790274932.5523224,
+    "seen": 1790280533.5384717,
+    "ast_hash": "e2cbb4804a9c8c8239cd1773134b492d",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/patients/page.tsx": {
+    "mtime": 1790274932.5523224,
+    "seen": 1790280533.5384722,
+    "ast_hash": "5b1da3bfc023c6ed22ce25fad75e040c",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/professionals/[professionalId]/page.tsx": {
+    "mtime": 1790274932.5543191,
+    "seen": 1790280533.5384724,
+    "ast_hash": "4bcb3a4e1d7af800a3ca6d872e300a7b",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/professionals/new/page.tsx": {
+    "mtime": 1790274932.5543191,
+    "seen": 1790280533.5384727,
+    "ast_hash": "a016aa7bace71e0ab01291536a3e97b6",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/professionals/page.tsx": {
+    "mtime": 1790274932.5543191,
+    "seen": 1790280533.5384731,
+    "ast_hash": "c9174123f20e5c7a0cb1c73ce9a7c407",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/profile/page.tsx": {
+    "mtime": 1790274932.5543191,
+    "seen": 1790280533.5384734,
+    "ast_hash": "516007a9f1a763c56e92b2598f372d3e",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/reports/page.tsx": {
+    "mtime": 1790274932.5543191,
+    "seen": 1790280533.538474,
+    "ast_hash": "28286f4bd8872b45fa698a93ae841b90",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/settings/page.tsx": {
+    "mtime": 1790274932.5543191,
+    "seen": 1790280533.5384743,
+    "ast_hash": "98a8654037c9d3595b0b8e1edee36022",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/settings/staff/[staffId]/edit/page.tsx": {
+    "mtime": 1790274932.5578258,
+    "seen": 1790280533.5384748,
+    "ast_hash": "a4830b2dc12a360b0ac0161b80edfb99",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/settings/staff/new/page.tsx": {
+    "mtime": 1790274932.5578258,
+    "seen": 1790280533.538475,
+    "ast_hash": "a0c1a6b689814180d85fc0ba31754529",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/settings/staff/page.tsx": {
+    "mtime": 1790274932.5578258,
+    "seen": 1790280533.5384755,
+    "ast_hash": "ca34595314e427c6793f3f82cc0bb408",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/telehealth/[sessionId]/page.tsx": {
+    "mtime": 1790274932.559441,
+    "seen": 1790280533.5384758,
+    "ast_hash": "4e18b9fcafa49f36f99734f3482582b8",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/[id]/telehealth/page.tsx": {
+    "mtime": 1790274932.559441,
+    "seen": 1790280533.5384762,
+    "ast_hash": "fc71ead114c16d5eff871fce9e1fe5ad",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/clinics/new/page.tsx": {
+    "mtime": 1790274932.5600958,
+    "seen": 1790280533.5384765,
+    "ast_hash": "1eeaede283459b7021ff1ca480eebc5f",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/layout.tsx": {
+    "mtime": 1790274932.5609584,
+    "seen": 1790280533.538477,
+    "ast_hash": "a4809bdd8339d227052f7e7aefc6be9f",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/login/page.tsx": {
+    "mtime": 1790274932.5609584,
+    "seen": 1790280533.5384774,
+    "ast_hash": "0808257fe6976586f4180fa71e49e253",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/page.tsx": {
+    "mtime": 1790274932.5615814,
+    "seen": 1790280533.538478,
+    "ast_hash": "5fe035c052b7bdab567252913edb670d",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/platform/clinics/[id]/page.tsx": {
+    "mtime": 1790274932.562516,
+    "seen": 1790280533.5384781,
+    "ast_hash": "b224761ce46d4e50b812039aad49b52e",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/platform/clinics/new/page.tsx": {
+    "mtime": 1790274932.562516,
+    "seen": 1790280533.5384786,
+    "ast_hash": "097fdb37d46fcc68bb47edf83e5279b0",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/platform/page.tsx": {
+    "mtime": 1790274932.562516,
+    "seen": 1790280533.5384789,
+    "ast_hash": "277b0e1237333c66d05c3104471f3c36",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/telehealth/join/[token]/page.tsx": {
+    "mtime": 1790274932.5645432,
+    "seen": 1790280533.5384793,
+    "ast_hash": "3992ab8c0added01af0590fa2df133ff",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/AppShell.tsx": {
+    "mtime": 1790274932.5645432,
+    "seen": 1790280533.5384796,
+    "ast_hash": "11938b87bf4078f53d741e7e69a58248",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/MetricCard.tsx": {
+    "mtime": 1790274932.5657318,
+    "seen": 1790280533.5384798,
+    "ast_hash": "6a8f92c7fe17dc949d411384d1822416",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/PlatformShell.tsx": {
+    "mtime": 1790274932.5657318,
+    "seen": 1790280533.5384803,
+    "ast_hash": "33b6d01efe621c0d2a29dd9116a3d96d",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/appointments/AppointmentCreatePage.tsx": {
+    "mtime": 1790274932.5666854,
+    "seen": 1790280533.5384808,
+    "ast_hash": "707076498469993ad6a9c468db3585d2",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/appointments/AppointmentDetailPage.tsx": {
+    "mtime": 1790274932.5668426,
+    "seen": 1790280533.538481,
+    "ast_hash": "b523f0f8481f56a07b818515d8b8cab5",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/appointments/AppointmentsPage.tsx": {
+    "mtime": 1790274932.5671053,
+    "seen": 1790280533.5384815,
+    "ast_hash": "3fa735f267cd113e06b3f2d9e8a40053",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/appointments/ScheduleBlockCreatePage.tsx": {
+    "mtime": 1790274932.5672247,
+    "seen": 1790280533.5384817,
+    "ast_hash": "102af0fc45ede528d41c24833861cbc4",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/appointments/calendarLayout.test.mts": {
+    "mtime": 1790274932.5672247,
+    "seen": 1790280533.538482,
+    "ast_hash": "d6cc9bb45630a15f67eee1a2ff3d9829",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/appointments/calendarLayout.ts": {
+    "mtime": 1790274932.5672247,
+    "seen": 1790280533.5384824,
+    "ast_hash": "33ffa30c2ac19938c0d3d36d38dab074",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/assessments/AddInstrumentModal.tsx": {
+    "mtime": 1790274932.5672247,
+    "seen": 1790280533.5384827,
+    "ast_hash": "aa2201f7c2156ff57af194e3eb195218",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/assessments/AssessmentCreatePage.tsx": {
+    "mtime": 1790274932.5679076,
+    "seen": 1790280533.5384831,
+    "ast_hash": "1c9d1932bb945092983eeb92a18d6dfd",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/assessments/AssessmentDetailPage.tsx": {
+    "mtime": 1790274932.5682044,
+    "seen": 1790280533.5384834,
+    "ast_hash": "678466705ea459b6f99bc7e3568b88d2",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/assessments/AssessmentsPage.tsx": {
+    "mtime": 1790274932.568302,
+    "seen": 1790280533.5384839,
+    "ast_hash": "05f2e8d6367fb4d2bda2a60a57682d12",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/auth/LoginPage.tsx": {
+    "mtime": 1790274932.568302,
+    "seen": 1790280533.5384843,
+    "ast_hash": "4a74158baa4d889c6b9d11bbedb8799d",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/billing/BillingPage.tsx": {
+    "mtime": 1790274932.568302,
+    "seen": 1790280533.5384848,
+    "ast_hash": "90e8e901aa0bc6c6816d70467bc938bd",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/billing/InvoiceCreatePage.tsx": {
+    "mtime": 1790274932.5696251,
+    "seen": 1790280533.538485,
+    "ast_hash": "d2b120020da809862eba955ff77d0d24",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/clinics/ClinicCreatePage.tsx": {
+    "mtime": 1790274932.5696251,
+    "seen": 1790280533.5384853,
+    "ast_hash": "d6177e3ca3bac96514026f2a147d3137",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/clinics/ClinicDetailPage.tsx": {
+    "mtime": 1790274932.5702386,
+    "seen": 1790280533.5384858,
+    "ast_hash": "aa6d5fd006fbf546c6a89872f3423f1e",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/clinics/DashboardPage.tsx": {
+    "mtime": 1790274932.570337,
+    "seen": 1790280533.538486,
+    "ast_hash": "019f6712e62defc774bb5c998b76837a",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/clinics/useAuthenticatedData.ts": {
+    "mtime": 1790274932.5704312,
+    "seen": 1790280533.5384865,
+    "ast_hash": "3f9540429b5734b71978695252beed15",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/documents/DocumentCreatePage.tsx": {
+    "mtime": 1790274932.5704312,
+    "seen": 1790280533.5384867,
+    "ast_hash": "e5ab2c49f9e45c7f35a0a2d853dd2d4f",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/documents/DocumentsPage.tsx": {
+    "mtime": 1790274932.5710304,
+    "seen": 1790280533.5384872,
+    "ast_hash": "eb4f5937c36531438f59d008d1868a5c",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/medical-records/MedicalRecordCreatePage.tsx": {
+    "mtime": 1790274932.5710304,
+    "seen": 1790280533.5384874,
+    "ast_hash": "967e0ea6a7688135b97c10e953463dbf",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/medical-records/MedicalRecordsPage.tsx": {
+    "mtime": 1790274932.571715,
+    "seen": 1790280533.538488,
+    "ast_hash": "407479d7e3c43b964cd6aaa23fc1db95",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/patients/PatientCreatePage.tsx": {
+    "mtime": 1790274932.571715,
+    "seen": 1790280533.5384881,
+    "ast_hash": "c4298b18f78230388d6a6748605cb0ef",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/patients/PatientDetailPage.tsx": {
+    "mtime": 1790274932.572384,
+    "seen": 1790280533.5384886,
+    "ast_hash": "dbbfd623b94ad5c7ccc33cc31289e1c3",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/patients/PatientEditPage.tsx": {
+    "mtime": 1790274932.5725713,
+    "seen": 1790280533.5384889,
+    "ast_hash": "9f7ebbd5f3aff66b58d0d7b0b60a1a13",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/patients/PatientsPage.tsx": {
+    "mtime": 1790274932.5727842,
+    "seen": 1790280533.538489,
+    "ast_hash": "a2163e06ec58e6351f4c15c609a707fc",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/platform/PlatformClinicCreatePage.tsx": {
+    "mtime": 1790274932.5727842,
+    "seen": 1790280533.5384896,
+    "ast_hash": "d34985abedba54bcfe9b73207591ba6b",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/platform/PlatformClinicDetailPage.tsx": {
+    "mtime": 1790274932.5733926,
+    "seen": 1790280533.5384898,
+    "ast_hash": "2d35b477988b58bfeaf27e405b0d93b8",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/platform/PlatformClinicsPage.tsx": {
+    "mtime": 1790274932.5733926,
+    "seen": 1790280533.5384903,
+    "ast_hash": "eeb25b570f1e90f222c2858ad6916279",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/professionals/ProfessionalCreatePage.tsx": {
+    "mtime": 1790274932.5733926,
+    "seen": 1790280533.5384927,
+    "ast_hash": "4b8b7983d34a9b9c18f59a1ede5291ef",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/professionals/ProfessionalProfilePage.tsx": {
+    "mtime": 1790274932.5741885,
+    "seen": 1790280533.538493,
+    "ast_hash": "95f1b2da651b05e08d8eb0e0ec588266",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/professionals/ProfessionalsPage.tsx": {
+    "mtime": 1790274932.574334,
+    "seen": 1790280533.5384932,
+    "ast_hash": "6b3575b6fea2d24bfa645b34548f2a5b",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/reports/ReportsPage.tsx": {
+    "mtime": 1790274932.574334,
+    "seen": 1790280533.5384936,
+    "ast_hash": "6f20a8a18d84a13aa7044285a109176d",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/settings/ClinicStaffFormPage.tsx": {
+    "mtime": 1790274932.574334,
+    "seen": 1790280533.5384939,
+    "ast_hash": "daa35bba565c1a3af1650087102e7a1f",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/settings/ClinicStaffPage.tsx": {
+    "mtime": 1790274932.5754848,
+    "seen": 1790280533.538494,
+    "ast_hash": "b6eade90e1019645acf13abae73db504",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/settings/SettingsPage.tsx": {
+    "mtime": 1790274932.5756414,
+    "seen": 1790280533.5384948,
+    "ast_hash": "2998f0cdd644aa07ed6db5b7e142fd10",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/telehealth/PublicTelehealthJoinPage.tsx": {
+    "mtime": 1790274932.5756414,
+    "seen": 1790280533.538495,
+    "ast_hash": "6a97d9a0511ab048d6cf211083eaebf5",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/telehealth/TelehealthPage.tsx": {
+    "mtime": 1790274932.5762842,
+    "seen": 1790280533.5384953,
+    "ast_hash": "08928e9452e8239d47ba0fe894cc95ea",
+    "semantic_hash": ""
+  },
+  "frontend/src/features/telehealth/TelehealthRoomPage.tsx": {
+    "mtime": 1790274932.5764585,
+    "seen": 1790280533.5384958,
+    "ast_hash": "66dfde3e43c7c371b6cadab12a3e52a9",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/api.ts": {
+    "mtime": 1790274932.5769646,
+    "seen": 1790280533.538496,
+    "ast_hash": "845062bd89c49c665b1395d133f1952e",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/auth.ts": {
+    "mtime": 1790274932.57709,
+    "seen": 1790280533.5384963,
+    "ast_hash": "5765cacf4ccc98dc44aa6ebe942fa72d",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/formMasks.ts": {
+    "mtime": 1790274932.57709,
+    "seen": 1790280533.5384967,
+    "ast_hash": "3213d9abd789dc7130bcf0c3660389ac",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/types.ts": {
+    "mtime": 1790274932.5772285,
+    "seen": 1790280533.538497,
+    "ast_hash": "dc08cab5c766eb2bcaff3385701fb458",
+    "semantic_hash": ""
+  },
+  "frontend/tsconfig.json": {
+    "mtime": 1790274932.5772285,
+    "seen": 1790280533.5384974,
+    "ast_hash": "ccb4783fbab01743894c25e2a4758749",
+    "semantic_hash": ""
+  },
+  "frontend/vercel.json": {
+    "mtime": 1790274932.5772285,
+    "seen": 1790280533.5384977,
+    "ast_hash": "052c135c5a50670e43329a6c2c59744d",
+    "semantic_hash": ""
+  },
+  "frontend/AGENTS.md": {
+    "mtime": 1790274932.5245402,
+    "seen": 1790280533.5385125,
+    "ast_hash": "01e8142356e15c3404e0d84c48187cd0",
+    "semantic_hash": ""
+  },
+  "frontend/CLAUDE.md": {
+    "mtime": 1790274932.5245402,
+    "seen": 1790280533.5385127,
+    "ast_hash": "5c27369b226fcf2be8a6cfe52224e767",
+    "semantic_hash": ""
+  },
+  "frontend/README.md": {
+    "mtime": 1790274932.5247293,
+    "seen": 1790280533.5385132,
+    "ast_hash": "f15aaa42d5d299d091b1171097ea56ad",
+    "semantic_hash": ""
+  },
+  "frontend/public/file.svg": {
+    "mtime": 1790274932.525886,
+    "seen": 1790280533.5385149,
+    "ast_hash": "d09f95206c3fa0bb9bd9fefabfd0ea71",
+    "semantic_hash": ""
+  },
+  "frontend/public/globe.svg": {
+    "mtime": 1790274932.5259767,
+    "seen": 1790280533.5385156,
+    "ast_hash": "2aaafa6a49b6563925fe440891e32717",
+    "semantic_hash": ""
+  },
+  "frontend/public/logo-marca-sem-fundo.png": {
+    "mtime": 1790274932.5279877,
+    "seen": 1790280533.538516,
+    "ast_hash": "fb467f179856755e48d7f50c8099672c",
+    "semantic_hash": ""
+  },
+  "frontend/public/logo-marca-transparente-cortada.png": {
+    "mtime": 1790274932.5297754,
+    "seen": 1790280533.5385163,
+    "ast_hash": "960a06b1f20933345595d63a657356f3",
+    "semantic_hash": ""
+  },
+  "frontend/public/logo-marca-transparente.png": {
+    "mtime": 1790274932.5333889,
+    "seen": 1790280533.5385168,
+    "ast_hash": "86d269484ed251768886054bec463b96",
+    "semantic_hash": ""
+  },
+  "frontend/public/logo-marca.png": {
+    "mtime": 1790274932.5415206,
+    "seen": 1790280533.538517,
+    "ast_hash": "2ec5cc0a743cd134ce83809e8ca56b27",
+    "semantic_hash": ""
+  },
+  "frontend/public/next.svg": {
+    "mtime": 1790274932.541686,
+    "seen": 1790280533.5385175,
+    "ast_hash": "8e061864f388b47f33a1c3780831193e",
+    "semantic_hash": ""
+  },
+  "frontend/public/vercel.svg": {
+    "mtime": 1790274932.541686,
+    "seen": 1790280533.5385177,
+    "ast_hash": "c0af2f507b369b085b35ef4bbe3bcf1e",
+    "semantic_hash": ""
+  },
+  "frontend/public/window.svg": {
+    "mtime": 1790274932.541686,
+    "seen": 1790280533.5385182,
+    "ast_hash": "a2760511c65806022ad20adf74370ff3",
+    "semantic_hash": ""
   }
 }
