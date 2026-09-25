@@ -1,7 +1,7 @@
 # Graph Report - plataforma-psi  (2026-09-25)
 
 ## Corpus Check
-- 343 files · ~436,992 words
+- 343 files · ~437,028 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 20 file(s) not represented in the graph (top: (none) 13, .example 2, .conf 1)
 

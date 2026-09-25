@@ -5402,13 +5402,6 @@ fieldset.form-section > legend + * {
   color: #ffffff;
 }
 
-.patient-search-prompt {
-  min-height: 12rem;
-  border: 1px dashed #cfe3e3;
-  border-radius: 1rem;
-  background: #f8fbfb;
-}
-
 .patient-detail-hero {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

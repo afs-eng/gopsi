@@ -2010,9 +2010,9 @@
     "semantic_hash": ""
   },
   "frontend/src/features/patients/PatientCreatePage.tsx": {
-    "mtime": 1790274932.571715,
-    "seen": 1790280533.5384881,
-    "ast_hash": "c4298b18f78230388d6a6748605cb0ef",
+    "mtime": 1790307807.9595191,
+    "seen": 1790307871.1067345,
+    "ast_hash": "d28b438e91127046d97fb1cd502fae1f",
     "semantic_hash": ""
   },
   "frontend/src/features/patients/PatientDetailPage.tsx": {
@@ -2022,15 +2022,15 @@
     "semantic_hash": ""
   },
   "frontend/src/features/patients/PatientEditPage.tsx": {
-    "mtime": 1790274932.5725713,
-    "seen": 1790280533.5384889,
-    "ast_hash": "9f7ebbd5f3aff66b58d0d7b0b60a1a13",
+    "mtime": 1790307833.475516,
+    "seen": 1790307871.106736,
+    "ast_hash": "ab77b997d096239351dacc1ad5272644",
     "semantic_hash": ""
   },
   "frontend/src/features/patients/PatientsPage.tsx": {
-    "mtime": 1790274932.5727842,
-    "seen": 1790280533.538489,
-    "ast_hash": "a2163e06ec58e6351f4c15c609a707fc",
+    "mtime": 1790314864.0743215,
+    "seen": 1790314925.817469,
+    "ast_hash": "1f02a090900e9669a29753b07bbcaa46",
     "semantic_hash": ""
   },
   "frontend/src/features/platform/PlatformClinicCreatePage.tsx": {

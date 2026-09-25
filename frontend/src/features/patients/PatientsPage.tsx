@@ -4,7 +4,6 @@ import Link from "next/link";
 import { use, useEffect, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
-import { MetricCard } from "@/components/MetricCard";
 import { getClinic, listPatients } from "@/lib/api";
 import type { Clinic, Patient } from "@/lib/types";
 import { useAuthenticatedData } from "@/features/clinics/useAuthenticatedData";
@@ -53,15 +52,13 @@ export function PatientsPage({ params }: PatientsPageProps) {
     );
   }
 
-  const activePatients = patients.filter((patient) => patient.is_active).length;
-  const archivedPatients = patients.filter((patient) => patient.status === "ARCHIVED").length;
-  const withoutProfessional = patients.filter((patient) => !patient.professional_links.length).length;
   const patientStatus = (status: string) =>
     ({ ACTIVE: "Ativo", INACTIVE: "Inativo", ARCHIVED: "Arquivado" }[status] ?? status);
   const professionalOptions = Array.from(new Map(patients.flatMap((patient) => patient.professional_links.map((link) => [link.professional, link.professional_name] as const))).entries())
     .sort((a, b) => a[1].localeCompare(b[1]));
   const normalizedSearch = search.trim().toLowerCase();
-  const hasActivePatientQuery = Boolean(normalizedSearch) || statusFilter !== "ALL" || professionalFilter !== "ALL";
+  const hasSearchQuery = normalizedSearch.length >= 2;
+  const hasActivePatientQuery = hasSearchQuery || statusFilter !== "ALL" || professionalFilter !== "ALL";
   const filteredPatients = patients.filter((patient) => {
     const matchesStatus = statusFilter === "ALL" || patient.status === statusFilter;
     const matchesProfessional = professionalFilter === "ALL" || patient.professional_links.some((link) => link.professional === professionalFilter);
@@ -72,7 +69,7 @@ export function PatientsPage({ params }: PatientsPageProps) {
       patient.phone,
       patient.cpf,
     ];
-    const matchesSearch = !normalizedSearch || searchableFields
+    const matchesSearch = !hasSearchQuery || searchableFields
       .filter(Boolean)
       .some((value) => value.toLowerCase().includes(normalizedSearch));
 
@@ -92,24 +89,6 @@ export function PatientsPage({ params }: PatientsPageProps) {
         </Link>
       }
     >
-      <section className="metrics-grid" aria-label="Resumo de pacientes">
-        <MetricCard
-          label="Pacientes ativos"
-          value={activePatients}
-          description="Cadastros disponíveis para agenda e prontuário."
-        />
-        <MetricCard
-          label="Arquivados"
-          value={archivedPatients}
-          description="Histórico preservado sem poluir a rotina diária."
-        />
-        <MetricCard
-          label="Sem profissional"
-          value={withoutProfessional}
-          description="Pacientes que ainda precisam de vínculo clínico."
-        />
-      </section>
-
       <section className="panel-card patients-panel">
         <div className="panel-heading">
           <div>
@@ -127,7 +106,7 @@ export function PatientsPage({ params }: PatientsPageProps) {
               type="search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Nome, e-mail, telefone ou CPF"
+              placeholder="Digite ao menos 2 caracteres"
             />
           </label>
           <label className="patients-filter-field">
@@ -208,17 +187,12 @@ export function PatientsPage({ params }: PatientsPageProps) {
               );
             })}
           </div>
-        ) : !hasActivePatientQuery && patients.length ? (
-          <div className="empty-state patient-search-prompt">
-            <h3>Busque para visualizar pacientes</h3>
-            <p>Digite nome, e-mail, telefone ou CPF. Você também pode filtrar por status ou profissional.</p>
-          </div>
-        ) : patients.length ? (
+        ) : hasActivePatientQuery && patients.length ? (
           <div className="empty-state">
             <h3>Nenhum paciente encontrado</h3>
             <p>Ajuste a busca ou os filtros para localizar outro cadastro.</p>
           </div>
-        ) : (
+        ) : patients.length ? null : (
           <div className="empty-state">
             <h3>Nenhum paciente cadastrado</h3>
             <p>Cadastre dados administrativos antes de avançar para agenda.</p>

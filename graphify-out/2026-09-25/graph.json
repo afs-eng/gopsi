@@ -10260,7 +10260,7 @@
       "file_type": "code",
       "norm_label": "handlephotochange()",
       "source_file": "frontend/src/features/patients/PatientCreatePage.tsx",
-      "source_location": "L52"
+      "source_location": "L53"
     },
     {
       "id": "frontend_src_features_patients_patientcreatepage_patientcreatepage_handlesubmit",
@@ -10272,7 +10272,7 @@
       "file_type": "code",
       "norm_label": "handlesubmit()",
       "source_file": "frontend/src/features/patients/PatientCreatePage.tsx",
-      "source_location": "L74"
+      "source_location": "L75"
     },
     {
       "id": "frontend_src_features_patients_patientcreatepage_patientcreatepage_updatepreview",
@@ -10284,7 +10284,7 @@
       "file_type": "code",
       "norm_label": "updatepreview()",
       "source_file": "frontend/src/features/patients/PatientCreatePage.tsx",
-      "source_location": "L45"
+      "source_location": "L46"
     },
     {
       "id": "frontend_src_features_professionals_professionalcreatepage_crpregionfromvalue",
@@ -14592,7 +14592,7 @@
       "file_type": "code",
       "norm_label": "handlephotochange()",
       "source_file": "frontend/src/features/patients/PatientEditPage.tsx",
-      "source_location": "L71"
+      "source_location": "L73"
     },
     {
       "id": "frontend_src_features_patients_patienteditpage_patienteditpage_handlesubmit",
@@ -14604,7 +14604,7 @@
       "file_type": "code",
       "norm_label": "handlesubmit()",
       "source_file": "frontend/src/features/patients/PatientEditPage.tsx",
-      "source_location": "L81"
+      "source_location": "L83"
     },
     {
       "id": "frontend_src_features_patients_patienteditpage_patienteditpage_updatepreview",
@@ -14616,7 +14616,7 @@
       "file_type": "code",
       "norm_label": "updatepreview()",
       "source_file": "frontend/src/features/patients/PatientEditPage.tsx",
-      "source_location": "L64"
+      "source_location": "L66"
     },
     {
       "id": "frontend_src_lib_api_deletepatient",
@@ -34418,7 +34418,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/features/patients/PatientCreatePage.tsx",
-      "source_location": "L126",
+      "source_location": "L131",
       "weight": 1.0
     },
     {
@@ -34442,7 +34442,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/features/patients/PatientCreatePage.tsx",
-      "source_location": "L43",
+      "source_location": "L44",
       "weight": 1.0
     },
     {
@@ -34454,7 +34454,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/features/patients/PatientCreatePage.tsx",
-      "source_location": "L67",
+      "source_location": "L68",
       "weight": 1.0
     },
     {
@@ -34466,7 +34466,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/features/patients/PatientCreatePage.tsx",
-      "source_location": "L126",
+      "source_location": "L131",
       "weight": 1.0
     },
     {
@@ -34586,7 +34586,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/features/patients/PatientEditPage.tsx",
-      "source_location": "L119",
+      "source_location": "L125",
       "weight": 1.0
     },
     {
@@ -34610,7 +34610,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/features/patients/PatientEditPage.tsx",
-      "source_location": "L39",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
@@ -34622,7 +34622,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/features/patients/PatientEditPage.tsx",
-      "source_location": "L44",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -34634,7 +34634,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/features/patients/PatientEditPage.tsx",
-      "source_location": "L44",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -34646,7 +34646,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/features/patients/PatientEditPage.tsx",
-      "source_location": "L44",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -34658,7 +34658,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/features/patients/PatientEditPage.tsx",
-      "source_location": "L119",
+      "source_location": "L125",
       "weight": 1.0
     },
     {
@@ -74626,7 +74626,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/features/patients/PatientCreatePage.tsx",
-      "source_location": "L45",
+      "source_location": "L46",
       "weight": 1.0
     },
     {
@@ -74637,7 +74637,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/features/patients/PatientCreatePage.tsx",
-      "source_location": "L52",
+      "source_location": "L53",
       "weight": 1.0
     },
     {
@@ -74648,7 +74648,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/features/patients/PatientCreatePage.tsx",
-      "source_location": "L74",
+      "source_location": "L75",
       "weight": 1.0
     },
     {
@@ -74769,7 +74769,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/features/patients/PatientEditPage.tsx",
-      "source_location": "L64",
+      "source_location": "L66",
       "weight": 1.0
     },
     {
@@ -74780,7 +74780,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/features/patients/PatientEditPage.tsx",
-      "source_location": "L71",
+      "source_location": "L73",
       "weight": 1.0
     },
     {
@@ -74791,7 +74791,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/features/patients/PatientEditPage.tsx",
-      "source_location": "L81",
+      "source_location": "L83",
       "weight": 1.0
     },
     {
