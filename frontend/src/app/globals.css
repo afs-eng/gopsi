@@ -4356,6 +4356,35 @@ body:has(.app-shell) {
   font-weight: 700;
 }
 
+.patient-health-plan-card {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #dbe4f2;
+  border-radius: 0.9rem;
+  background: #f8fbfb;
+  padding: 0.85rem 1rem;
+}
+
+.patient-health-plan-card strong {
+  color: #071947;
+  font-size: 0.95rem;
+}
+
+.patient-health-plan-card p {
+  margin-top: 0.2rem;
+  color: #63759b;
+  font-size: 0.86rem;
+}
+
+.patient-health-plan-fields {
+  border: 1px solid #eef2f7;
+  border-radius: 0.9rem;
+  background: #ffffff;
+  padding: 0.9rem;
+}
+
 .patient-intake-footer {
   display: flex;
   gap: 1rem;
@@ -7518,6 +7547,11 @@ fieldset.form-section > legend,
     width: 100%;
     min-width: 0;
     margin-left: 0;
+  }
+
+  .patient-health-plan-card {
+    display: grid;
+    align-items: start;
   }
 }
 

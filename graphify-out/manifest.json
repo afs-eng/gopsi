@@ -984,10 +984,10 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "apps/professionals/admin.py": {
-    "mtime": 1789444013.6916282,
-    "seen": 1790251623.8773253,
-    "ast_hash": "71600ff881bd8def4598654552ff1deb",
-    "semantic_hash": "71600ff881bd8def4598654552ff1deb"
+    "mtime": 1790307494.2431083,
+    "seen": 1790307545.1324599,
+    "ast_hash": "25e82775f72a44bb7013c697829d1857",
+    "semantic_hash": ""
   },
   "apps/professionals/apps.py": {
     "mtime": 1789443781.3225598,
@@ -1008,10 +1008,10 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "apps/professionals/models.py": {
-    "mtime": 1789444013.727614,
-    "seen": 1790251623.8773272,
-    "ast_hash": "6b75be35f132f7403169cb083d40d9f4",
-    "semantic_hash": "6b75be35f132f7403169cb083d40d9f4"
+    "mtime": 1790307494.2395754,
+    "seen": 1790307545.1324635,
+    "ast_hash": "89c92938ab590a682161e367abbdb36e",
+    "semantic_hash": ""
   },
   "apps/professionals/permissions.py": {
     "mtime": 1789585825.7609828,
@@ -1026,10 +1026,10 @@
     "semantic_hash": "ce4500c013eff8478146bb5cd3ccf920"
   },
   "apps/professionals/serializers.py": {
-    "mtime": 1790021618.4143927,
-    "seen": 1790251623.8773289,
-    "ast_hash": "507f456a8cf523bbb570f247478ef77e",
-    "semantic_hash": "507f456a8cf523bbb570f247478ef77e"
+    "mtime": 1790307494.2431083,
+    "seen": 1790307545.1324646,
+    "ast_hash": "17cff731b4239fd288db34659e941c6c",
+    "semantic_hash": ""
   },
   "apps/professionals/tests.py": {
     "mtime": 1789585736.1704664,
@@ -2010,9 +2010,9 @@
     "semantic_hash": ""
   },
   "frontend/src/features/patients/PatientCreatePage.tsx": {
-    "mtime": 1790274932.571715,
-    "seen": 1790280533.5384881,
-    "ast_hash": "c4298b18f78230388d6a6748605cb0ef",
+    "mtime": 1790307807.9595191,
+    "seen": 1790307871.1067345,
+    "ast_hash": "d28b438e91127046d97fb1cd502fae1f",
     "semantic_hash": ""
   },
   "frontend/src/features/patients/PatientDetailPage.tsx": {
@@ -2022,9 +2022,9 @@
     "semantic_hash": ""
   },
   "frontend/src/features/patients/PatientEditPage.tsx": {
-    "mtime": 1790274932.5725713,
-    "seen": 1790280533.5384889,
-    "ast_hash": "9f7ebbd5f3aff66b58d0d7b0b60a1a13",
+    "mtime": 1790307833.475516,
+    "seen": 1790307871.106736,
+    "ast_hash": "ab77b997d096239351dacc1ad5272644",
     "semantic_hash": ""
   },
   "frontend/src/features/patients/PatientsPage.tsx": {
@@ -2052,9 +2052,9 @@
     "semantic_hash": ""
   },
   "frontend/src/features/professionals/ProfessionalCreatePage.tsx": {
-    "mtime": 1790307068.5996473,
-    "seen": 1790307112.7602456,
-    "ast_hash": "3516b15fb82c14cc2acca2703c9b1455",
+    "mtime": 1790307494.2435753,
+    "seen": 1790307545.1325214,
+    "ast_hash": "c31936da63be1f544b60c6cea35cf0c6",
     "semantic_hash": ""
   },
   "frontend/src/features/professionals/ProfessionalProfilePage.tsx": {
@@ -2130,9 +2130,9 @@
     "semantic_hash": ""
   },
   "frontend/src/lib/types.ts": {
-    "mtime": 1790274932.5772285,
-    "seen": 1790280533.538497,
-    "ast_hash": "dc08cab5c766eb2bcaff3385701fb458",
+    "mtime": 1790307494.2435753,
+    "seen": 1790307545.132527,
+    "ast_hash": "8f8796b85e3e7a6e89b103fe16e3f247",
     "semantic_hash": ""
   },
   "frontend/tsconfig.json": {
@@ -2217,6 +2217,12 @@
     "mtime": 1790274932.541686,
     "seen": 1790280533.5385182,
     "ast_hash": "a2760511c65806022ad20adf74370ff3",
+    "semantic_hash": ""
+  },
+  "apps/professionals/migrations/0002_remove_professional_social_name.py": {
+    "mtime": 1790307494.2435753,
+    "seen": 1790307545.1324618,
+    "ast_hash": "0469a78ddbb2fb9564705b53b6510c42",
     "semantic_hash": ""
   }
 }

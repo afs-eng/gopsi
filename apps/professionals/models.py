@@ -49,7 +49,6 @@ class Professional(models.Model):
         null=True,
     )
     full_name = models.CharField(max_length=255)
-    social_name = models.CharField(max_length=255, blank=True)
     cpf = models.CharField(max_length=14, blank=True)
     birth_date = models.DateField(blank=True, null=True)
     email = models.EmailField(blank=True)

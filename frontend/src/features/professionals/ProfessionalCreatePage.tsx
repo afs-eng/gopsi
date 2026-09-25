@@ -93,7 +93,6 @@ export function ProfessionalCreatePage({ params }: ProfessionalCreatePageProps) 
         await createProfessional({
           clinic: id,
           full_name: String(formData.get("full_name") ?? ""),
-          social_name: String(formData.get("social_name") ?? ""),
           cpf: String(formData.get("cpf") ?? ""),
           email: String(formData.get("email") ?? ""),
           phone: String(formData.get("phone") ?? ""),
@@ -167,12 +166,6 @@ export function ProfessionalCreatePage({ params }: ProfessionalCreatePageProps) 
                 <label htmlFor="full_name">Nome completo</label>
                 <input id="full_name" name="full_name" required />
               </div>
-              <div className="field-group">
-                <label htmlFor="social_name">Nome social</label>
-                <input id="social_name" name="social_name" />
-              </div>
-            </div>
-            <div className="field-grid">
               <div className="field-group">
                 <label htmlFor="cpf">CPF</label>
                 <input id="cpf" name="cpf" inputMode="numeric" maxLength={14} onInput={maskCpfInput} placeholder="000.000.000-00" />

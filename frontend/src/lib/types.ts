@@ -94,7 +94,6 @@ export type Professional = {
   clinic: string;
   user: string | null;
   full_name: string;
-  social_name: string;
   cpf: string;
   birth_date: string | null;
   email: string;
@@ -116,7 +115,6 @@ export type Professional = {
 export type ProfessionalPayload = {
   clinic: string;
   full_name: string;
-  social_name: string;
   cpf: string;
   email: string;
   phone: string;

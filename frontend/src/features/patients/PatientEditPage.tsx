@@ -33,6 +33,7 @@ export function PatientEditPage({ params }: PatientEditPageProps) {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [professionals, setProfessionals] = useState<Professional[]>([]);
   const [error, setError] = useState("");
+  const [healthPlanOpen, setHealthPlanOpen] = useState(false);
   const [photoPreview, setPhotoPreview] = useState("");
   const [preview, setPreview] = useState({ birth_date: "", cpf: "", full_name: "", phone: "" });
   const [isPending, startTransition] = useTransition();
@@ -46,6 +47,7 @@ export function PatientEditPage({ params }: PatientEditPageProps) {
         setClinic(clinicData);
         setPatient(patientData);
         setProfessionals(professionalsData);
+        setHealthPlanOpen(patientData.has_health_plan || Boolean(patientData.health_plan || patientData.health_plan_card));
         setPhotoPreview(patientData.photo ?? "");
         setPreview({
           birth_date: patientData.birth_date ?? "",
@@ -95,7 +97,11 @@ export function PatientEditPage({ params }: PatientEditPageProps) {
     ].filter((guardian) => guardian !== null);
 
     formData.set("clinic", id);
-    formData.set("has_health_plan", formData.get("has_health_plan") === "yes" ? "true" : "false");
+    formData.set("has_health_plan", healthPlanOpen ? "true" : "false");
+    if (!healthPlanOpen) {
+      formData.set("health_plan", "");
+      formData.set("health_plan_card", "");
+    }
     formData.set("is_active", formData.get("is_active") === "on" ? "true" : "false");
     formData.set("guardians_json", JSON.stringify(guardians));
     formData.set(
@@ -175,7 +181,7 @@ export function PatientEditPage({ params }: PatientEditPageProps) {
                   <label htmlFor="full_name">Nome completo <span>*</span></label>
                   <input id="full_name" name="full_name" required defaultValue={patient.full_name} onChange={updatePreview} />
                 </div>
-                <div className="patient-intake-grid cols-4">
+                <div className="patient-intake-grid cols-3">
                   <div className="patient-intake-field">
                     <label htmlFor="birth_date">Data de nascimento</label>
                     <input id="birth_date" name="birth_date" type="date" defaultValue={patient.birth_date ?? ""} onChange={updatePreview} />
@@ -191,16 +197,6 @@ export function PatientEditPage({ params }: PatientEditPageProps) {
                       <option value="FEMALE">Feminino</option>
                       <option value="MALE">Masculino</option>
                       <option value="OTHER">Outro</option>
-                    </select>
-                  </div>
-                  <div className="patient-intake-field">
-                    <label htmlFor="gender_identity">Identidade de gênero</label>
-                    <select id="gender_identity" name="gender_identity" defaultValue={patient.gender_identity}>
-                      <option value="">Selecione</option>
-                      <option>Feminina</option>
-                      <option>Masculina</option>
-                      <option>Não binária</option>
-                      <option>Prefere não informar</option>
                     </select>
                   </div>
                 </div>
@@ -296,23 +292,28 @@ export function PatientEditPage({ params }: PatientEditPageProps) {
 
               <fieldset>
                 <legend>Planos, vínculo e segurança</legend>
-                <div className="patient-intake-grid cols-3">
-                  <div className="patient-intake-field">
-                    <label>Possui plano de saúde?</label>
-                    <div className="patient-radio-row">
-                      <label><input name="has_health_plan" type="radio" value="yes" defaultChecked={patient.has_health_plan} /> Sim</label>
-                      <label><input name="has_health_plan" type="radio" value="no" defaultChecked={!patient.has_health_plan} /> Não</label>
-                    </div>
+                <input name="has_health_plan" type="hidden" value={healthPlanOpen ? "true" : "false"} />
+                <div className="patient-health-plan-card">
+                  <div>
+                    <strong>Convênio</strong>
+                    <p>Opcional. Adicione apenas quando o paciente usar plano de saúde.</p>
                   </div>
-                  <div className="patient-intake-field">
-                    <label htmlFor="health_plan">Convênio</label>
-                    <select id="health_plan" name="health_plan" defaultValue={patient.health_plan}>
-                      <option value="">Selecione o convênio</option>
-                      <option>Particular</option><option>Unimed</option><option>Bradesco Saúde</option>
-                    </select>
-                  </div>
-                  <div className="patient-intake-field"><label htmlFor="health_plan_card">Carteirinha</label><input id="health_plan_card" name="health_plan_card" defaultValue={patient.health_plan_card} /></div>
+                  <button className="button-secondary button-compact" type="button" onClick={() => setHealthPlanOpen((current) => !current)}>
+                    {healthPlanOpen ? "Remover convênio" : "Adicionar convênio"}
+                  </button>
                 </div>
+                {healthPlanOpen ? (
+                  <div className="patient-intake-grid cols-2 patient-health-plan-fields">
+                    <div className="patient-intake-field">
+                      <label htmlFor="health_plan">Convênio</label>
+                      <select id="health_plan" name="health_plan" defaultValue={patient.health_plan}>
+                        <option value="">Selecione o convênio</option>
+                        <option>Particular</option><option>Unimed</option><option>Bradesco Saúde</option>
+                      </select>
+                    </div>
+                    <div className="patient-intake-field"><label htmlFor="health_plan_card">Carteirinha</label><input id="health_plan_card" name="health_plan_card" defaultValue={patient.health_plan_card} /></div>
+                  </div>
+                ) : null}
                 <div className="patient-intake-grid cols-2">
                   <div className="patient-intake-field">
                     <label htmlFor="professional">Profissional responsável</label>

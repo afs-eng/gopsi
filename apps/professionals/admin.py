@@ -13,7 +13,7 @@ class SpecialtyAdmin(admin.ModelAdmin):
 @admin.register(Professional)
 class ProfessionalAdmin(admin.ModelAdmin):
     list_display = ("full_name", "clinic", "profession", "crp", "status", "is_active")
-    search_fields = ("full_name", "social_name", "cpf", "email", "crp")
+    search_fields = ("full_name", "cpf", "email", "crp")
     list_filter = ("status", "is_active", "appointment_modalities")
 
 

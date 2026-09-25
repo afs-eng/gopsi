@@ -29,7 +29,6 @@ class ProfessionalSerializer(serializers.ModelSerializer):
             "clinic",
             "user",
             "full_name",
-            "social_name",
             "cpf",
             "birth_date",
             "email",
