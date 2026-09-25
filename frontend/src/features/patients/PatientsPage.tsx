@@ -61,6 +61,7 @@ export function PatientsPage({ params }: PatientsPageProps) {
   const professionalOptions = Array.from(new Map(patients.flatMap((patient) => patient.professional_links.map((link) => [link.professional, link.professional_name] as const))).entries())
     .sort((a, b) => a[1].localeCompare(b[1]));
   const normalizedSearch = search.trim().toLowerCase();
+  const hasActivePatientQuery = Boolean(normalizedSearch) || statusFilter !== "ALL" || professionalFilter !== "ALL";
   const filteredPatients = patients.filter((patient) => {
     const matchesStatus = statusFilter === "ALL" || patient.status === statusFilter;
     const matchesProfessional = professionalFilter === "ALL" || patient.professional_links.some((link) => link.professional === professionalFilter);
@@ -116,7 +117,7 @@ export function PatientsPage({ params }: PatientsPageProps) {
             <h2>Pacientes vinculados</h2>
             <p className="muted">Acompanhe os cadastros administrativos e acesse o prontuário da clínica.</p>
           </div>
-          <span className="panel-pill">{filteredPatients.length} de {patients.length} registro(s)</span>
+          <span className="panel-pill">{hasActivePatientQuery ? `${filteredPatients.length} encontrado(s)` : `${patients.length} cadastrado(s)`}</span>
         </div>
 
         <div className="patients-toolbar" aria-label="Filtros de pacientes">
@@ -155,7 +156,7 @@ export function PatientsPage({ params }: PatientsPageProps) {
           </label>
         </div>
 
-        {filteredPatients.length ? (
+        {hasActivePatientQuery && filteredPatients.length ? (
           <div className="clinic-list patients-list">
             <div className="patients-list-header" aria-hidden="true">
               <span>Paciente</span>
@@ -163,47 +164,54 @@ export function PatientsPage({ params }: PatientsPageProps) {
               <span>Status</span>
               <span>Ações</span>
             </div>
-            {filteredPatients.map((patient) => (
-              <article className="clinic-row patient-row" key={patient.id}>
-                <div className="patient-identity">
-                  <span className="patient-avatar" aria-hidden="true">
-                    {patient.full_name.slice(0, 1).toUpperCase()}
-                  </span>
-                  <div>
-                    <strong>
-                      <Link className="patient-name-link" href={`/clinics/${id}/patients/${patient.id}`}>
-                        {patient.full_name}
-                      </Link>
-                    </strong>
-                    <p>{patient.social_name ? `Nome social: ${patient.social_name}` : patient.professional_links[0]?.professional_name || "Sem profissional vinculado"}</p>
+            {filteredPatients.map((patient) => {
+              const socialName = patient.social_name.trim();
+              const showSocialName = socialName && socialName.toLowerCase() !== patient.full_name.trim().toLowerCase();
+              const patientSubtitle = showSocialName
+                ? `Nome social: ${socialName}`
+                : patient.professional_links[0]?.professional_name || "Sem profissional vinculado";
+
+              return (
+                <article className="clinic-row patient-row" key={patient.id}>
+                  <div className="patient-identity">
+                    <span className="patient-avatar" aria-hidden="true">
+                      {patient.full_name.slice(0, 1).toUpperCase()}
+                    </span>
+                    <div>
+                      <strong>
+                        <Link className="patient-name-link" href={`/clinics/${id}/patients/${patient.id}`}>
+                          {patient.full_name}
+                        </Link>
+                      </strong>
+                      <p>{patientSubtitle}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="patient-contact">
-                  <span>{patient.email ? patient.email : patient.phone ? patient.phone : "Contato não informado"}</span>
-                  <small>{patient.guardians.length ? `${patient.guardians.length} responsável(is)` : "Sem responsável"}</small>
-                </div>
-                <span className="status-badge" aria-label={`Status: ${patientStatus(patient.status)}`}>
-                  {patientStatus(patient.status)}
-                </span>
-                <div className="row-actions patient-actions">
-                  <Link className="button-secondary button-compact" href={`/clinics/${id}/patients/${patient.id}`} aria-label={`Abrir resumo de ${patient.full_name}`}>
-                    Resumo
-                  </Link>
-                  <Link className="button-secondary button-compact" href={`/clinics/${id}/appointments/new`} aria-label={`Agendar consulta para ${patient.full_name}`}>
-                    Agendar
-                  </Link>
-                  <Link className="button-secondary button-compact" href={`/clinics/${id}/medical-records`} aria-label="Abrir lista de prontuários da clínica">
-                    Prontuários
-                  </Link>
-                  <Link className="button-secondary button-compact" href={`/clinics/${id}/documents`} aria-label={`Abrir documentos de ${patient.full_name}`}>
-                    Documentos
-                  </Link>
-                  <Link className="button-secondary button-compact" href={`/clinics/${id}/assessments/new`} aria-label={`Iniciar avaliação de ${patient.full_name}`}>
-                    Avaliação
-                  </Link>
-                </div>
-              </article>
-            ))}
+                  <div className="patient-contact">
+                    <span>{patient.email ? patient.email : patient.phone ? patient.phone : "Contato não informado"}</span>
+                    <small>{patient.guardians.length ? `${patient.guardians.length} responsável(is)` : "Sem responsável"}</small>
+                  </div>
+                  <span className="status-badge" aria-label={`Status: ${patientStatus(patient.status)}`}>
+                    {patientStatus(patient.status)}
+                  </span>
+                  <div className="row-actions patient-actions">
+                    <Link className="button-secondary button-compact" href={`/clinics/${id}/patients/${patient.id}`} aria-label={`Abrir resumo de ${patient.full_name}`}>
+                      Resumo
+                    </Link>
+                    <Link className="button-secondary button-compact" href={`/clinics/${id}/appointments/new`} aria-label={`Agendar consulta para ${patient.full_name}`}>
+                      Agendar
+                    </Link>
+                    <Link className="button-secondary button-compact" href={`/clinics/${id}/medical-records`} aria-label="Abrir lista de prontuários da clínica">
+                      Prontuário
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : !hasActivePatientQuery && patients.length ? (
+          <div className="empty-state patient-search-prompt">
+            <h3>Busque para visualizar pacientes</h3>
+            <p>Digite nome, e-mail, telefone ou CPF. Você também pode filtrar por status ou profissional.</p>
           </div>
         ) : patients.length ? (
           <div className="empty-state">

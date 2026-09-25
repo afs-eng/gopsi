@@ -5246,6 +5246,10 @@ fieldset.form-section > legend + * {
 }
 
 /* Patient list polish */
+.patients-panel {
+  overflow: hidden;
+}
+
 .patients-panel .panel-heading {
   align-items: flex-start;
 }
@@ -5256,16 +5260,20 @@ fieldset.form-section > legend + * {
 
 .patients-toolbar {
   display: grid;
-  grid-template-columns: minmax(16rem, 1fr) repeat(2, minmax(11rem, 15rem));
-  gap: 0.85rem;
-  margin: 1rem 0;
+  grid-template-columns: minmax(18rem, 1fr) repeat(2, minmax(10rem, 13rem));
+  gap: 0.8rem;
+  margin: 1.1rem 0 0.85rem;
+  border: 1px solid #eef1f2;
+  border-radius: 1rem;
+  background: #f8fbfb;
+  padding: 0.85rem;
 }
 
 .patients-search-field,
 .patients-filter-field {
   display: grid;
   gap: 0.4rem;
-  color: var(--accent-dark);
+  color: #1f4f56;
   font-size: 0.82rem;
   font-weight: 850;
 }
@@ -5273,29 +5281,37 @@ fieldset.form-section > legend + * {
 .patients-search-field input,
 .patients-filter-field select {
   min-height: 2.75rem;
-  border: 1px solid var(--line);
-  border-radius: 0.85rem;
-  background: var(--surface-strong);
-  color: var(--text);
+  border: 1px solid #e3e7e9;
+  border-radius: 0.78rem;
+  background: #ffffff;
+  color: #202226;
   padding: 0.75rem 0.9rem;
 }
 
+.patients-search-field input:focus,
+.patients-filter-field select:focus {
+  outline: 0;
+  border-color: #4aa1ad;
+  box-shadow: 0 0 0 3px rgb(74 161 173 / 16%);
+}
+
 .patients-list {
+  border-color: #eef1f2;
   border-radius: 1rem;
 }
 
 .patients-list-header,
 .patient-row {
   display: grid;
-  grid-template-columns: minmax(16rem, 1.05fr) minmax(13rem, 0.85fr) 7rem minmax(31rem, auto);
+  grid-template-columns: minmax(15rem, 1fr) minmax(12rem, 0.8fr) 6.5rem minmax(16rem, 0.8fr);
   gap: 0.8rem;
   align-items: center;
 }
 
 .patients-list-header {
-  border-bottom: 1px solid #edf1fb;
-  background: #f8faff;
-  color: #63759b;
+  border-bottom: 1px solid #eef1f2;
+  background: #f7f9f9;
+  color: #6a6e77;
   padding: 0.72rem 1rem;
   font-size: 0.72rem;
   font-weight: 900;
@@ -5304,8 +5320,13 @@ fieldset.form-section > legend + * {
 }
 
 .patient-row.clinic-row {
-  min-height: 4.6rem;
-  padding: 0.85rem 1rem;
+  min-height: 4.35rem;
+  border-bottom-color: #eef1f2;
+  padding: 0.78rem 1rem;
+}
+
+.patient-row.clinic-row:hover {
+  background: #f8fbfb;
 }
 
 .patient-identity {
@@ -5322,8 +5343,8 @@ fieldset.form-section > legend + * {
   flex: 0 0 auto;
   place-items: center;
   border-radius: 999px;
-  background: linear-gradient(135deg, #e8e1ff, #eef5ff);
-  color: #5e45c4;
+  background: #dff2f1;
+  color: #2f8f9b;
   font-weight: 900;
 }
 
@@ -5339,7 +5360,7 @@ fieldset.form-section > legend + * {
 .patient-contact {
   display: grid;
   gap: 0.16rem;
-  color: #63759b;
+  color: #6a6e77;
   font-size: 0.85rem;
   min-width: 0;
 }
@@ -5355,14 +5376,14 @@ fieldset.form-section > legend + * {
 }
 
 .patient-name-link:hover {
-  color: #176b56;
+  color: #2f8f9b;
   text-decoration: underline;
 }
 
 .patient-actions {
   display: flex;
   flex-wrap: nowrap;
-  gap: 0.45rem;
+  gap: 0.4rem;
   justify-content: flex-end;
   overflow-x: auto;
   white-space: nowrap;
@@ -5372,7 +5393,20 @@ fieldset.form-section > legend + * {
   min-width: auto;
   justify-content: center;
   flex: 0 0 auto;
-  padding: 0.68rem 0.82rem;
+  padding: 0.62rem 0.78rem;
+}
+
+.patient-actions .button-compact:first-child {
+  border-color: #1f4f56;
+  background: #1f4f56;
+  color: #ffffff;
+}
+
+.patient-search-prompt {
+  min-height: 12rem;
+  border: 1px dashed #cfe3e3;
+  border-radius: 1rem;
+  background: #f8fbfb;
 }
 
 .patient-detail-hero {
