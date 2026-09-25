@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, use, useState, useTransition } from "react";
+import { FormEvent, use, useEffect, useState, useTransition } from "react";
 
-import { createProfessional } from "@/lib/api";
+import { AppShell } from "@/components/AppShell";
+import { createProfessional, getClinic } from "@/lib/api";
 import { maskCpfInput, maskCrpInput, maskPhoneInput } from "@/lib/formMasks";
+import type { Clinic } from "@/lib/types";
 import { useAuthenticatedData } from "@/features/clinics/useAuthenticatedData";
 
 type ProfessionalCreatePageProps = {
@@ -47,11 +49,23 @@ export function ProfessionalCreatePage({ params }: ProfessionalCreatePageProps) 
   const { id } = use(params);
   const router = useRouter();
   const { loading, user } = useAuthenticatedData();
+  const [clinic, setClinic] = useState<Clinic | null>(null);
+  const [loadError, setLoadError] = useState("");
   const [error, setError] = useState("");
   const [crpState, setCrpState] = useState("");
   const [crpRegionLabel, setCrpRegionLabel] = useState("");
   const [invalidCrpRegion, setInvalidCrpRegion] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    getClinic(id)
+      .then(setClinic)
+      .catch(() => setLoadError("Não foi possível carregar a clínica."));
+  }, [id, user]);
 
   function handleCrpInput(event: FormEvent<HTMLInputElement>) {
     maskCrpInput(event);
@@ -104,19 +118,44 @@ export function ProfessionalCreatePage({ params }: ProfessionalCreatePageProps) 
     });
   }
 
-  if (loading || !user) {
+  if (loading || !user || (!clinic && !loadError)) {
     return <main className="loading-page" role="status" aria-live="polite">Carregando ambiente seguro...</main>;
   }
 
+  if (loadError || !clinic) {
+    return (
+      <AppShell activeNav="professionals" eyebrow="Equipe clínica" title="Acesso bloqueado" user={user}>
+        <section className="panel-card">
+          <div className="alert" role="alert" aria-live="assertive">{loadError || "Clínica não encontrada."}</div>
+          <Link className="button-secondary button-compact" href="/">
+            Voltar ao dashboard
+          </Link>
+        </section>
+      </AppShell>
+    );
+  }
+
   return (
-    <main className="form-page">
-      <section className="form-card is-compact" aria-labelledby="professional-form-title">
-        <Link className="back-link" href={`/clinics/${id}/professionals`}>
+    <AppShell
+      activeNav="professionals"
+      currentClinic={clinic}
+      eyebrow="Equipe clínica"
+      title="Cadastrar profissional"
+      user={user}
+      actions={
+        <Link className="button-secondary button-compact" href={`/clinics/${id}/professionals`}>
           Voltar para profissionais
         </Link>
-        <p className="eyebrow">Equipe clínica</p>
-        <h1 id="professional-form-title">Cadastrar profissional</h1>
-        <p className="muted">O profissional será vinculado somente à clínica atual.</p>
+      }
+    >
+      <section className="form-card is-compact professional-form-card" aria-labelledby="professional-form-title">
+        <div className="form-card-header">
+          <div>
+            <p className="eyebrow">Cadastro</p>
+            <h2 id="professional-form-title">Dados do profissional</h2>
+          </div>
+          <p className="muted">O profissional será vinculado somente à clínica atual.</p>
+        </div>
 
         {error ? <div id="professional-form-error" className="alert" role="alert" aria-live="assertive">{error}</div> : null}
 
@@ -230,6 +269,6 @@ export function ProfessionalCreatePage({ params }: ProfessionalCreatePageProps) 
           </div>
         </form>
       </section>
-    </main>
+    </AppShell>
   );
 }

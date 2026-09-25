@@ -2052,9 +2052,9 @@
     "semantic_hash": ""
   },
   "frontend/src/features/professionals/ProfessionalCreatePage.tsx": {
-    "mtime": 1790307068.5996473,
-    "seen": 1790307112.7602456,
-    "ast_hash": "3516b15fb82c14cc2acca2703c9b1455",
+    "mtime": 1790306059.2392876,
+    "seen": 1790306495.9330432,
+    "ast_hash": "1cac5a20dac2cbf454b260e8af516e2c",
     "semantic_hash": ""
   },
   "frontend/src/features/professionals/ProfessionalProfilePage.tsx": {
