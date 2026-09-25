@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { use, useEffect, useState, useTransition } from "react";
 
 import { AppShell } from "@/components/AppShell";
@@ -21,6 +22,8 @@ type DocumentsPageProps = {
 
 export function DocumentsPage({ params }: DocumentsPageProps) {
   const { id } = use(params);
+  const searchParams = useSearchParams();
+  const selectedPatientId = searchParams.get("patient") ?? "";
   const { loading, user } = useAuthenticatedData();
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [templates, setTemplates] = useState<DocumentTemplate[]>([]);
@@ -64,6 +67,9 @@ export function DocumentsPage({ params }: DocumentsPageProps) {
     ({ DRAFT: "Rascunho", FINAL: "Finalizado", SIGNED: "Assinado", VOIDED: "Anulado" }[status] ?? status);
   const templateType = (type: string) =>
     ({ DECLARATION: "Declaração", CONSENT: "Consentimento", REPORT: "Relatório", RECEIPT: "Recibo", OTHER: "Outro" }[type] ?? type);
+  const visibleDocuments = selectedPatientId ? documents.filter((document) => document.patient === selectedPatientId) : documents;
+  const selectedPatientName = visibleDocuments[0]?.patient_name ?? "paciente selecionado";
+  const patientQuery = selectedPatientId ? `?patient=${selectedPatientId}` : "";
 
   function handleDownloadPdf(document: GeneratedDocument) {
     setError("");
@@ -100,7 +106,7 @@ export function DocumentsPage({ params }: DocumentsPageProps) {
       title="Modelos e PDFs"
       user={user}
       actions={
-        <Link className="button-primary button-compact" href={`/clinics/${id}/documents/new`}>
+        <Link className="button-primary button-compact" href={`/clinics/${id}/documents/new${patientQuery}`}>
           Novo documento
         </Link>
       }
@@ -127,16 +133,16 @@ export function DocumentsPage({ params }: DocumentsPageProps) {
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Geração</p>
-            <h2>Documentos emitidos</h2>
+            <h2>{selectedPatientId ? `Documentos de ${selectedPatientName}` : "Documentos emitidos"}</h2>
           </div>
-          <span className="panel-pill">{documents.length} registro(s)</span>
+          <span className="panel-pill">{visibleDocuments.length} registro(s)</span>
         </div>
 
         {error ? <div className="alert" role="alert" aria-live="assertive">{error}</div> : null}
 
-        {documents.length ? (
+        {visibleDocuments.length ? (
           <div className="clinic-list">
-            {documents.map((document) => (
+            {visibleDocuments.map((document) => (
               <article className="clinic-row" key={document.id}>
                 <div>
                   <strong>{document.title}</strong>
@@ -165,7 +171,7 @@ export function DocumentsPage({ params }: DocumentsPageProps) {
           <div className="empty-state">
             <h3>Nenhum documento gerado</h3>
             <p>Crie um modelo ou gere um documento avulso para o paciente.</p>
-            <Link className="button-primary button-compact" href={`/clinics/${id}/documents/new`}>
+            <Link className="button-primary button-compact" href={`/clinics/${id}/documents/new${patientQuery}`}>
               Criar documento
             </Link>
           </div>

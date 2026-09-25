@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { use, useEffect, useState, useTransition } from "react";
 
 import { AppShell } from "@/components/AppShell";
@@ -35,6 +36,8 @@ async function getMedicalRecordData(clinicId: string) {
 
 export function MedicalRecordsPage({ params }: MedicalRecordsPageProps) {
   const { id } = use(params);
+  const searchParams = useSearchParams();
+  const selectedPatientId = searchParams.get("patient") ?? "";
   const { loading, user } = useAuthenticatedData();
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [records, setRecords] = useState<MedicalRecordEntry[]>([]);
@@ -108,16 +111,19 @@ export function MedicalRecordsPage({ params }: MedicalRecordsPageProps) {
   const activeRecords = records.filter((record) => record.is_active);
   const finalRecords = records.filter((record) => record.status === "FINAL");
   const draftRecords = records.filter((record) => record.status === "DRAFT");
+  const visibleRecords = selectedPatientId ? records.filter((record) => record.patient === selectedPatientId) : records;
+  const selectedPatientName = visibleRecords[0]?.patient_name ?? "paciente selecionado";
+  const patientQuery = selectedPatientId ? `?patient=${selectedPatientId}` : "";
 
   return (
     <AppShell
       activeNav="medicalRecords"
       currentClinic={clinic}
       eyebrow="Prontuário protegido"
-      title="Registros clínicos"
+        title="Registros clínicos"
       user={user}
       actions={
-        <Link className="button-primary button-compact" href={`/clinics/${id}/medical-records/new`}>
+        <Link className="button-primary button-compact" href={`/clinics/${id}/medical-records/new${patientQuery}`}>
           Novo registro
         </Link>
       }
@@ -135,15 +141,15 @@ export function MedicalRecordsPage({ params }: MedicalRecordsPageProps) {
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Acesso sensível</p>
-            <h2>Entradas do prontuário</h2>
+            <h2>{selectedPatientId ? `Prontuário de ${selectedPatientName}` : "Entradas do prontuário"}</h2>
             <p className="muted">A abertura e alteração de registros é controlada por permissão e auditoria.</p>
           </div>
-          <span className="panel-pill">{records.length} registro(s)</span>
+          <span className="panel-pill">{visibleRecords.length} registro(s)</span>
         </div>
 
-        {records.length ? (
+        {visibleRecords.length ? (
           <div className="clinic-list">
-            {records.map((record) => (
+            {visibleRecords.map((record) => (
               <article className="clinic-row record-row" key={record.id}>
                 <div>
                   <strong>{record.patient_name}</strong>
@@ -166,7 +172,7 @@ export function MedicalRecordsPage({ params }: MedicalRecordsPageProps) {
           <div className="empty-state">
             <h3>Nenhum registro clínico</h3>
             <p>Crie a primeira evolução, avaliação ou nota de sessão para um paciente.</p>
-            <Link className="button-primary button-compact" href={`/clinics/${id}/medical-records/new`}>
+            <Link className="button-primary button-compact" href={`/clinics/${id}/medical-records/new${patientQuery}`}>
               Criar registro
             </Link>
           </div>

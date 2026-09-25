@@ -5240,7 +5240,7 @@
       "file_type": "code",
       "norm_label": "patientspageprops",
       "source_file": "frontend/src/features/patients/PatientsPage.tsx",
-      "source_location": "L12"
+      "source_location": "L11"
     },
     {
       "id": "frontend_src_lib_types_patient",
@@ -15840,7 +15840,7 @@
       "file_type": "code",
       "norm_label": "patientspage()",
       "source_file": "frontend/src/features/patients/PatientsPage.tsx",
-      "source_location": "L16"
+      "source_location": "L15"
     },
     {
       "id": "frontend_src_lib_api_createappointment",
@@ -34670,7 +34670,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/features/patients/PatientsPage.tsx",
-      "source_location": "L18",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -34682,7 +34682,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/features/patients/PatientsPage.tsx",
-      "source_location": "L31",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -34694,7 +34694,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "frontend/src/features/patients/PatientsPage.tsx",
-      "source_location": "L31",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -50299,18 +50299,6 @@
     },
     {
       "source": "frontend_src_features_patients_patientspage",
-      "target": "frontend_src_features_clinics_useauthenticateddata_useauthenticateddata",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "frontend/src/features/patients/PatientsPage.tsx",
-      "source_location": "L10",
-      "weight": 1.0
-    },
-    {
-      "source": "frontend_src_features_patients_patientspage",
       "target": "frontend_src_components_appshell_appshell",
       "relation": "imports",
       "_origin": "ast",
@@ -50323,7 +50311,7 @@
     },
     {
       "source": "frontend_src_features_patients_patientspage",
-      "target": "frontend_src_components_metriccard_metriccard",
+      "target": "frontend_src_lib_api_getclinic",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -50335,18 +50323,6 @@
     },
     {
       "source": "frontend_src_features_patients_patientspage",
-      "target": "frontend_src_lib_api_getclinic",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "frontend/src/features/patients/PatientsPage.tsx",
-      "source_location": "L8",
-      "weight": 1.0
-    },
-    {
-      "source": "frontend_src_features_patients_patientspage",
       "target": "frontend_src_lib_api_listpatients",
       "relation": "imports",
       "_origin": "ast",
@@ -50354,7 +50330,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "frontend/src/features/patients/PatientsPage.tsx",
-      "source_location": "L8",
+      "source_location": "L7",
       "weight": 1.0
     },
     {
@@ -50366,12 +50342,24 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "frontend/src/features/patients/PatientsPage.tsx",
-      "source_location": "L9",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
       "source": "frontend_src_features_patients_patientspage",
       "target": "frontend_src_lib_types_patient",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "frontend/src/features/patients/PatientsPage.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "frontend_src_features_patients_patientspage",
+      "target": "frontend_src_features_clinics_useauthenticateddata_useauthenticateddata",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -62959,18 +62947,6 @@
     },
     {
       "source": "frontend_src_features_patients_patientspage",
-      "target": "frontend_src_features_clinics_useauthenticateddata",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "frontend/src/features/patients/PatientsPage.tsx",
-      "source_location": "L10",
-      "weight": 1.0
-    },
-    {
-      "source": "frontend_src_features_patients_patientspage",
       "target": "ref_next",
       "relation": "imports_from",
       "_origin": "ast",
@@ -63007,7 +62983,7 @@
     },
     {
       "source": "frontend_src_features_patients_patientspage",
-      "target": "frontend_src_components_metriccard",
+      "target": "frontend_src_lib_api",
       "relation": "imports_from",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -63019,18 +62995,6 @@
     },
     {
       "source": "frontend_src_features_patients_patientspage",
-      "target": "frontend_src_lib_api",
-      "relation": "imports_from",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "frontend/src/features/patients/PatientsPage.tsx",
-      "source_location": "L8",
-      "weight": 1.0
-    },
-    {
-      "source": "frontend_src_features_patients_patientspage",
       "target": "frontend_src_lib_types",
       "relation": "imports_from",
       "_origin": "ast",
@@ -63038,8 +63002,20 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "frontend/src/features/patients/PatientsPage.tsx",
-      "source_location": "L9",
+      "source_location": "L8",
       "type_only": true,
+      "weight": 1.0
+    },
+    {
+      "source": "frontend_src_features_patients_patientspage",
+      "target": "frontend_src_features_clinics_useauthenticateddata",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "frontend/src/features/patients/PatientsPage.tsx",
+      "source_location": "L9",
       "weight": 1.0
     },
     {
@@ -74802,7 +74778,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/features/patients/PatientsPage.tsx",
-      "source_location": "L12",
+      "source_location": "L11",
       "weight": 1.0
     },
     {
@@ -74813,7 +74789,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/features/patients/PatientsPage.tsx",
-      "source_location": "L16",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -92893,5 +92869,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "f4885bcee540fb0a23200ce1498042f392dad874"
+  "built_at_commit": "40498e9efcd37d12fe84793e4ed6967ab51f29df"
 }

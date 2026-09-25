@@ -52,8 +52,6 @@ export function PatientsPage({ params }: PatientsPageProps) {
     );
   }
 
-  const patientStatus = (status: string) =>
-    ({ ACTIVE: "Ativo", INACTIVE: "Inativo", ARCHIVED: "Arquivado" }[status] ?? status);
   const professionalOptions = Array.from(new Map(patients.flatMap((patient) => patient.professional_links.map((link) => [link.professional, link.professional_name] as const))).entries())
     .sort((a, b) => a[1].localeCompare(b[1]));
   const normalizedSearch = search.trim().toLowerCase();
@@ -106,7 +104,7 @@ export function PatientsPage({ params }: PatientsPageProps) {
               type="search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Digite ao menos 2 caracteres"
+              placeholder="Nome, e-mail, telefone ou CPF"
             />
           </label>
           <label className="patients-filter-field">
@@ -139,16 +137,12 @@ export function PatientsPage({ params }: PatientsPageProps) {
           <div className="clinic-list patients-list">
             <div className="patients-list-header" aria-hidden="true">
               <span>Paciente</span>
-              <span>Contato</span>
-              <span>Status</span>
               <span>Ações</span>
             </div>
             {filteredPatients.map((patient) => {
               const socialName = patient.social_name.trim();
               const showSocialName = socialName && socialName.toLowerCase() !== patient.full_name.trim().toLowerCase();
-              const patientSubtitle = showSocialName
-                ? `Nome social: ${socialName}`
-                : patient.professional_links[0]?.professional_name || "Sem profissional vinculado";
+              const patientQuery = `?patient=${patient.id}`;
 
               return (
                 <article className="clinic-row patient-row" key={patient.id}>
@@ -162,25 +156,24 @@ export function PatientsPage({ params }: PatientsPageProps) {
                           {patient.full_name}
                         </Link>
                       </strong>
-                      <p>{patientSubtitle}</p>
+                      {showSocialName ? <p>{socialName}</p> : null}
                     </div>
                   </div>
-                  <div className="patient-contact">
-                    <span>{patient.email ? patient.email : patient.phone ? patient.phone : "Contato não informado"}</span>
-                    <small>{patient.guardians.length ? `${patient.guardians.length} responsável(is)` : "Sem responsável"}</small>
-                  </div>
-                  <span className="status-badge" aria-label={`Status: ${patientStatus(patient.status)}`}>
-                    {patientStatus(patient.status)}
-                  </span>
                   <div className="row-actions patient-actions">
                     <Link className="button-secondary button-compact" href={`/clinics/${id}/patients/${patient.id}`} aria-label={`Abrir resumo de ${patient.full_name}`}>
                       Resumo
                     </Link>
-                    <Link className="button-secondary button-compact" href={`/clinics/${id}/appointments/new`} aria-label={`Agendar consulta para ${patient.full_name}`}>
+                    <Link className="button-secondary button-compact" href={`/clinics/${id}/appointments/new${patientQuery}`} aria-label={`Agendar consulta para ${patient.full_name}`}>
                       Agendar
                     </Link>
-                    <Link className="button-secondary button-compact" href={`/clinics/${id}/medical-records`} aria-label="Abrir lista de prontuários da clínica">
+                    <Link className="button-secondary button-compact" href={`/clinics/${id}/medical-records${patientQuery}`} aria-label={`Abrir prontuário de ${patient.full_name}`}>
                       Prontuário
+                    </Link>
+                    <Link className="button-secondary button-compact" href={`/clinics/${id}/documents${patientQuery}`} aria-label={`Abrir documentos de ${patient.full_name}`}>
+                      Documentos
+                    </Link>
+                    <Link className="button-secondary button-compact" href={`/clinics/${id}/assessments${patientQuery}`} aria-label={`Abrir avaliações de ${patient.full_name}`}>
+                      Avaliação
                     </Link>
                   </div>
                 </article>

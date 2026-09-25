@@ -125,13 +125,13 @@ export function PatientDetailPage({ params }: PatientDetailPageProps) {
           <button className="button-secondary button-compact" type="button" onClick={handleDeletePatient} disabled={isDeleting}>
             {isDeleting ? "Excluindo..." : "Excluir"}
           </button>
-          <Link className="button-secondary button-compact" href={`/clinics/${id}/medical-records/new${patientQuery}`}>
+          <Link className="button-secondary button-compact" href={`/clinics/${id}/medical-records${patientQuery}`}>
             Prontuário
           </Link>
-          <Link className="button-secondary button-compact" href={`/clinics/${id}/documents/new${patientQuery}`}>
+          <Link className="button-secondary button-compact" href={`/clinics/${id}/documents${patientQuery}`}>
             Documento
           </Link>
-          <Link className="button-secondary button-compact" href={`/clinics/${id}/assessments/new${patientQuery}`}>
+          <Link className="button-secondary button-compact" href={`/clinics/${id}/assessments${patientQuery}`}>
             Avaliação
           </Link>
           <Link className="button-primary button-compact" href={`/clinics/${id}/appointments/new${patientQuery}`}>
@@ -166,11 +166,11 @@ export function PatientDetailPage({ params }: PatientDetailPageProps) {
 
         <nav className="patient-profile-tabs" aria-label="Áreas do paciente">
           <span className="is-active">Visão geral</span>
-          <Link href={`/clinics/${id}/appointments/new${patientQuery}`}>Agenda</Link>
-          <Link href={`/clinics/${id}/medical-records/new${patientQuery}`}>Prontuário</Link>
-          <Link href={`/clinics/${id}/documents/new${patientQuery}`}>Documentos</Link>
-          <Link href={`/clinics/${id}/assessments/new${patientQuery}`}>Avaliação psicológica</Link>
-          <Link href={`/clinics/${id}/billing/new${patientQuery}`}>Financeiro</Link>
+          <Link href={`/clinics/${id}/appointments${patientQuery}`}>Agenda</Link>
+          <Link href={`/clinics/${id}/medical-records${patientQuery}`}>Prontuário</Link>
+          <Link href={`/clinics/${id}/documents${patientQuery}`}>Documentos</Link>
+          <Link href={`/clinics/${id}/assessments${patientQuery}`}>Avaliação psicológica</Link>
+          <Link href={`/clinics/${id}/billing${patientQuery}`}>Financeiro</Link>
         </nav>
 
         {error ? <div className="alert" role="alert" aria-live="assertive">{error}</div> : null}

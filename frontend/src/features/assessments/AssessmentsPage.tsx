@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { use, useEffect, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
@@ -38,6 +39,8 @@ function formatDate(date: string | null) {
 
 export function AssessmentsPage({ params }: AssessmentsPageProps) {
   const { id } = use(params);
+  const searchParams = useSearchParams();
+  const selectedPatientId = searchParams.get("patient") ?? "";
   const { loading, user } = useAuthenticatedData();
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [assessments, setAssessments] = useState<PsychologicalAssessment[]>([]);
@@ -75,6 +78,7 @@ export function AssessmentsPage({ params }: AssessmentsPageProps) {
 
   const normalizedSearch = search.trim().toLowerCase();
   const filteredAssessments = assessments.filter((assessment) => {
+    const matchesPatient = !selectedPatientId || assessment.patient === selectedPatientId;
     const matchesStatus = statusFilter === "ALL" || assessment.status === statusFilter;
     const matchesSearch = !normalizedSearch || [
       assessment.title,
@@ -85,8 +89,11 @@ export function AssessmentsPage({ params }: AssessmentsPageProps) {
     ]
       .filter(Boolean)
       .some((value) => value.toLowerCase().includes(normalizedSearch));
-    return matchesStatus && matchesSearch;
+    return matchesPatient && matchesStatus && matchesSearch;
   });
+  const patientAssessments = selectedPatientId ? assessments.filter((assessment) => assessment.patient === selectedPatientId) : assessments;
+  const selectedPatientName = patientAssessments[0]?.patient_name ?? "paciente selecionado";
+  const patientQuery = selectedPatientId ? `?patient=${selectedPatientId}` : "";
   const inProgressCount = assessments.filter((assessment) => assessment.status === "IN_PROGRESS").length;
   const completedCount = assessments.filter((assessment) => assessment.status === "COMPLETED").length;
   const instrumentsCount = assessments.reduce(
@@ -102,7 +109,7 @@ export function AssessmentsPage({ params }: AssessmentsPageProps) {
       title="Avaliação psicológica"
       user={user}
       actions={
-        <Link className="button-primary button-compact" href={`/clinics/${id}/assessments/new`}>
+        <Link className="button-primary button-compact" href={`/clinics/${id}/assessments/new${patientQuery}`}>
           Nova avaliação
         </Link>
       }
@@ -136,7 +143,7 @@ export function AssessmentsPage({ params }: AssessmentsPageProps) {
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Avaliações</p>
-            <h2>Processos em acompanhamento</h2>
+            <h2>{selectedPatientId ? `Avaliações de ${selectedPatientName}` : "Processos em acompanhamento"}</h2>
             <p className="muted">Busque por paciente, profissional, motivo ou título da avaliação.</p>
           </div>
           <span className="panel-pill">{filteredAssessments.length} de {assessments.length} registro(s)</span>
@@ -208,7 +215,7 @@ export function AssessmentsPage({ params }: AssessmentsPageProps) {
           <div className="empty-state">
             <h3>Nenhuma avaliação registrada</h3>
             <p>Comece pelo cadastro do paciente para organizar instrumentos, resultados e documento final.</p>
-            <Link className="button-primary button-compact" href={`/clinics/${id}/assessments/new`}>
+            <Link className="button-primary button-compact" href={`/clinics/${id}/assessments/new${patientQuery}`}>
               Iniciar avaliação
             </Link>
           </div>

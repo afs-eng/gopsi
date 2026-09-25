@@ -1896,9 +1896,9 @@
     "semantic_hash": ""
   },
   "frontend/src/features/appointments/AppointmentsPage.tsx": {
-    "mtime": 1790274932.5671053,
-    "seen": 1790280533.5384815,
-    "ast_hash": "3fa735f267cd113e06b3f2d9e8a40053",
+    "mtime": 1790317192.141923,
+    "seen": 1790317219.8593738,
+    "ast_hash": "f4a59f8bbc7220e2a2fd900bc7a8310c",
     "semantic_hash": ""
   },
   "frontend/src/features/appointments/ScheduleBlockCreatePage.tsx": {
@@ -1938,9 +1938,9 @@
     "semantic_hash": ""
   },
   "frontend/src/features/assessments/AssessmentsPage.tsx": {
-    "mtime": 1790274932.568302,
-    "seen": 1790280533.5384839,
-    "ast_hash": "05f2e8d6367fb4d2bda2a60a57682d12",
+    "mtime": 1790317166.1659272,
+    "seen": 1790317219.8593774,
+    "ast_hash": "e54e135411f2dd8bf243a58df5f5b60b",
     "semantic_hash": ""
   },
   "frontend/src/features/auth/LoginPage.tsx": {
@@ -1992,9 +1992,9 @@
     "semantic_hash": ""
   },
   "frontend/src/features/documents/DocumentsPage.tsx": {
-    "mtime": 1790274932.5710304,
-    "seen": 1790280533.5384872,
-    "ast_hash": "eb4f5937c36531438f59d008d1868a5c",
+    "mtime": 1790317166.1659272,
+    "seen": 1790317219.8593814,
+    "ast_hash": "8ccba318092284cf6b07f7c44b03b586",
     "semantic_hash": ""
   },
   "frontend/src/features/medical-records/MedicalRecordCreatePage.tsx": {
@@ -2004,9 +2004,9 @@
     "semantic_hash": ""
   },
   "frontend/src/features/medical-records/MedicalRecordsPage.tsx": {
-    "mtime": 1790274932.571715,
-    "seen": 1790280533.538488,
-    "ast_hash": "407479d7e3c43b964cd6aaa23fc1db95",
+    "mtime": 1790317166.1659272,
+    "seen": 1790317219.8593826,
+    "ast_hash": "4ef4b1d15073283b94ee2d15590b1689",
     "semantic_hash": ""
   },
   "frontend/src/features/patients/PatientCreatePage.tsx": {
@@ -2016,9 +2016,9 @@
     "semantic_hash": ""
   },
   "frontend/src/features/patients/PatientDetailPage.tsx": {
-    "mtime": 1790274932.572384,
-    "seen": 1790280533.5384886,
-    "ast_hash": "dbbfd623b94ad5c7ccc33cc31289e1c3",
+    "mtime": 1790317116.5299325,
+    "seen": 1790317219.8593833,
+    "ast_hash": "b5fee580b2f2754a85722ff493aec58d",
     "semantic_hash": ""
   },
   "frontend/src/features/patients/PatientEditPage.tsx": {
@@ -2028,9 +2028,9 @@
     "semantic_hash": ""
   },
   "frontend/src/features/patients/PatientsPage.tsx": {
-    "mtime": 1790315664.5941794,
-    "seen": 1790315697.3104825,
-    "ast_hash": "8f80ea6bb204da90f0fc5db04a867923",
+    "mtime": 1790317130.029933,
+    "seen": 1790317219.859384,
+    "ast_hash": "936dc296db7d0543e135b8113ab1aa2a",
     "semantic_hash": ""
   },
   "frontend/src/features/platform/PlatformClinicCreatePage.tsx": {

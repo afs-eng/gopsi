@@ -2028,9 +2028,9 @@
     "semantic_hash": ""
   },
   "frontend/src/features/patients/PatientsPage.tsx": {
-    "mtime": 1790314864.0743215,
-    "seen": 1790314925.817469,
-    "ast_hash": "1f02a090900e9669a29753b07bbcaa46",
+    "mtime": 1790316308.4620657,
+    "seen": 1790316316.4426055,
+    "ast_hash": "31bd809c2f7582d3a1368c357ce17733",
     "semantic_hash": ""
   },
   "frontend/src/features/platform/PlatformClinicCreatePage.tsx": {

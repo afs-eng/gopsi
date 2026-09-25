@@ -1,7 +1,7 @@
 # Graph Report - plataforma-psi  (2026-09-25)
 
 ## Corpus Check
-- 343 files · ~436,990 words
+- 343 files · ~437,158 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 20 file(s) not represented in the graph (top: (none) 13, .example 2, .conf 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `40498e9e`
+- Built from commit: `1a09bf57`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

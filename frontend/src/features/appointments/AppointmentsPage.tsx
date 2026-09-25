@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { type CSSProperties, type FormEvent, type MouseEvent, use, useEffect, useState, useTransition } from "react";
 
 import { AppShell } from "@/components/AppShell";
@@ -129,6 +130,8 @@ function itemSearchValues(item: CalendarItem) {
 
 export function AppointmentsPage({ params }: AppointmentsPageProps) {
   const { id } = use(params);
+  const searchParams = useSearchParams();
+  const selectedPatientId = searchParams.get("patient") ?? "";
   const { loading, user } = useAuthenticatedData();
   const [clinic, setClinic] = useState<Clinic | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -186,9 +189,10 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
   const weekEnd = addDays(weekStart, 6);
   const hours = Array.from({ length: GRID_END_HOUR - GRID_START_HOUR }, (_, index) => GRID_START_HOUR + index);
   const normalizedSearch = search.trim().toLowerCase();
+  const patientInContext = selectedPatientId ? patients.find((patient) => patient.id === selectedPatientId) ?? null : null;
   const searchableCalendarItems: CalendarItem[] = [
     ...appointments
-      .filter((appointment) => appointment.is_active)
+      .filter((appointment) => appointment.is_active && (!selectedPatientId || appointment.patient === selectedPatientId))
       .map((appointment) => ({
         date: appointment.date,
         end_time: appointment.end_time,
@@ -202,7 +206,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
         type: "appointment" as const,
       })),
     ...scheduleBlocks
-      .filter((block) => block.is_active)
+      .filter((block) => block.is_active && !selectedPatientId)
       .map((block) => ({
         date: block.date,
         end_time: block.end_time,
@@ -403,7 +407,7 @@ export function AppointmentsPage({ params }: AppointmentsPageProps) {
       activeNav="appointments"
       currentClinic={clinic}
       eyebrow="Agenda clínica"
-      title="Consultas"
+      title={patientInContext ? `Agenda de ${patientInContext.full_name}` : "Consultas"}
       user={user}
       actions={
         <>

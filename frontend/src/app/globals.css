@@ -5303,7 +5303,7 @@ fieldset.form-section > legend + * {
 .patients-list-header,
 .patient-row {
   display: grid;
-  grid-template-columns: minmax(15rem, 1fr) minmax(12rem, 0.8fr) 6.5rem minmax(16rem, 0.8fr);
+  grid-template-columns: minmax(15rem, 1fr) minmax(23rem, auto);
   gap: 0.8rem;
   align-items: center;
 }
