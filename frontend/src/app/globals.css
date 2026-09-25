@@ -7167,10 +7167,6 @@ body:has(.app-shell) {
   color: #637083;
 }
 
-.form-card.is-compact {
-  width: min(100%, 58rem);
-}
-
 .form-card > .back-link {
   border-color: #eef1f2;
   background: #ffffff;
@@ -7254,6 +7250,215 @@ fieldset.form-section > legend,
 
 .form-stack > .row-actions .button-primary {
   margin-left: auto;
+}
+
+.form-card.is-compact {
+  width: min(100%, 42rem);
+  border-color: #eef1f2;
+  background: linear-gradient(180deg, #eef7f7 0%, #ffffff 10.5rem);
+  box-shadow: 0 20px 54px rgb(31 79 86 / 8%);
+  padding: clamp(0.9rem, 1.3vw, 1.25rem) clamp(1.15rem, 2.2vw, 1.9rem);
+}
+
+.form-card.is-compact > .back-link {
+  margin-bottom: 0.85rem;
+  border-color: #e6eaeb;
+  background: #ffffff;
+  color: #226d77;
+  padding: 0.42rem 0.75rem;
+  font-size: 0.84rem;
+}
+
+.form-card.is-compact > .eyebrow {
+  margin: 0;
+}
+
+.form-card.is-compact > h1,
+.form-card.is-compact > h2 {
+  margin-top: 0.15rem;
+  color: #202226;
+  font-size: clamp(1.55rem, 2.2vw, 1.95rem);
+}
+
+.form-card.is-compact > .muted {
+  max-width: 34rem;
+  margin-top: 0.45rem;
+  color: #6a6e77;
+  font-size: 0.95rem;
+}
+
+.form-card.is-compact > .alert {
+  margin-top: 0.85rem;
+}
+
+.form-card.is-compact .form-stack {
+  gap: 0.75rem;
+  margin-top: 0.8rem;
+}
+
+.form-card.is-compact .form-section {
+  align-content: start;
+  gap: 0.7rem;
+  margin-top: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.form-card.is-compact .form-section > legend {
+  float: none;
+  width: auto;
+  clear: none;
+  margin: 0 0 0.85rem;
+  border-bottom: 0;
+  color: #1f4f56;
+  line-height: 1.25;
+  padding-bottom: 0;
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.form-card.is-compact .form-section > legend + * {
+  clear: none;
+}
+
+.form-card.is-compact .field-grid {
+  align-items: start;
+  gap: 0.8rem 1rem;
+}
+
+.form-card.is-compact .field-group {
+  align-content: start;
+  gap: 0.45rem;
+}
+
+.form-card.is-compact .field-group label,
+.form-card.is-compact .checkbox-row {
+  color: #6a6e77;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.form-card.is-compact .field-hint,
+.form-card.is-compact .field-error {
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+
+.form-card.is-compact .form-stack input,
+.form-card.is-compact .form-stack select,
+.form-card.is-compact .form-stack textarea {
+  min-height: 2.5rem;
+  border-color: #e3e7e9;
+  border-radius: 0.7rem;
+  background: #f7f8f9;
+  color: #202226;
+  padding: 0.55rem 0.85rem;
+}
+
+.form-card.is-compact .form-stack input::placeholder,
+.form-card.is-compact .form-stack textarea::placeholder {
+  color: #9aa0a7;
+}
+
+.form-card.is-compact .form-stack input:focus,
+.form-card.is-compact .form-stack select:focus,
+.form-card.is-compact .form-stack textarea:focus {
+  outline: 0;
+  border-color: #4aa1ad;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgb(74 161 173 / 22%);
+}
+
+.form-card.is-compact .form-stack textarea {
+  min-height: 3.5rem;
+}
+
+.form-card.is-compact .form-stack > .row-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+  margin-top: 0.25rem;
+}
+
+.form-card.is-compact .form-stack > .row-actions > * {
+  width: 100%;
+  min-width: 0;
+  min-height: 3rem;
+  margin-top: 0;
+  margin-left: 0;
+  justify-content: center;
+}
+
+@media (min-width: 721px) {
+  .form-card.is-compact .form-stack > .row-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .form-page:has(> .form-card.is-compact) {
+    padding: clamp(0.75rem, 1.4vw, 1.1rem);
+  }
+
+  .form-card.is-compact {
+    width: min(100%, 72rem);
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 1.1rem;
+    row-gap: 0;
+  }
+
+  .form-card.is-compact > .back-link {
+    grid-area: 1 / 1;
+    align-self: center;
+    margin-bottom: 0;
+  }
+
+  .form-card.is-compact > h1 {
+    grid-area: 1 / 2;
+    align-self: center;
+    justify-self: start;
+    margin-top: 0;
+  }
+
+  .form-card.is-compact > .eyebrow {
+    grid-area: 2 / 1;
+    align-self: center;
+  }
+
+  .form-card.is-compact > .muted {
+    grid-area: 2 / 2;
+    align-self: center;
+    justify-self: end;
+    max-width: 26rem;
+    margin-top: 0;
+    text-align: right;
+  }
+
+  .form-card.is-compact > .alert {
+    grid-area: 3 / 1 / 4 / -1;
+  }
+
+  .form-card.is-compact > .form-stack {
+    grid-area: 4 / 1 / 5 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+  }
+
+  .form-card.is-compact .form-stack > .form-section:last-of-type {
+    grid-column: 1;
+  }
+
+  .form-card.is-compact .form-stack > .row-actions {
+    grid-column: 2;
+    align-self: end;
+  }
 }
 
 @media (max-width: 1120px) {

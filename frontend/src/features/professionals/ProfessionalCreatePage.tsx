@@ -216,7 +216,7 @@ export function ProfessionalCreatePage({ params }: ProfessionalCreatePageProps) 
             <legend>Sobre o profissional</legend>
             <div className="field-group">
               <label htmlFor="biography">Biografia profissional</label>
-              <textarea id="biography" name="biography" rows={4} />
+              <textarea id="biography" name="biography" rows={3} />
             </div>
           </fieldset>
 
