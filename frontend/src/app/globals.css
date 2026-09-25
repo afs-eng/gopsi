@@ -1405,41 +1405,11 @@ h2 {
   padding: 0.45rem 0.75rem;
 }
 
-.professionals-marketplace,
 .profile-showcase {
   display: grid;
   gap: 1rem;
 }
 
-.professionals-marketplace-heading {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-  justify-content: space-between;
-}
-
-.professionals-marketplace-heading h2 {
-  color: #5a1597;
-  font-size: clamp(1.7rem, 3vw, 2.35rem);
-  line-height: 1.05;
-}
-
-.professionals-offer-list {
-  display: grid;
-  gap: 1rem;
-}
-
-.professional-offer-card {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 1rem;
-  border: 1px solid #bdf7d0;
-  border-radius: 1rem;
-  background: #ffffff;
-  padding: clamp(1rem, 2vw, 1.45rem);
-}
-
-.professional-card-avatar,
 .profile-photo {
   display: grid;
   place-items: center;
@@ -1449,109 +1419,14 @@ h2 {
   font-weight: 900;
 }
 
-.professional-card-avatar {
-  width: 4rem;
-  height: 4rem;
-  font-size: 1.45rem;
-}
-
-.professional-card-body {
-  display: grid;
-  gap: 0.85rem;
-}
-
-.professional-card-header,
-.professional-card-footer {
-  display: flex;
-  gap: 0.8rem;
-  align-items: flex-start;
-  justify-content: space-between;
-}
-
-.professional-card-header h3 {
-  color: #111827;
-  font-size: 1.15rem;
-}
-
 .professional-name-link {
   color: inherit;
   text-decoration: none;
 }
 
 .professional-name-link:hover {
-  color: #176b56;
+  color: #4aa1ad;
   text-decoration: underline;
-}
-
-.professional-tag {
-  display: inline-flex;
-  width: fit-content;
-  margin-top: 0.35rem;
-  border: 1px solid #d7dee9;
-  border-radius: 999px;
-  background: white;
-  color: #111827;
-  padding: 0.28rem 0.58rem;
-  font-size: 0.74rem;
-  font-weight: 850;
-}
-
-.professional-score {
-  border-radius: 999px;
-  background: #ff8a00;
-  color: white;
-  padding: 0.4rem 0.65rem;
-  font-size: 0.78rem;
-}
-
-.professional-offer-panels {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.professional-offer-box {
-  display: grid;
-  gap: 0.35rem;
-  border-radius: 0.8rem;
-  padding: 1rem;
-}
-
-.professional-offer-box.is-primary {
-  background: #ecfbf1;
-}
-
-.professional-offer-box.is-secondary {
-  background: #faf2ff;
-}
-
-.professional-offer-box span {
-  color: #637083;
-  font-size: 0.75rem;
-  font-weight: 850;
-  text-transform: uppercase;
-}
-
-.professional-offer-box strong {
-  color: #006144;
-  font-size: 1rem;
-}
-
-.professional-offer-box.is-secondary strong {
-  color: #5a1597;
-}
-
-.professional-offer-box p,
-.professional-card-meta {
-  color: #526173;
-  font-size: 0.86rem;
-}
-
-.professional-card-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
 }
 
 .profile-showcase-hero,
@@ -2855,17 +2730,12 @@ h2 {
 }
 
 @media (max-width: 720px) {
-  .professional-offer-card,
-  .professional-offer-panels,
   .profile-showcase-hero,
   .profile-showcase-grid,
   .profile-business-card > div {
     grid-template-columns: 1fr;
   }
 
-  .professional-card-header,
-  .professional-card-footer,
-  .professionals-marketplace-heading,
   .profile-showcase-hero {
     align-items: flex-start;
     flex-direction: column;
@@ -7185,5 +7055,263 @@ body:has(.app-shell) {
 
   .dashboard-quick-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Professionals list and intake pass, adapted from the local Medlink references. */
+.professionals-panel .panel-heading {
+  align-items: flex-start;
+}
+
+.professionals-list {
+  gap: 0;
+  margin-top: 0;
+  border-color: #eef1f2;
+}
+
+.professionals-list-header,
+.professional-row {
+  display: grid;
+  grid-template-columns: minmax(13rem, 1.15fr) minmax(9rem, 0.7fr) minmax(12rem, 0.95fr) 6.5rem auto;
+  gap: 0.85rem;
+  align-items: center;
+}
+
+.professionals-list-header {
+  background: #f7f9f9;
+  color: #6a6e77;
+  padding: 0.75rem 1rem;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.professional-row {
+  min-height: 4.4rem;
+  border: 0;
+  border-bottom: 1px solid #eef1f2;
+  border-radius: 0;
+  background: #ffffff;
+  padding: 0.85rem 1rem;
+}
+
+.professional-row:last-child {
+  border-bottom: 0;
+}
+
+.professional-row:hover {
+  background: #f8fbfb;
+}
+
+.professional-row > * {
+  min-width: 0;
+}
+
+.professional-identity {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.professional-row span.professional-avatar {
+  display: grid;
+  width: 2.4rem;
+  height: 2.4rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  background: #dff2f1;
+  color: #2f8f9b;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.professional-identity strong,
+.professional-identity p,
+.professional-service strong,
+.professional-service p,
+.professional-contact strong,
+.professional-contact p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.professional-identity p,
+.professional-service p,
+.professional-contact p {
+  margin-top: 0.15rem;
+}
+
+.professional-actions {
+  justify-content: flex-end;
+}
+
+.professionals-list-header span:last-child {
+  justify-self: end;
+}
+
+.professional-status-active {
+  background: #dff2f1;
+  color: #2f8f9b;
+}
+
+.professional-status-blocked {
+  background: rgb(143 47 36 / 10%);
+  color: var(--danger);
+}
+
+.professional-status-inactive {
+  background: #f2f4f8;
+  color: #637083;
+}
+
+.form-card.is-compact {
+  width: min(100%, 58rem);
+}
+
+.form-card > .back-link {
+  border-color: #eef1f2;
+  background: #ffffff;
+  color: #226d77;
+}
+
+.form-card > h1,
+.form-card > h2 {
+  color: #202226;
+}
+
+.form-card > .muted {
+  color: #6a6e77;
+}
+
+.form-stack {
+  gap: 1.1rem;
+}
+
+.form-stack .form-section {
+  gap: 1.05rem;
+  border: 1px solid #eef1f2;
+  border-radius: 1.15rem;
+  background: #fafbfb;
+  box-shadow: none;
+  padding: clamp(1rem, 2vw, 1.35rem);
+}
+
+fieldset.form-section > legend,
+.form-stack .form-section > legend {
+  margin-bottom: 1.05rem;
+  border-bottom-color: #eef1f2;
+  color: #2f8f9b;
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.field-group label,
+.checkbox-row {
+  color: #202226;
+}
+
+.form-stack input,
+.form-stack select,
+.form-stack textarea {
+  min-height: 3rem;
+  border-color: #e3e7e9;
+  border-radius: 0.75rem;
+  background: #f7f8f9;
+  color: #202226;
+}
+
+.form-stack input::placeholder,
+.form-stack textarea::placeholder {
+  color: #9aa0a7;
+}
+
+.form-stack input:focus,
+.form-stack select:focus,
+.form-stack textarea:focus {
+  border-color: #4aa1ad;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgb(74 161 173 / 16%);
+}
+
+.form-stack > .row-actions {
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+}
+
+.form-stack > .row-actions .button-secondary,
+.form-stack > .row-actions .button-primary {
+  min-height: 3.05rem;
+  min-width: 10rem;
+  margin-top: 0;
+  justify-content: center;
+}
+
+.form-stack > .row-actions .button-primary {
+  margin-left: auto;
+}
+
+@media (max-width: 1120px) {
+  .professionals-list-header {
+    display: none;
+  }
+
+  .professional-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.7rem 1rem;
+  }
+
+  .professional-identity {
+    grid-area: 1 / 1;
+  }
+
+  .professional-row .status-badge {
+    grid-area: 1 / 2;
+    justify-self: end;
+  }
+
+  .professional-service {
+    grid-area: 2 / 1;
+  }
+
+  .professional-actions {
+    grid-area: 2 / 2;
+    justify-self: end;
+  }
+
+  .professional-contact {
+    grid-area: 3 / 1 / 4 / -1;
+  }
+}
+
+@media (max-width: 720px) {
+  .professional-row {
+    grid-template-columns: 1fr;
+  }
+
+  .professional-identity,
+  .professional-row .status-badge,
+  .professional-service,
+  .professional-contact,
+  .professional-actions {
+    grid-area: auto;
+    justify-self: start;
+  }
+
+  .professional-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .form-stack > .row-actions .button-secondary,
+  .form-stack > .row-actions .button-primary {
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
   }
 }

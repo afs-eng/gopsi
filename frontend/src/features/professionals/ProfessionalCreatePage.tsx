@@ -110,7 +110,7 @@ export function ProfessionalCreatePage({ params }: ProfessionalCreatePageProps) 
 
   return (
     <main className="form-page">
-      <section className="form-card" aria-labelledby="professional-form-title">
+      <section className="form-card is-compact" aria-labelledby="professional-form-title">
         <Link className="back-link" href={`/clinics/${id}/professionals`}>
           Voltar para profissionais
         </Link>
@@ -121,86 +121,113 @@ export function ProfessionalCreatePage({ params }: ProfessionalCreatePageProps) 
         {error ? <div id="professional-form-error" className="alert" role="alert" aria-live="assertive">{error}</div> : null}
 
         <form className="form-stack" onSubmit={handleSubmit} aria-describedby={error ? "professional-form-error" : undefined}>
-          <div className="field-group">
-            <label htmlFor="full_name">Nome completo</label>
-            <input id="full_name" name="full_name" required />
-          </div>
-          <div className="field-group">
-            <label htmlFor="social_name">Nome social</label>
-            <input id="social_name" name="social_name" />
-          </div>
-          <div className="field-grid">
-            <div className="field-group">
-              <label htmlFor="profession">Profissão</label>
-              <input id="profession" name="profession" defaultValue="Psicóloga" required />
+          <fieldset className="form-section">
+            <legend>Dados pessoais</legend>
+            <div className="field-grid">
+              <div className="field-group">
+                <label htmlFor="full_name">Nome completo</label>
+                <input id="full_name" name="full_name" required />
+              </div>
+              <div className="field-group">
+                <label htmlFor="social_name">Nome social</label>
+                <input id="social_name" name="social_name" />
+              </div>
+            </div>
+            <div className="field-grid">
+              <div className="field-group">
+                <label htmlFor="cpf">CPF</label>
+                <input id="cpf" name="cpf" inputMode="numeric" maxLength={14} onInput={maskCpfInput} placeholder="000.000.000-00" />
+              </div>
+              <div className="field-group">
+                <label htmlFor="profession">Profissão</label>
+                <input id="profession" name="profession" defaultValue="Psicóloga" required />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset className="form-section">
+            <legend>Registro profissional</legend>
+            <div className="field-grid">
+              <div className="field-group">
+                <label htmlFor="crp">CRP</label>
+                <input
+                  id="crp"
+                  name="crp"
+                  aria-describedby="crp-help"
+                  aria-invalid={invalidCrpRegion}
+                  className={invalidCrpRegion ? "field-invalid" : undefined}
+                  inputMode="numeric"
+                  maxLength={12}
+                  onInput={handleCrpInput}
+                  placeholder="CRP 00/00000"
+                />
+                <span className={invalidCrpRegion ? "field-error" : "field-hint"} id="crp-help">
+                  {invalidCrpRegion ? "Regional do CRP não encontrada." : crpRegionLabel ? `Regional: ${crpRegionLabel}.` : "Digite a regional para preencher a UF automaticamente."}
+                </span>
+              </div>
+              <div className="field-group">
+                <label htmlFor="crp_state">UF do CRP</label>
+                <input id="crp_state" name="crp_state" maxLength={2} placeholder="SP" readOnly value={crpState} />
+              </div>
             </div>
             <div className="field-group">
-              <label htmlFor="cpf">CPF</label>
-              <input id="cpf" name="cpf" inputMode="numeric" maxLength={14} onInput={maskCpfInput} placeholder="000.000.000-00" />
+              <label htmlFor="registration_number">Número de registro</label>
+              <input id="registration_number" name="registration_number" />
             </div>
-          </div>
-          <div className="field-grid">
-            <div className="field-group">
-              <label htmlFor="crp">CRP</label>
-              <input
-                id="crp"
-                name="crp"
-                aria-describedby="crp-help"
-                aria-invalid={invalidCrpRegion}
-                className={invalidCrpRegion ? "field-invalid" : undefined}
-                inputMode="numeric"
-                maxLength={12}
-                onInput={handleCrpInput}
-                placeholder="CRP 00/00000"
-              />
-              <span className={invalidCrpRegion ? "field-error" : "field-hint"} id="crp-help">
-                {invalidCrpRegion ? "Regional do CRP não encontrada." : crpRegionLabel ? `Regional: ${crpRegionLabel}.` : "Digite a regional para preencher a UF automaticamente."}
-              </span>
+          </fieldset>
+
+          <fieldset className="form-section">
+            <legend>Contato</legend>
+            <div className="field-grid">
+              <div className="field-group">
+                <label htmlFor="email">E-mail</label>
+                <input id="email" name="email" type="email" />
+              </div>
+              <div className="field-group">
+                <label htmlFor="phone">Telefone</label>
+                <input id="phone" name="phone" inputMode="numeric" maxLength={14} onInput={maskPhoneInput} placeholder="(00)00000-0000" />
+              </div>
             </div>
-            <div className="field-group">
-              <label htmlFor="crp_state">UF do CRP</label>
-              <input id="crp_state" name="crp_state" maxLength={2} placeholder="SP" readOnly value={crpState} />
-            </div>
-          </div>
-          <div className="field-grid">
-            <div className="field-group">
-              <label htmlFor="email">E-mail</label>
-              <input id="email" name="email" type="email" />
-            </div>
-            <div className="field-group">
-              <label htmlFor="phone">Telefone</label>
-              <input id="phone" name="phone" inputMode="numeric" maxLength={14} onInput={maskPhoneInput} placeholder="(00)00000-0000" />
-            </div>
-          </div>
-          <div className="field-grid">
-            <div className="field-group">
-              <label htmlFor="appointment_modalities">Modalidade</label>
-              <select id="appointment_modalities" name="appointment_modalities" defaultValue="IN_PERSON">
-                <option value="IN_PERSON">Presencial</option>
-                <option value="ONLINE">Online</option>
-                <option value="HYBRID">Híbrido</option>
-              </select>
+          </fieldset>
+
+          <fieldset className="form-section">
+            <legend>Atendimento</legend>
+            <div className="field-grid">
+              <div className="field-group">
+                <label htmlFor="appointment_modalities">Modalidade</label>
+                <select id="appointment_modalities" name="appointment_modalities" defaultValue="IN_PERSON">
+                  <option value="IN_PERSON">Presencial</option>
+                  <option value="ONLINE">Online</option>
+                  <option value="HYBRID">Híbrido</option>
+                </select>
+              </div>
+              <div className="field-group">
+                <label htmlFor="appointment_price">Valor da consulta</label>
+                <input id="appointment_price" name="appointment_price" type="number" min="0" step="0.01" defaultValue="0" />
+              </div>
             </div>
             <div className="field-group">
-              <label htmlFor="appointment_price">Valor da consulta</label>
-              <input id="appointment_price" name="appointment_price" type="number" min="0" step="0.01" defaultValue="0" />
+              <label htmlFor="default_appointment_duration">Duração padrão em minutos</label>
+              <input id="default_appointment_duration" name="default_appointment_duration" type="number" min="10" defaultValue="50" />
             </div>
+          </fieldset>
+
+          <fieldset className="form-section">
+            <legend>Sobre o profissional</legend>
+            <div className="field-group">
+              <label htmlFor="biography">Biografia profissional</label>
+              <textarea id="biography" name="biography" rows={4} />
+            </div>
+          </fieldset>
+
+          <div className="row-actions">
+            <Link className="button-secondary" href={`/clinics/${id}/professionals`}>
+              Cancelar
+            </Link>
+            <button className="button-primary" disabled={isPending} type="submit">
+              {isPending ? "Salvando..." : "Salvar profissional"}
+            </button>
           </div>
-          <div className="field-group">
-            <label htmlFor="default_appointment_duration">Duração padrão em minutos</label>
-            <input id="default_appointment_duration" name="default_appointment_duration" type="number" min="10" defaultValue="50" />
-          </div>
-          <div className="field-group">
-            <label htmlFor="registration_number">Número de registro</label>
-            <input id="registration_number" name="registration_number" />
-          </div>
-          <div className="field-group">
-            <label htmlFor="biography">Biografia profissional</label>
-            <textarea id="biography" name="biography" rows={4} />
-          </div>
-          <button className="button-primary" disabled={isPending} type="submit">
-            {isPending ? "Salvando..." : "Salvar profissional"}
-          </button>
         </form>
       </section>
     </main>

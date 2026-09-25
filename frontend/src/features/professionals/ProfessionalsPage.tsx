@@ -61,6 +61,8 @@ export function ProfessionalsPage({ params }: ProfessionalsPageProps) {
     );
   }
 
+  const activeCount = professionals.filter((professional) => professional.is_active).length;
+
   return (
     <AppShell
       activeNav="professionals"
@@ -74,59 +76,66 @@ export function ProfessionalsPage({ params }: ProfessionalsPageProps) {
         </Link>
       }
     >
-      <section className="professionals-marketplace" aria-label="Lista de profissionais">
-        <div className="professionals-marketplace-heading">
+      <section className="panel-card professionals-panel" aria-labelledby="professionals-title">
+        <div className="panel-heading">
           <div>
-            <h2>Equipe profissional</h2>
-            <p className="muted">Visualize atuação, modalidade e contato de cada profissional da clínica.</p>
+            <p className="eyebrow">Cadastro</p>
+            <h2 id="professionals-title">Profissionais vinculados</h2>
+            <p className="muted">Atuação, modalidade e contato de cada profissional da clínica.</p>
           </div>
-          <span className="panel-pill">{professionals.filter((professional) => professional.is_active).length} ativo(s)</span>
+          <span className="panel-pill">{activeCount} de {professionals.length} ativo(s)</span>
         </div>
 
         {professionals.length ? (
-          <div className="professionals-offer-list">
+          <div className="clinic-list professionals-list">
+            <div className="professionals-list-header" aria-hidden="true">
+              <span>Profissional</span>
+              <span>Atendimento</span>
+              <span>Contato</span>
+              <span>Status</span>
+              <span>Ações</span>
+            </div>
             {professionals.map((professional) => (
-              <article className="professional-offer-card" key={professional.id}>
-                <div className="professional-card-avatar" aria-hidden="true">
-                  {professional.full_name.slice(0, 1).toUpperCase()}
+              <article className="clinic-row professional-row" key={professional.id}>
+                <div className="professional-identity">
+                  <span className="professional-avatar" aria-hidden="true">
+                    {professional.full_name.slice(0, 1).toUpperCase()}
+                  </span>
+                  <div>
+                    <strong>
+                      <Link className="professional-name-link" href={`/clinics/${id}/professionals/${professional.id}`}>
+                        {professional.full_name}
+                      </Link>
+                    </strong>
+                    <p>{professional.profession} · {professional.crp || "CRP não informado"}</p>
+                  </div>
                 </div>
-                <div className="professional-card-body">
-                  <div className="professional-card-header">
-                    <div>
-                      <h3>
-                        <Link className="professional-name-link" href={`/clinics/${id}/professionals/${professional.id}`}>
-                          {professional.full_name}
-                        </Link>
-                      </h3>
-                      <span className="professional-tag">{professional.profession}</span>
-                    </div>
-                    <strong className="professional-score">{professional.default_appointment_duration} min</strong>
-                  </div>
-
-                  <div className="professional-offer-panels">
-                    <div className="professional-offer-box is-primary">
-                      <span>Atuação</span>
-                      <strong>{professional.crp || "CRP não informado"}</strong>
-                      <p>{professional.registration_number || "Registro complementar não informado"}</p>
-                    </div>
-                    <div className="professional-offer-box is-secondary">
-                      <span>Disponibilidade</span>
-                      <strong>{modalityLabels[professional.appointment_modalities]}</strong>
-                      <p>{Number(professional.appointment_price || 0).toLocaleString("pt-BR", { currency: "BRL", style: "currency" })} por consulta</p>
-                    </div>
-                  </div>
-
-                  <div className="professional-card-footer">
-                    <div className="professional-card-meta">
-                      <span aria-hidden="true">♡</span>
-                      <span>{professional.email || "E-mail não informado"}</span>
-                      <span aria-hidden="true">↗</span>
-                      <span>{professional.phone || "Telefone não informado"}</span>
-                    </div>
-                    <span className="status-badge" aria-label={`Status: ${statusLabels[professional.status] || professional.status}`}>
-                      {statusLabels[professional.status] || professional.status}
-                    </span>
-                  </div>
+                <div className="professional-service">
+                  <strong>{modalityLabels[professional.appointment_modalities]}</strong>
+                  <p>
+                    {Number(professional.appointment_price || 0).toLocaleString("pt-BR", { currency: "BRL", style: "currency" })}
+                    {" · "}
+                    {professional.default_appointment_duration} min
+                  </p>
+                </div>
+                <div className="professional-contact">
+                  <strong>{professional.email || "E-mail não informado"}</strong>
+                  <p>{professional.phone || "Telefone não informado"}</p>
+                </div>
+                <span
+                  className={`status-badge professional-status-${professional.status.toLowerCase()}`}
+                  aria-label={`Status: ${statusLabels[professional.status] || professional.status}`}
+                >
+                  {statusLabels[professional.status] || professional.status}
+                </span>
+                <div className="row-actions professional-actions">
+                  <Link
+                    className="button-secondary button-compact"
+                    href={`/clinics/${id}/professionals/${professional.id}`}
+                    aria-label={`Abrir perfil de ${professional.full_name}`}
+                  >
+                    Ver perfil
+                  </Link>
                 </div>
               </article>
             ))}

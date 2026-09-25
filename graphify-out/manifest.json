@@ -2052,9 +2052,9 @@
     "semantic_hash": ""
   },
   "frontend/src/features/professionals/ProfessionalCreatePage.tsx": {
-    "mtime": 1790274932.5733926,
-    "seen": 1790280533.5384927,
-    "ast_hash": "4b8b7983d34a9b9c18f59a1ede5291ef",
+    "mtime": 1790284492.217314,
+    "seen": 1790285446.5421236,
+    "ast_hash": "a3fcf6912293a56ae20604e811838d59",
     "semantic_hash": ""
   },
   "frontend/src/features/professionals/ProfessionalProfilePage.tsx": {
@@ -2064,9 +2064,9 @@
     "semantic_hash": ""
   },
   "frontend/src/features/professionals/ProfessionalsPage.tsx": {
-    "mtime": 1790274932.574334,
-    "seen": 1790280533.5384932,
-    "ast_hash": "6b3575b6fea2d24bfa645b34548f2a5b",
+    "mtime": 1790285242.6217632,
+    "seen": 1790285446.5421247,
+    "ast_hash": "4e1408b57c07ff73ff8968d1b660f0a2",
     "semantic_hash": ""
   },
   "frontend/src/features/reports/ReportsPage.tsx": {
